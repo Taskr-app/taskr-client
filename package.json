@@ -2,21 +2,62 @@
   "name": "taskr-client",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "codegen": "graphql-codegen --config codegen.yml",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.1",
+    "antd": "^3.25.0",
+    "apollo-boost": "^0.4.4",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-token-refresh": "^0.2.6",
+    "apollo-link-ws": "^1.0.19",
+    "classnames": "^2.2.6",
+    "cookie": "^0.4.0",
+    "graphql": "^14.5.7",
+    "hashids": "latest",
+    "isomorphic-unfetch": "^3.0.0",
+    "jwt-decode": "^2.2.0",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-scripts": "3.2.0",
+    "subscriptions-transport-ws": "^0.9.16",
+    "tslint": "^5.20.0",
+    "ws": "^7.2.0"
+  },
+  "devDependencies": {
     "@types/jest": "24.0.23",
     "@types/node": "12.12.7",
     "@types/react": "16.9.11",
     "@types/react-dom": "16.9.4",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
-    "react-scripts": "3.2.0",
-    "typescript": "3.7.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "typescript": "3.7.2",
+    "@apollo/react-testing": "^3.1.2",
+    "@graphql-codegen/cli": "^1.7.0",
+    "@graphql-codegen/introspection": "1.7.0",
+    "@graphql-codegen/typescript": "1.7.0",
+    "@graphql-codegen/typescript-operations": "1.7.0",
+    "@graphql-codegen/typescript-react-apollo": "1.7.0",
+    "@types/classnames": "^2.2.9",
+    "@types/cookie": "^0.3.3",
+    "@types/enzyme": "^3.10.3",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/graphql": "^14.5.0",
+    "@types/hashids": "latest",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/react-test-renderer": "^16.9.0",
+    "@types/ws": "^6.0.3",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.0",
+    "jest": "^24.9.0",
+    "jest-transform-stub": "^2.0.0",
+    "react-test-renderer": "^16.10.2",
+    "ts-jest": "^24.1.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-react": "^4.1.0"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -31,6 +72,30 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest",
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "globals": {
+      "ts-jest": {
+        "babelConfig": true,
+        "tsConfig": "jest.tsconfig.json"
+      }
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/lib/enzyme.ts"
     ]
   }
 }
