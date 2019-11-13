@@ -10,25 +10,22 @@ import GoogleLogin from "../../components/auth/GoogleLogin";
 
 import styles from "./Login.module.scss";
 import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useParams } from "react-router";
-import { queryConcat } from "../../lib/queryConcat";
-
-interface RouteParams {
-  [key: string]: string
-}
+import { useHistory, useLocation } from "react-router";
+import { queryStringify, queryParse } from "../../lib/queryParser";
 
 const Login: React.FC<FormComponentProps> = ({ form }) => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search)
   const [forgotPassword, showForgotPassword] = useState(false);
   const [login, { loading }] = useLoginMutation({
     onCompleted: data => {
       setAccessToken(data.login.accessToken);
-      if (params.returnUrl) {
-        const { returnUrl, ...queryParams } = params;
+      if (routeQueries.returnUrl) {
+        const { returnUrl, ...queryParams } = routeQueries;
         history.push({
-          pathname: returnUrl as string,
-          search: queryConcat({ ...queryParams })
+          pathname: returnUrl,
+          search: queryStringify({ ...queryParams })
         });
       } else {
         history.push("/");
@@ -63,7 +60,7 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
         <Form onSubmit={handleSubmit}>
           <Form.Item hasFeedback>
             {getFieldDecorator("email", {
-              initialValue: params.email ? params.email : "",
+              initialValue: routeQueries.email ? routeQueries.email : "",
               rules: [
                 { required: true, message: "Email field is required" },
                 { type: "email", message: "Not a a valid email address" }

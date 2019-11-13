@@ -9,23 +9,20 @@ import { message, Button, Icon } from "antd";
 import Layout from "../../components/layouts/Layout";
 import ErrorLayout from "../../components/layouts/ErrorLayout";
 import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useParams } from "react-router";
-import { queryConcat } from "../../lib/queryConcat";
-
-interface RouteParams {
-  [key: string]: string
-}
+import { useHistory, useLocation } from "react-router";
+import { queryStringify, queryParse } from "../../lib/queryParser";
 
 const EmailVerificationSuccessPage: React.FC = () => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search)
   const [
     register,
     { error: registerError, loading: registerLoading, called: registerCalled }
   ] = useRegisterMutation({
     variables: {
-      email: params.email,
-      verificationLink: params.id
+      email: routeQueries.email,
+      verificationLink: routeQueries.id
     },
     onCompleted: data => {
       setAccessToken(data.register.accessToken);
@@ -53,13 +50,13 @@ const EmailVerificationSuccessPage: React.FC = () => {
   });
   const [resendVerificationLink] = useResendVerificationLinkMutation({
     variables: {
-      email: params.email
+      email: routeQueries.email
     },
     onCompleted: data => {
       history.push({
         pathname: "/email-verification",
-        search: queryConcat({
-          email: params.email,
+        search: queryStringify({
+          email: routeQueries.email,
           id: data.resendVerificationLink
         })
       });
@@ -80,7 +77,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
 
   useEffect(() => {
     let didCancel = false;
-    if (!params.id || !params.email) {
+    if (!routeQueries.id || !routeQueries.email) {
       history.push("/");
     }
 

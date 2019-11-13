@@ -8,24 +8,21 @@ import {
 import AnonLayout from "../../../components/layouts/AnonLayout";
 import { errorMessage } from "../../../lib/messageHandler";
 import ErrorLayout from "../../../components/layouts/ErrorLayout";
-import { useHistory, useParams } from "react-router";
-import { queryConcat } from "../../../lib/queryConcat";
-
-interface RouteParams {
-  [key: string]: string;
-}
+import { useHistory, useLocation } from "react-router";
+import { queryStringify, queryParse } from "../../../lib/queryParser";
 
 const ProjectInvitePublicPage: React.FC = () => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search)
   const { data, loading } = useMeQuery();
   const {
     data: validated,
     loading: validateLoading
   } = useValidatePublicProjectLinkQuery({
     variables: {
-      projectId: params.project,
-      link: params.id
+      projectId: routeQueries.project,
+      link: routeQueries.id
     },
     onError: err => {
       errorMessage(err);
@@ -33,15 +30,15 @@ const ProjectInvitePublicPage: React.FC = () => {
   });
   const [acceptProjectLink] = useAcceptPublicProjectLinkMutation({
     variables: {
-      link: params.id,
-      projectId: params.project
+      link: routeQueries.id,
+      projectId: routeQueries.project
     },
     onCompleted: () => history.push({ pathname: "/" }),
     onError: err => errorMessage(err)
   });
 
   useEffect(() => {
-    if (!params.project || !params.id) {
+    if (!routeQueries.project || !routeQueries.id) {
       history.push("/");
     }
     if (!loading && data && validated && !validateLoading) {
@@ -55,7 +52,7 @@ const ProjectInvitePublicPage: React.FC = () => {
     validated,
     validateLoading,
     loading,
-    params,
+    routeQueries,
     history,
     acceptProjectLink
   ]);
@@ -69,9 +66,9 @@ const ProjectInvitePublicPage: React.FC = () => {
   const handleLogin = () => {
     history.push({
       pathname: "/login",
-      search: queryConcat({
+      search: queryStringify({
         returnUrl: "/invite/project/public",
-        ...params
+        ...routeQueries
       })
     });
   };

@@ -23,6 +23,7 @@
     "isomorphic-unfetch": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "node-sass": "^4.13.0",
+    "query-string": "^6.9.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-helmet": "^5.2.1",
@@ -100,7 +101,11 @@
       }
     },
     "setupFilesAfterEnv": [
-      "<rootDir>/lib/enzyme.ts"
+      "<rootDir>/src/lib/enzyme.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules",
+      "/src/__tests__/utils/*"
     ]
   }
 }

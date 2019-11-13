@@ -11,6 +11,7 @@ import DashboardProjects from "../../components/layouts/DashboardLayout/Dashboar
 
 const Dashboard = () => {
   const { data, loading } = useGetUserProjectsQuery();
+  console.log('Rendering dashboard ? ')
   return (
     <DashboardLayout>
        {

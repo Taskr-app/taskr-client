@@ -8,21 +8,18 @@ import {
 import AnonLayout from "../../../components/layouts/AnonLayout";
 import ErrorLayout from "../../../components/layouts/ErrorLayout";
 import { errorMessage } from "../../../lib/messageHandler";
-import { useHistory, useParams } from "react-router";
-import { queryConcat } from "../../../lib/queryConcat";
-
-interface RouteParams {
-  [key: string]: string;
-}
+import { useHistory, useLocation } from "react-router";
+import { queryStringify, queryParse } from "../../../lib/queryParser";
 
 const ProjectInviteSuccessPage: React.FC = () => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation()
+  const routeQueries = queryParse(location.search)
   const { data, loading } = useMeQuery();
   const { data: validated, loading: validateLoading } = useValidateLinkQuery({
     variables: {
-      key: `project-invite-${params.email}`,
-      link: params.id
+      key: `project-invite-${routeQueries.email}`,
+      link: routeQueries.id
     },
     onError: err => {
       errorMessage(err)
@@ -30,15 +27,15 @@ const ProjectInviteSuccessPage: React.FC = () => {
   });
   const [acceptProjectInviteLink] = useAcceptProjectInviteLinkMutation({
     variables: {
-      email: params.email,
-      projectInviteLink: params.id
+      email: routeQueries.email,
+      projectInviteLink: routeQueries.id
     },
     onCompleted: () => history.push({ pathname: "/" }),
     onError: (err) => errorMessage(err)
   });
 
   useEffect(() => {
-    if (!params.id || !params.email) {
+    if (!routeQueries.id || !routeQueries.email) {
       history.push("/");
     }
 
@@ -48,15 +45,15 @@ const ProjectInviteSuccessPage: React.FC = () => {
       };
       fetchData();
     }
-  }, [data, validated, history, params, loading, validateLoading, acceptProjectInviteLink]);
+  }, [data, validated, history, routeQueries, loading, validateLoading, acceptProjectInviteLink]);
 
   const handleSignup = () => {
     history.push({
       pathname: "/register",
-      search: queryConcat({
+      search: queryStringify({
         returnUrl: "/invite/project/success",
         registerKey: "project-invite",
-        ...params
+        ...routeQueries
       })
     });
   };
@@ -64,10 +61,10 @@ const ProjectInviteSuccessPage: React.FC = () => {
   const handleLogin = () => {
     history.push({
       pathname: "/login",
-      search: queryConcat({
+      search: queryStringify({
         returnUrl: "/invite/project/success",
         registerKey: "project-invite",
-        ...params
+        ...routeQueries
       })
     });
   };

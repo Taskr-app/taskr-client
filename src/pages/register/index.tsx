@@ -11,21 +11,19 @@ import { FormComponentProps } from "antd/lib/form";
 import GoogleLogin from "../../components/auth/GoogleLogin";
 import { setAccessToken } from "../../lib/accessToken";
 import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useParams } from "react-router";
-import { queryConcat } from "../../lib/queryConcat";
+import { useHistory, useLocation } from "react-router";
+import { queryStringify, queryParse } from "../../lib/queryParser";
 
-interface RouteParams {
-  [key: string]: string;
-}
 
 const Register: React.FC<FormComponentProps> = ({ form }) => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search)
   const [sendVerificationLink, { loading }] = useSendVerificationLinkMutation({
     onCompleted: data => {
       history.push({
         pathname: "/email-verification",
-        search: queryConcat({
+        search: queryStringify({
           email: form.getFieldValue("email"),
           id: data.sendVerificationLink
         })
@@ -42,11 +40,11 @@ const Register: React.FC<FormComponentProps> = ({ form }) => {
   });
   const [getMe] = useMeLazyQuery({
     onCompleted: () => {
-      const { returnUrl, ...queryParams } = params;
+      const { returnUrl, ...queryParams } = routeQueries;
       message.success(`Congratulations! Welcome to Taskr`, 2.5);
       history.push({
-        pathname: params.returnUrl as string,
-        search: queryConcat({ ...queryParams })
+        pathname: returnUrl as string,
+        search: queryStringify({ ...queryParams as { [key: string]: string } })
       });
     }
   });
@@ -59,8 +57,8 @@ const Register: React.FC<FormComponentProps> = ({ form }) => {
         return null;
       }
 
-      if (params.returnUrl) {
-        const { returnUrl, registerKey, ...queryParams } = params;
+      if (routeQueries.returnUrl) {
+        const { returnUrl, registerKey, ...queryParams } = routeQueries;
         register({
           variables: {
             email,
@@ -97,7 +95,7 @@ const Register: React.FC<FormComponentProps> = ({ form }) => {
         <Form onSubmit={handleSubmit}>
           <Form.Item hasFeedback>
             {getFieldDecorator("email", {
-              initialValue: params.email ? params.email : "",
+              initialValue: routeQueries.email ? routeQueries.email : "",
               rules: [
                 { required: true, message: "Email field is required" },
                 { type: "email", message: "Not a a valid email address" }

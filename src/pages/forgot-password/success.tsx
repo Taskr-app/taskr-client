@@ -6,15 +6,13 @@ import { FormComponentProps } from "antd/lib/form";
 import { useForgotPasswordMutation } from "../../generated/graphql";
 import { SubText } from "../../components/common/Text";
 import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useParams } from "react-router";
-
-interface RouteParams {
-  [key: string]: string;
-}
+import { useHistory, useLocation } from "react-router";
+import { queryParse } from "../../lib/queryParser";
 
 const ForgotPasswordSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search)
   const [forgotPassword, { loading }] = useForgotPasswordMutation({
     onCompleted: () => {
       message.success(`Your password has been changed`);
@@ -24,10 +22,10 @@ const ForgotPasswordSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
   });
 
   useEffect(() => {
-    if (!params.id || !params.email) {
+    if (!routeQueries.id || !routeQueries.email) {
       history.push("/");
     }
-  }, [history, params]);
+  }, [history, routeQueries]);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -36,8 +34,8 @@ const ForgotPasswordSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
       if (!validationErrors) {
         forgotPassword({
           variables: {
-            email: params.email,
-            forgotPasswordLink: params.id,
+            email: routeQueries.email,
+            forgotPasswordLink: routeQueries.id,
             password
           },
         });

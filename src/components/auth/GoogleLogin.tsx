@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { Button } from "antd";
 import { useLoginGoogleOAuthLazyQuery } from "../../generated/graphql";
-import { useParams } from "react-router";
+import { useLocation } from "react-router";
+import { queryParse } from "../../lib/queryParser";
 
 const GoogleLogin: React.FC = () => {
-  const params = useParams();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search);
   const [
     useGoogleURL,
     { data, called, error, loading }
@@ -20,7 +22,7 @@ const GoogleLogin: React.FC = () => {
     e.preventDefault();
     await useGoogleURL({
       variables: {
-        returnUrl: JSON.stringify(params)
+        returnUrl: JSON.stringify(routeQueries)
       }
     });
   };

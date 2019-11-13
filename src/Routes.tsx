@@ -12,6 +12,8 @@ import ProjectInviteSuccess from "./pages/invite/project/success";
 import TeamInviteSuccess from "./pages/invite/team/success";
 import Dashboard from "./pages/dashboard";
 import Settings from "./pages/settings"
+import EmailVerificationPage from "./pages/email-verification";
+import EmailVerificationSuccessPage from "./pages/email-verification/success";
 
 const Routes: React.FC = () => {
   return (
@@ -24,6 +26,8 @@ const Routes: React.FC = () => {
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
 
+            <Route exact path="/email-verification" component={EmailVerificationPage} />
+            <Route exact path="/email-verification/success" component={EmailVerificationSuccessPage} />
             <Route exact path="/forgot-password" component={ForgotPassword} />
             <Route
               exact

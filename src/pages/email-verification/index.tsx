@@ -4,25 +4,22 @@ import { SubText } from "../../components/common/Text";
 import { Button, message, PageHeader, Empty } from "antd";
 import { useResendVerificationLinkMutation } from "../../generated/graphql";
 import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useParams } from "react-router";
-import { queryConcat } from "../../lib/queryConcat";
-
-interface RouteParams {
-  [key: string]: string;
-}
+import { useHistory, useLocation } from "react-router";
+import { queryStringify, queryParse } from "../../lib/queryParser";
 
 const EmailVerificationPage = () => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search)
   const [resendVerificationLink] = useResendVerificationLinkMutation({
     variables: {
-      email: params.email
+      email: routeQueries.email
     },
     onCompleted: (data) => {
       history.push({
         pathname: "/email-verification",
-        search: queryConcat({
-          email: params.email,
+        search: queryStringify({
+          email: routeQueries.email,
           id: data.resendVerificationLink
         })
       })
@@ -36,7 +33,7 @@ const EmailVerificationPage = () => {
   };
 
   useEffect(() => {
-    if (!params.id || !params.email) {
+    if (!routeQueries.id || !routeQueries.email) {
       history.push("/");
     }
   }, []);
@@ -63,7 +60,7 @@ const EmailVerificationPage = () => {
         }}
         description={
           <span>
-            An email has been sent to <b>{params.email}</b> verify your
+            An email has been sent to <b>{routeQueries.email}</b> verify your
             account.
           </span>
         }

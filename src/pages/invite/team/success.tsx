@@ -8,12 +8,8 @@ import {
 import AnonLayout from "../../../components/layouts/AnonLayout";
 import { errorMessage } from "../../../lib/messageHandler";
 import ErrorLayout from "../../../components/layouts/ErrorLayout";
-import { useHistory, useParams } from "react-router";
-import { queryConcat } from "../../../lib/queryConcat";
-
-interface RouteParams {
-  [key: string]: string;
-}
+import { useHistory, useLocation } from "react-router";
+import { queryStringify, queryParse } from "../../../lib/queryParser";
 
 /**
  * @route '/invite/team/success
@@ -22,12 +18,13 @@ interface RouteParams {
 
 const TeamInviteSuccessPage: React.FC = () => {
   const history = useHistory();
-  const params = useParams<RouteParams>();
+  const location = useLocation();
+  const routeQueries = queryParse(location.search)
   const { data, loading } = useMeQuery();
   const { data: validated, loading: validateLoading } = useValidateLinkQuery({
     variables: {
-      key: `team-invite-${params.email}`,
-      link: params.id
+      key: `team-invite-${routeQueries.email}`,
+      link: routeQueries.id
     },
     onError: err => {
       errorMessage(err);
@@ -35,8 +32,8 @@ const TeamInviteSuccessPage: React.FC = () => {
   });
   const [acceptTeamInviteLink] = useAcceptTeamInviteLinkMutation({
     variables: {
-      email: params.email,
-      teamInviteLink: params.id
+      email: routeQueries.email,
+      teamInviteLink: routeQueries.id
     },
     onCompleted: () => {
       history.push({ pathname: "/" });
@@ -45,7 +42,7 @@ const TeamInviteSuccessPage: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!params.id || !params.email) {
+    if (!routeQueries.id || !routeQueries.email) {
       history.push("/");
     }
 
@@ -60,7 +57,7 @@ const TeamInviteSuccessPage: React.FC = () => {
     validated,
     validateLoading,
     loading,
-    params,
+    routeQueries,
     history,
     acceptTeamInviteLink
   ]);
@@ -68,10 +65,10 @@ const TeamInviteSuccessPage: React.FC = () => {
   const handleSignup = () => {
     history.push({
       pathname: "/register",
-      search: queryConcat({
+      search: queryStringify({
         returnUrl: "/invite/team/success",
         registerKey: "team-invite",
-        ...params
+        ...routeQueries
       })
     });
   };
@@ -79,10 +76,10 @@ const TeamInviteSuccessPage: React.FC = () => {
   const handleLogin = () => {
     history.push({
       pathname: "/login",
-      search: queryConcat({
+      search: queryStringify({
         returnUrl: "/invite/team/success",
         registerKey: "team-invite",
-        ...params
+        ...routeQueries
       })
     });
   };
