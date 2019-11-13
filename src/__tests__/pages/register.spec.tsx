@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, mount } from "enzyme";
+import { mount } from "enzyme";
 import { act } from "react-dom/test-utils";
 import { MockedProvider, wait } from "@apollo/react-testing";
 import Register from "../../pages/register";
@@ -28,16 +28,6 @@ describe("Pages", () => {
         }
       }
     ];
-
-    const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-    useRouter.mockImplementation(() => ({
-      route: '/register',
-      query: {
-        returnUrl: '',
-        id: '',
-        email: ''
-      }
-    }))
 
     it("fires sendVerificationLink mutation on clicking the submit button", async () => {
       const wrapper = mount(
