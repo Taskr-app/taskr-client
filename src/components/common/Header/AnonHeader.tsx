@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Row, Col, Button } from "antd";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
 import styles from "./Header.module.scss";
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const AnonHeader: React.FC<Props> = ({ dark }) => {
-  // const router = useRouter();
+  const location = useLocation();
   const headerStyle = classNames(styles.header, {
     [styles.dark]: dark
   });
@@ -37,7 +37,7 @@ const AnonHeader: React.FC<Props> = ({ dark }) => {
             <Col span={3}>
               <NavLink
                 // to={{ pathname: "/login", query: { ...router.query } }}
-                to={{ pathname: "/login" }}
+                to={{ pathname: "/login", search: location.search }}
               >
                 <Button type="link" ghost={dark ? true : false}>
                   Login
@@ -47,7 +47,10 @@ const AnonHeader: React.FC<Props> = ({ dark }) => {
             <Col span={3}>
               <NavLink
                 // href={{ pathname: "/register", query: { ...router.query } }}
-                to={{ pathname: "/register" }}
+                to={{
+                  pathname: "/register",
+                  search: location.search
+                }}
               >
                 <Button type="link" ghost={dark ? true : false}>
                   Signup

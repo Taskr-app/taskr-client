@@ -39,13 +39,13 @@ const ProjectInviteSuccessPage: React.FC = () => {
       history.push("/");
     }
 
-    if (!loading && data && validated && !validateLoading) {
+    if (data && validated) {
       const fetchData = async () => {
         await acceptProjectInviteLink();
       };
       fetchData();
     }
-  }, [data, validated, history, routeQueries, loading, validateLoading, acceptProjectInviteLink]);
+  }, [data, validated]);
 
   const handleSignup = () => {
     history.push({

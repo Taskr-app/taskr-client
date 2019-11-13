@@ -17,7 +17,6 @@ const App: React.FC = () => {
       })
       .catch(async error => {
         setLoading(false);
-        console.log("ERROR in refreshtoken: ", error);
       });
   }, []);
 

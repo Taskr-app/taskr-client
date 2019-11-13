@@ -18,7 +18,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
   const routeQueries = queryParse(location.search)
   const [
     register,
-    { error: registerError, loading: registerLoading, called: registerCalled }
+    { error: registerError }
   ] = useRegisterMutation({
     variables: {
       email: routeQueries.email,

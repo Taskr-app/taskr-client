@@ -9,14 +9,14 @@ const GoogleLogin: React.FC = () => {
   const routeQueries = queryParse(location.search);
   const [
     useGoogleURL,
-    { data, called, error, loading }
+    { data }
   ] = useLoginGoogleOAuthLazyQuery()
 
   useEffect(() => {
-    if (called && !error && !loading && data && data.loginGoogleOAuth) {
+    if (data && data.loginGoogleOAuth) {
       window.location.href = data.loginGoogleOAuth
     }
-  }, [data, called, error, loading]);
+  }, [data]);
 
   const HandleGoogleLogin = async (e: React.SyntheticEvent) => {
     e.preventDefault();

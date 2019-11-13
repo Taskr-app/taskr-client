@@ -7,16 +7,19 @@ import {
 import { Button, Input, message, Skeleton } from "antd";
 import { errorMessage } from "../../lib/messageHandler";
 import { decode } from "../../lib/hashids";
-import { useLocation } from "react-router";
-import { queryParse } from "../../lib/queryParser";
+import { useParams } from "react-router";
 
-const Team: React.FC = () => {
-  const location = useLocation();
-  const routeQueries = queryParse(location.search)
+interface RouteParams {
+  teamId: string;
+  teamName: string;
+}
+
+const TeamPage: React.FC = () => {
+  const params = useParams<RouteParams>()
   const [value, setValue] = useState("");
   const { data, loading } = useGetUserTeamQuery({
     variables: {
-      id: decode(routeQueries.teamId)
+      id: decode(params.teamId)
     }
   });
   const [sendTeamInviteLink] = useSendTeamInviteLinkMutation({
@@ -29,7 +32,7 @@ const Team: React.FC = () => {
   const handleInviteMember = async () => {
     await sendTeamInviteLink({
       variables: {
-        teamId: routeQueries.teamId,
+        teamId: decode(params.teamId),
         email: value
       }
     });
@@ -54,4 +57,4 @@ const Team: React.FC = () => {
   );
 };
 
-export default Team;
+export default TeamPage;

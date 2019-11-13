@@ -15,7 +15,13 @@ interface Props {
 export const Header: React.FC<Props> = ({ dark }) => {
   const history = useHistory();
   const { data } = useMeQuery();
-  const [logout, { client }] = useLogoutMutation();
+  const [logout, { client }] = useLogoutMutation({
+    onCompleted: async () => {
+      setAccessToken("");
+      await client!.clearStore();
+      history.push("/login");
+    }
+  });
 
   const headerStyle = classNames(styles.header, {
     [styles.dark]: dark
@@ -32,12 +38,7 @@ export const Header: React.FC<Props> = ({ dark }) => {
         break;
       }
       case "logout": {
-        const logoutResponse = await logout();
-        if (logoutResponse) {
-          setAccessToken("");
-          await client!.resetStore();
-          history.push("/login");
-        }
+        logout();
         break;
       }
 

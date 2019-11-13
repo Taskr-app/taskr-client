@@ -41,7 +41,7 @@ const ProjectInvitePublicPage: React.FC = () => {
     if (!routeQueries.project || !routeQueries.id) {
       history.push("/");
     }
-    if (!loading && data && validated && !validateLoading) {
+    if (data && validated) {
       const fetchData = async () => {
         await acceptProjectLink();
       };
@@ -49,12 +49,7 @@ const ProjectInvitePublicPage: React.FC = () => {
     }
   }, [
     data,
-    validated,
-    validateLoading,
-    loading,
-    routeQueries,
-    history,
-    acceptProjectLink
+    validated
   ]);
 
   const handleSignup = () => {

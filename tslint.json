@@ -1,6 +1,6 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:latest", "tslint-react", "tslint-config-prettier"],
+  "extends": ["tslint:latest", "tslint-react", "tslint-config-prettier", "tslint-react-hooks"],
   "jsRules": {},
   "rules": {
     "member-access": false,
@@ -12,7 +12,8 @@
     "interface-over-type-literal": false,
     "no-implicit-dependencies": false,
     "jsx-no-lambda": false,
-    "jsx-boolean-value": false
+    "jsx-boolean-value": false,
+    "react-hooks/exhaustive-deps": false
   },
   "rulesDirectory": [],
   "linterOptions": {

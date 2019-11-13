@@ -18,11 +18,11 @@ const GoogleOAuth: React.FC = () => {
         history.push({
           pathname: returnUrl,
           search: queryStringify({
-            ...routeQueries
+            ...queryParams
           })
         });
       } else {
-        window.location.href = process.env.CLIENT_URL!;
+        window.location.href = process.env.REACT_APP_CLIENT_URL!;
       }
     }
   });

@@ -44,9 +44,10 @@ const TeamInviteSuccessPage: React.FC = () => {
   useEffect(() => {
     if (!routeQueries.id || !routeQueries.email) {
       history.push("/");
+      return;
     }
 
-    if (!loading && data && validated && !validateLoading) {
+    if (data && validated) {
       const fetchData = async () => {
         await acceptTeamInviteLink();
       };
@@ -55,11 +56,6 @@ const TeamInviteSuccessPage: React.FC = () => {
   }, [
     data,
     validated,
-    validateLoading,
-    loading,
-    routeQueries,
-    history,
-    acceptTeamInviteLink
   ]);
 
   const handleSignup = () => {

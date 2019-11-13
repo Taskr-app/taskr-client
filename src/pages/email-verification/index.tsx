@@ -54,7 +54,7 @@ const EmailVerificationPage = () => {
       </PageHeader>
 
       <Empty
-        image="/static/email/4x/mobile-chat@4x.png"
+        image={`${process.env.PUBLIC_URL}/email/4x/mobile-chat@4x.png`}
         imageStyle={{
           marginTop: "60px"
         }}

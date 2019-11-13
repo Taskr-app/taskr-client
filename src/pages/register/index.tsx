@@ -3,7 +3,6 @@ import Layout from "../../components/layouts/Layout";
 import {
   useSendVerificationLinkMutation,
   useRegisterMutation,
-  useMeLazyQuery
 } from "../../generated/graphql";
 import { message, Form, Input, Icon, Button } from "antd";
 import AuthLayout from "../../components/auth/AuthLayout";
@@ -34,19 +33,14 @@ const Register: React.FC<FormComponentProps> = ({ form }) => {
   const [register, { loading: registerLoading }] = useRegisterMutation({
     onCompleted: data => {
       setAccessToken(data.register.accessToken);
-      getMe();
-    },
-    onError: err => errorMessage(err)
-  });
-  const [getMe] = useMeLazyQuery({
-    onCompleted: () => {
       const { returnUrl, ...queryParams } = routeQueries;
-      message.success(`Congratulations! Welcome to Taskr`, 2.5);
+      message.success('Congratulations! Welcome to Taskr')
       history.push({
         pathname: returnUrl as string,
         search: queryStringify({ ...queryParams as { [key: string]: string } })
       });
-    }
+    },
+    onError: err => errorMessage(err)
   });
 
   const handleSubmit = async (e: React.SyntheticEvent) => {

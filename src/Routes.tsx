@@ -14,6 +14,8 @@ import Dashboard from "./pages/dashboard";
 import Settings from "./pages/settings"
 import EmailVerificationPage from "./pages/email-verification";
 import EmailVerificationSuccessPage from "./pages/email-verification/success";
+import TeamPage from "./pages/team";
+import GoogleOAuth from "./pages/google";
 
 const Routes: React.FC = () => {
   return (
@@ -25,6 +27,7 @@ const Routes: React.FC = () => {
             <Route exact path="/home" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
+            <Route exact path="/google" component={GoogleOAuth} />
 
             <Route exact path="/email-verification" component={EmailVerificationPage} />
             <Route exact path="/email-verification/success" component={EmailVerificationSuccessPage} />
@@ -52,6 +55,8 @@ const Routes: React.FC = () => {
             />
 
             <Route exact path="/settings" component={Settings} />
+
+            <Route exact path="/team/:teamId/:teamName" component={TeamPage} />
           </Switch>
         </AuthProvider>
       </ModalProvider>
