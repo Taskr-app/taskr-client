@@ -1,0 +1,15 @@
+.header {
+  text-align: center;
+  font-size: 1.05rem;
+  background-color: #fff;
+  box-shadow: 0 2px 8px #f0f1f2;
+
+  &.dark {
+    background-color: #1C1D21;
+    box-shadow: none;
+  }
+
+  .headerContent {
+    float: right;
+  }
+}
