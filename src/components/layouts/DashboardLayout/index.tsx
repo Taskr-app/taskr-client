@@ -1,3 +1,4 @@
+import React from 'react';
 import { useModal } from "../../modals";
 import { useGetUserTeamsQuery, useGetUserProjectsQuery, Project, Team } from "../../../generated/graphql";
 import { Menu, Icon } from "antd";
@@ -23,6 +24,7 @@ const DashboardLayout: React.FC = ({ children }) => {
 
   return (
     <Layout
+      title="Taskr"
       sider={
         <>
           <Menu

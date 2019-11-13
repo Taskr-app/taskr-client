@@ -41,9 +41,8 @@ const ProjectInvitePublicPage: React.FC = () => {
   });
 
   useEffect(() => {
-    let didCancel = false;
     if (!params.project || !params.id) {
-      history.push("/error", "/");
+      history.push("/");
     }
     if (!loading && data && validated && !validateLoading) {
       const fetchData = async () => {
@@ -51,11 +50,15 @@ const ProjectInvitePublicPage: React.FC = () => {
       };
       fetchData();
     }
-
-    return () => {
-      didCancel = true;
-    };
-  }, [data, validated]);
+  }, [
+    data,
+    validated,
+    validateLoading,
+    loading,
+    params,
+    history,
+    acceptProjectLink
+  ]);
 
   const handleSignup = () => {
     history.push({

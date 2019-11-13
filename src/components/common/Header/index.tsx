@@ -37,8 +37,8 @@ export const Header: React.FC<Props> = ({ dark }) => {
           setAccessToken("");
           await client!.resetStore();
           history.push("/login");
-          break;
         }
+        break;
       }
 
       default:
@@ -74,7 +74,11 @@ export const Header: React.FC<Props> = ({ dark }) => {
           <Row>
             <Col span={4}>
               <ButtonLink path="/">
-                <img src={`${process.env.PUBLIC_URL}/logo/header.png`} alt="Home" height={16} />
+                <img
+                  src={`${process.env.PUBLIC_URL}/logo/header.png`}
+                  alt="Home"
+                  height={16}
+                />
               </ButtonLink>
             </Col>
           </Row>

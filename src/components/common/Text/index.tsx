@@ -40,6 +40,6 @@ export const SubText:React.FC<Props> = ({ children, ...props }) => {
 
 export const LinkText:React.FC<Props> = ({ children, ...props }) => {
   return (
-    <div className={textStyle(styles.linkText, props)} {...props}>{children}</div>
+    <span className={textStyle(styles.linkText, props)} {...props}>{children}</span>
   )
 }

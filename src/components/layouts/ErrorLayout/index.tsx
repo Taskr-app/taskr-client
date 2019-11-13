@@ -18,7 +18,7 @@ const ErrorLayout: React.FC<Props> = ({ message }) => {
     <Layout hide={1}>
       <div className={styles.errorLayout}>
       <Empty
-        image="/static/error/4x/square-remove-12@4x.png"
+        image={`${process.env.PUBLIC_URL}/error/4x/square-remove-12@4x.png`}
         imageStyle={{
           opacity: 0.6
         }}

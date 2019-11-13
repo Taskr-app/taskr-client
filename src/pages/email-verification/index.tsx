@@ -37,7 +37,7 @@ const EmailVerificationPage = () => {
 
   useEffect(() => {
     if (!params.id || !params.email) {
-      history.push("/error", "/");
+      history.push("/");
     }
   }, []);
 

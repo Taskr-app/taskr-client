@@ -1,21 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useMeQuery } from "../../generated/graphql";
-import { useHistory, useLocation } from "react-router";
+import { useLocation, Redirect } from "react-router";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const AuthProvider: React.FC<Props> = ({ children }) => {
-  const history = useHistory();
   const location = useLocation();
   const { data, loading } = useMeQuery();
-
-  useEffect(() => {
-    if (data && whiteList.includes(location.pathname)) {
-      history.push("/error", "/");
-    }
-  }, [data]);
 
   const anonList = [
     "/invite/team/success",
@@ -39,14 +32,20 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     return <></>;
   }
 
+  if (data && whiteList.includes(location.pathname)) {
+    console.log('Tried to access a whitelisted page...routing to push')
+    document.title="Taskr"
+    return <Redirect push to="/" />
+  }
+
   // not authenticated, redirect unless it's in whiteList
   if (
     !data &&
     !whiteList.includes(location.pathname) &&
     !anonList.includes(location.pathname)
   ) {
-    history.push("/login");
-    return <></>;
+    document.title="Login | Taskr"
+    return <Redirect to="/login" />
   }
   return <>{children}</>;
 };

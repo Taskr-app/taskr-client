@@ -38,9 +38,8 @@ const ProjectInviteSuccessPage: React.FC = () => {
   });
 
   useEffect(() => {
-    let didCancel = false;
     if (!params.id || !params.email) {
-      history.push("/error", "/");
+      history.push("/");
     }
 
     if (!loading && data && validated && !validateLoading) {
@@ -49,11 +48,7 @@ const ProjectInviteSuccessPage: React.FC = () => {
       };
       fetchData();
     }
-
-    return () => {
-      didCancel = true;
-    };
-  }, [data, validated]);
+  }, [data, validated, history, params, loading, validateLoading, acceptProjectInviteLink]);
 
   const handleSignup = () => {
     history.push({

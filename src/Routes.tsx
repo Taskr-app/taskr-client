@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { ModalProvider } from "./components/modals";
+import AuthProvider from "./components/auth/AuthProvider";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
@@ -8,8 +10,8 @@ import ForgotPasswordSuccess from "./pages/forgot-password/success";
 import ProjectInvitePublic from "./pages/invite/project/public";
 import ProjectInviteSuccess from "./pages/invite/project/success";
 import TeamInviteSuccess from "./pages/invite/team/success";
-import AuthProvider from "./components/auth/AuthProvider";
-import { ModalProvider } from "./components/modals";
+import Dashboard from "./pages/dashboard";
+import Settings from "./pages/settings"
 
 const Routes: React.FC = () => {
   return (
@@ -17,7 +19,8 @@ const Routes: React.FC = () => {
       <ModalProvider>
         <AuthProvider>
           <Switch>
-            <Route exact path="/" component={Home} />
+            <Route exact path="/" component={Dashboard} />
+            <Route exact path="/home" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
 
@@ -43,6 +46,8 @@ const Routes: React.FC = () => {
               path="/invite/team/success"
               component={TeamInviteSuccess}
             />
+
+            <Route exact path="/settings" component={Settings} />
           </Switch>
         </AuthProvider>
       </ModalProvider>

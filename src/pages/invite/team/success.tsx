@@ -12,7 +12,7 @@ import { useHistory, useParams } from "react-router";
 import { queryConcat } from "../../../lib/queryConcat";
 
 interface RouteParams {
-  [key: string]: string
+  [key: string]: string;
 }
 
 /**
@@ -45,9 +45,8 @@ const TeamInviteSuccessPage: React.FC = () => {
   });
 
   useEffect(() => {
-    let didCancel = false;
     if (!params.id || !params.email) {
-      history.push("/error", "/");
+      history.push("/");
     }
 
     if (!loading && data && validated && !validateLoading) {
@@ -55,11 +54,16 @@ const TeamInviteSuccessPage: React.FC = () => {
         await acceptTeamInviteLink();
       };
       fetchData();
-      return () => {
-        didCancel = true;
-      };
     }
-  }, [data, validated]);
+  }, [
+    data,
+    validated,
+    validateLoading,
+    loading,
+    params,
+    history,
+    acceptTeamInviteLink
+  ]);
 
   const handleSignup = () => {
     history.push({

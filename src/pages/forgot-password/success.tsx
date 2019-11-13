@@ -25,9 +25,9 @@ const ForgotPasswordSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
 
   useEffect(() => {
     if (!params.id || !params.email) {
-      history.push("/error", "/");
+      history.push("/");
     }
-  }, []);
+  }, [history, params]);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();

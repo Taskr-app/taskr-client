@@ -22,22 +22,7 @@ const CreateTeamModal: React.FC<FormComponentProps> = ({ form }) => {
   });
   const unmount = () => hideModal();
 
-  const handleEnterPress = useCallback(e => {
-    const { keyCode } = e;
-    if (keyCode === 13 && form.isFieldTouched("name")) {
-      handleSubmit();
-    }
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleEnterPress);
-
-    return () => {
-      window.removeEventListener("keydown", handleEnterPress);
-    };
-  }, [handleEnterPress]);
-
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     const { validateFields } = form;
     validateFields(async (validationErrors, { name }) => {
       if (!validationErrors) {
@@ -48,7 +33,25 @@ const CreateTeamModal: React.FC<FormComponentProps> = ({ form }) => {
         });
       }
     });
-  };
+  }, [createTeam, form]);
+
+  const handleEnterPress = useCallback(
+    e => {
+      const { keyCode } = e;
+      if (keyCode === 13 && form.isFieldTouched("name")) {
+        handleSubmit();
+      }
+    },
+    [form, handleSubmit]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleEnterPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleEnterPress);
+    };
+  }, [handleEnterPress, handleSubmit]);
 
   const { getFieldDecorator } = form;
   return (

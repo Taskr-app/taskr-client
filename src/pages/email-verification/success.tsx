@@ -81,7 +81,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
   useEffect(() => {
     let didCancel = false;
     if (!params.id || !params.email) {
-      history.push("/error", "/");
+      history.push("/");
     }
 
     const fetchData = async () => {

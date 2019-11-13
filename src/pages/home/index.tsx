@@ -23,7 +23,7 @@ const Home: React.FC = () => {
 
             <NavLink to={{ pathname: "/register" }}>
               <Button type="primary" block={true}>
-                <a>Start your account - it's free</a>
+                <span>Start your account - it's free</span>
               </Button>
             </NavLink>
           </div>

@@ -14,7 +14,7 @@ const GoogleLogin: React.FC = () => {
     if (called && !error && !loading && data && data.loginGoogleOAuth) {
       window.location.href = data.loginGoogleOAuth
     }
-  }, [data]);
+  }, [data, called, error, loading]);
 
   const HandleGoogleLogin = async (e: React.SyntheticEvent) => {
     e.preventDefault();

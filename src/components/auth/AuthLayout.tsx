@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styles from './Auth.module.scss';
-import { HeaderText, SubText } from '../common/Text';
+import { HeaderText, SubText, LinkText } from '../common/Text';
 import { useLocation } from 'react-router';
 import { NavLink } from 'react-router-dom'
 
@@ -51,7 +51,7 @@ const AuthLayout: React.FC<Props> = ({ children }) => {
           <SubText white={1}>
             {authText[location.pathname].alt}{' '}
             <NavLink to={authText[location.pathname].altHref}>
-              <a>{authText[location.pathname].altLink}</a>
+              <LinkText>{authText[location.pathname].altLink}</LinkText>
             </NavLink>
           </SubText>
         </div>

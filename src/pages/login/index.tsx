@@ -31,7 +31,7 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
           search: queryConcat({ ...queryParams })
         });
       } else {
-        history.push("/error", "/");
+        history.push("/");
       }
     },
     onError: err => {
