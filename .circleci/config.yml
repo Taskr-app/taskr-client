@@ -5,10 +5,12 @@ jobs:
     steps:
       - checkout:
           path: ~/taskr-client
+
       - restore_cache:
           keys:
           - dependency-cache-{{ checksum "yarn.lock" }}
           - dependency-cache-
+
       - run:
           name: "Install dependencies"
           command: yarn
@@ -16,29 +18,34 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: dependency-cache-{{ checksum "yar.lock" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+
       - persist_to_workspace:
           root: '.'
           paths:
             - node_modules
             - yarn.lock
+
   test:
     working_directory: ~/taskr-client
     steps:
       - checkout:
           path: ~/taskr-client
+      
       - attach_workspace:
           at: '.'
+
       - restore_cache:
-        keys:
-          - dependency-cache-{{ checksum "yarn.lock" }}
-          - dependency-cache-
+          keys:
+            - dependency-cache-{{ checksum "yarn.lock" }}
+            - dependency-cache-
       - run:
           name: "Lint files"
           command: yarn lint
       - run:
           name: "React test suite"
           command: yarn test
+
 
 workflows:
   version: 2.1
