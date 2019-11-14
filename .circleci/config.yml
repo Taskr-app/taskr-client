@@ -2,6 +2,8 @@ version: 2
 jobs:
   build:
     working_directory: ~/taskr-client
+    docker:
+      - image: buildpack-deps:trusty
     steps:
       - checkout:
           path: ~/taskr-client
@@ -28,6 +30,8 @@ jobs:
 
   test:
     working_directory: ~/taskr-client
+    docker:
+      - image: buildpack-deps:trusty
     steps:
       - checkout:
           path: ~/taskr-client
@@ -45,7 +49,6 @@ jobs:
       - run:
           name: "React test suite"
           command: yarn test
-
 
 workflows:
   version: 2
