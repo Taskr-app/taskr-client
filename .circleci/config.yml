@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/taskr-client
     docker:
-      - image: buildpack-deps:trusty
+      - image: circleci/node:latest
     steps:
       - checkout:
           path: ~/taskr-client
@@ -31,7 +31,7 @@ jobs:
   test:
     working_directory: ~/taskr-client
     docker:
-      - image: buildpack-deps:trusty
+      - image: circleci/node:latest
     steps:
       - checkout:
           path: ~/taskr-client
