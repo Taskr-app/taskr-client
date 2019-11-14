@@ -27,6 +27,15 @@ export type ImageResponse = {
   original_filename: Scalars['String'],
 };
 
+export type List = {
+   __typename?: 'List',
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  pos: Scalars['Float'],
+  project: Project,
+  tasks: Array<Task>,
+};
+
 export type LoginResponse = {
    __typename?: 'LoginResponse',
   accessToken: Scalars['String'],
@@ -35,8 +44,9 @@ export type LoginResponse = {
 
 export type Mutation = {
    __typename?: 'Mutation',
-  deleteProject: Project,
   deleteTeam: Team,
+  deleteList: List,
+  deleteProject: Project,
   sendVerificationLink: Scalars['String'],
   resendVerificationLink: Scalars['String'],
   register: LoginResponse,
@@ -50,25 +60,36 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'],
   changePassword: Scalars['Boolean'],
   revokeRefreshToken: Scalars['Boolean'],
-  createTeam: Team,
-  sendTeamInviteLink: Scalars['String'],
-  acceptTeamInviteLink: Scalars['Boolean'],
-  deleteTeamMember: Scalars['Boolean'],
-  updateTeam: Team,
   createProject: Project,
   updateProject: Scalars['Boolean'],
   sendProjectInviteLink: Scalars['String'],
   acceptProjectInviteLink: Scalars['Boolean'],
   acceptPublicProjectLink: Scalars['Boolean'],
-};
-
-
-export type MutationDeleteProjectArgs = {
-  id: Scalars['ID']
+  createList: List,
+  updateListName: Scalars['Boolean'],
+  updateListPos: Scalars['Boolean'],
+  createTeam: Team,
+  sendTeamInviteLink: Scalars['String'],
+  acceptTeamInviteLink: Scalars['Boolean'],
+  deleteTeamMember: Scalars['Boolean'],
+  updateTeam: Team,
+  createTask: Task,
+  updateTask: Task,
+  deleteTask: Scalars['Boolean'],
 };
 
 
 export type MutationDeleteTeamArgs = {
+  id: Scalars['ID']
+};
+
+
+export type MutationDeleteListArgs = {
+  id: Scalars['ID']
+};
+
+
+export type MutationDeleteProjectArgs = {
   id: Scalars['ID']
 };
 
@@ -141,35 +162,6 @@ export type MutationRevokeRefreshTokenArgs = {
 };
 
 
-export type MutationCreateTeamArgs = {
-  name: Scalars['String']
-};
-
-
-export type MutationSendTeamInviteLinkArgs = {
-  email: Scalars['String'],
-  teamId: Scalars['ID']
-};
-
-
-export type MutationAcceptTeamInviteLinkArgs = {
-  teamInviteLink: Scalars['String'],
-  email: Scalars['String']
-};
-
-
-export type MutationDeleteTeamMemberArgs = {
-  userId: Scalars['ID'],
-  teamId: Scalars['ID']
-};
-
-
-export type MutationUpdateTeamArgs = {
-  name: Scalars['String'],
-  teamId: Scalars['ID']
-};
-
-
 export type MutationCreateProjectArgs = {
   teamId?: Maybe<Scalars['ID']>,
   desc?: Maybe<Scalars['String']>,
@@ -202,6 +194,75 @@ export type MutationAcceptPublicProjectLinkArgs = {
   link: Scalars['String']
 };
 
+
+export type MutationCreateListArgs = {
+  name: Scalars['String'],
+  projectId: Scalars['ID']
+};
+
+
+export type MutationUpdateListNameArgs = {
+  name: Scalars['String'],
+  id: Scalars['ID']
+};
+
+
+export type MutationUpdateListPosArgs = {
+  belowId?: Maybe<Scalars['ID']>,
+  aboveId?: Maybe<Scalars['ID']>,
+  id: Scalars['ID']
+};
+
+
+export type MutationCreateTeamArgs = {
+  name: Scalars['String']
+};
+
+
+export type MutationSendTeamInviteLinkArgs = {
+  email: Scalars['String'],
+  teamId: Scalars['ID']
+};
+
+
+export type MutationAcceptTeamInviteLinkArgs = {
+  teamInviteLink: Scalars['String'],
+  email: Scalars['String']
+};
+
+
+export type MutationDeleteTeamMemberArgs = {
+  userId: Scalars['ID'],
+  teamId: Scalars['ID']
+};
+
+
+export type MutationUpdateTeamArgs = {
+  name: Scalars['String'],
+  teamId: Scalars['ID']
+};
+
+
+export type MutationCreateTaskArgs = {
+  desc?: Maybe<Scalars['String']>,
+  name: Scalars['String'],
+  listId: Scalars['ID']
+};
+
+
+export type MutationUpdateTaskArgs = {
+  dueDate?: Maybe<Scalars['DateTime']>,
+  desc?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
+  listId?: Maybe<Scalars['ID']>,
+  taskId: Scalars['ID']
+};
+
+
+export type MutationDeleteTaskArgs = {
+  taskId: Scalars['ID']
+};
+
 export type Project = {
    __typename?: 'Project',
   id: Scalars['Int'],
@@ -210,30 +271,29 @@ export type Project = {
   created_at: Scalars['DateTime'],
   updated_at: Scalars['DateTime'],
   owner: User,
+  lists: Array<List>,
   members: Array<User>,
   team: Team,
 };
 
 export type Query = {
    __typename?: 'Query',
-  getAllProjects: Array<Project>,
-  getProject: Project,
   getAllTeams: Array<Team>,
   getTeam: Team,
+  getAllLists: Array<List>,
+  getList: List,
+  getAllProjects: Array<Project>,
+  getProject: Project,
   me: User,
   loginGoogleOAuth: Scalars['String'],
-  getUserTeam: Team,
-  getUserTeams: Array<Team>,
   getUserProject: Project,
   getUserProjects: Array<Project>,
   getPublicProjectLink: Scalars['String'],
   validateLink: Scalars['Boolean'],
   validatePublicProjectLink: Scalars['Boolean'],
-};
-
-
-export type QueryGetProjectArgs = {
-  id: Scalars['ID']
+  getUserTeam: Team,
+  getUserTeams: Array<Team>,
+  getListTasks: Array<Task>,
 };
 
 
@@ -242,13 +302,18 @@ export type QueryGetTeamArgs = {
 };
 
 
-export type QueryLoginGoogleOAuthArgs = {
-  returnUrl?: Maybe<Scalars['String']>
+export type QueryGetListArgs = {
+  id: Scalars['ID']
 };
 
 
-export type QueryGetUserTeamArgs = {
+export type QueryGetProjectArgs = {
   id: Scalars['ID']
+};
+
+
+export type QueryLoginGoogleOAuthArgs = {
+  returnUrl?: Maybe<Scalars['String']>
 };
 
 
@@ -271,6 +336,48 @@ export type QueryValidateLinkArgs = {
 export type QueryValidatePublicProjectLinkArgs = {
   link: Scalars['String'],
   projectId: Scalars['ID']
+};
+
+
+export type QueryGetUserTeamArgs = {
+  id: Scalars['ID']
+};
+
+
+export type QueryGetListTasksArgs = {
+  listId: Scalars['ID']
+};
+
+export type Subscription = {
+   __typename?: 'Subscription',
+  newTask: Task,
+  updatedTask: Task,
+  deletedTask: Task,
+};
+
+
+export type SubscriptionNewTaskArgs = {
+  listId: Scalars['Int']
+};
+
+
+export type SubscriptionUpdatedTaskArgs = {
+  taskId: Scalars['Int']
+};
+
+
+export type SubscriptionDeletedTaskArgs = {
+  taskId: Scalars['Int']
+};
+
+export type Task = {
+   __typename?: 'Task',
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  desc?: Maybe<Scalars['String']>,
+  dueDate?: Maybe<Scalars['DateTime']>,
+  pos: Scalars['Float'],
+  list: List,
 };
 
 export type Team = {
