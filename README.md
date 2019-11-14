@@ -1,14 +1,9 @@
-heroku: http://www.taskr-app.com/
-
-This project is built using Next.js to assist in server-side rendering our React app. It's built using typescript and uses graphql-codegen to build out our graphql hooks.
-
 # Taskr client
 
 #### Table of Contents
 - [Installation](#Installation)
 - [Getting started](#Getting_started)
 - [Generate graphql](#Generate_graphql)
-- [Routing](#Routing)
 - [Graphql](#Graphql)
 - [Styling](#Styling)
 - [Tests](#Tests)
@@ -28,34 +23,6 @@ This project is built using Next.js to assist in server-side rendering our React
 6. Run `yarn dev` to get started
 ------
 
-### Routing
-Routing is handled by nextjs
-##### With hooks
-```jsx
-import { useRouter } from 'next/router';
-const App = () => {
-    const router = useRouter();
-    const handleClick = () => {
-        router.push('/login')
-    }
-
-    return <button onClick={handleClick}>Click</button>
-}
-```
-##### Link
-```jsx
-import Link from 'next/link';
-const App = () => (
-    <ul>
-        <li>
-            <Link href="/login" as "/login>Log in</Link>
-        </li>
-        <li>
-            <Link href="/signup" as "/signup>Sign up</Link>
-        </li>
-    </ul>
-)
-```
 ##### Creating routes
 - Routes can be created in the `pages` directory. Every file there will be rendered as its own route in relation to its file name. _ie._ `home.tsx` will be rendered in `/home`.
 - `pages/index.tsx` is served on `/`
