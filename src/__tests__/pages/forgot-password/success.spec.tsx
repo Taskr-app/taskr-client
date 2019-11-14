@@ -4,6 +4,9 @@ import { act } from "react-dom/test-utils";
 import { MockedProvider, wait } from "@apollo/react-testing";
 import { ForgotPasswordDocument } from "../../../generated/graphql";
 import ForgotPasswordSuccessPage from "../../../pages/forgot-password/success";
+import { queryStringify } from "../../../lib/queryParser";
+import { MemoryRouter, Switch, Route } from "react-router";
+import Login from "../../../pages/login"
 
 describe("Pages", () => {
   describe("ForgotPasswordSuccessPage", () => {
@@ -34,17 +37,34 @@ describe("Pages", () => {
       }
     ];
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => ({
-      route: "/forgot-password/success",
-      query: { email: mockQuery.email, id: mockQuery.id },
-      push: () => null
-    }));
+    const routerLocation = {
+      pathname: "/forgot-password/success",
+      search: queryStringify({
+        email: mockQuery.email,
+        id: mockQuery.id
+      })
+    };
 
-    it("fires forgotPassword mutation on submit button", async () => {
+    it("fires forgotPassword mutation on submit and redirects to LoginPage", async () => {
       const wrapper = mount(
         <MockedProvider mocks={mocks} addTypename={false}>
-          <ForgotPasswordSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <Switch>
+              <Route
+                exact
+                path={routerLocation.pathname}
+                render={() => <ForgotPasswordSuccessPage />}
+              />
+              <Route
+                exact
+                path={'/login'}
+                render={({ location }) => {
+                  routerLocation.pathname = location.pathname;
+                  return <Login />
+                }}
+              />
+            </Switch>
+          </MemoryRouter>
         </MockedProvider>
       );
 
@@ -64,6 +84,8 @@ describe("Pages", () => {
       });
 
       expect(forgotPasswordCalled).toBe(true);
+      expect(wrapper.contains(<Login />))
+      expect(routerLocation.pathname).toEqual('/login')
     });
   });
 });

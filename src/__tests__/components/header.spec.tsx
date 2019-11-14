@@ -5,6 +5,7 @@ import { MeDocument } from "../../generated/graphql";
 import { Header } from "../../components/common/Header";
 import AnonHeader from "../../components/common/Header/AnonHeader";
 import { act } from "react-dom/test-utils";
+import { MemoryRouter } from "react-router";
 
 describe("Component", () => {
   describe("Header", () => {
@@ -24,13 +25,15 @@ describe("Component", () => {
     it("should render AnonHeader if user is not authenticated", async () => {
       const wrapper = mount(
         <MockedProvider mocks={[]}>
-          <Header />
+          <MemoryRouter>
+            <Header />
+          </MemoryRouter>
         </MockedProvider>
       );
 
       await act(async () => {
-        await wait(0)
-      })
+        await wait(0);
+      });
 
       expect(wrapper.find(AnonHeader).length).toEqual(1);
     });
@@ -38,7 +41,9 @@ describe("Component", () => {
     it("should render without error", () => {
       render(
         <MockedProvider mocks={mocks} addTypename={false}>
-          <Header />
+          <MemoryRouter>
+            <Header />
+          </MemoryRouter>
         </MockedProvider>
       );
     });

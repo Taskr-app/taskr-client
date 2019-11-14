@@ -35,7 +35,7 @@ describe("Pages", () => {
       }
     ];
 
-    it("fires login mutation on submit and then routes to dashboard", async () => {
+    it("fires login mutation on submit and then redirects to dashboard", async () => {
       const wrapper = mount(
         <MockedProvider mocks={mocks} addTypename={false}>
           <MemoryRouter initialEntries={[routerLocation]}>

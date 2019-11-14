@@ -11,6 +11,8 @@ import { act } from "react-dom/test-utils";
 import AnonLayout from "../../../../components/layouts/AnonLayout";
 import { GraphQLError } from "graphql";
 import ErrorLayout from "../../../../components/layouts/ErrorLayout";
+import { MemoryRouter, Switch, Route } from "react-router";
+import Dashboard from "../../../../pages/dashboard";
 
 describe("Pages", () => {
   describe("TeamInviteSuccessPage", () => {
@@ -21,16 +23,7 @@ describe("Pages", () => {
       teamInviteLink: "abc",
       key: "team-invite-dev@email.com"
     };
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => ({
-      route: "/email-verification/success",
-      query: {
-        email: mockQuery.email,
-        id: mockQuery.teamInviteLink
-      },
-      // tslint:disable-next-line: no-empty
-      push: () => {}
-    }));
+
     let acceptTeamInviteLinkCalled = false;
     const meQuery = {
       request: {
@@ -81,13 +74,33 @@ describe("Pages", () => {
       }
     };
 
+    const routerLocation = {
+      pathname: "/invite/team/success",
+      search: `?email=${mockQuery.email}&id=${mockQuery.teamInviteLink}`
+    };
     it("fires acceptTeamInvite mutation on mount", async () => {
       const wrapper = mount(
         <MockedProvider
           mocks={[meQuery, validateLinkQuery, acceptTeamLinkInviteQuery]}
           addTypename={false}
         >
-          <TeamInviteSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <Switch>
+              <Route
+                exact
+                path="/invite/team/success"
+                render={() => <TeamInviteSuccessPage />}
+              />
+              <Route
+                exact
+                path="/"
+                render={({ location }) => {
+                  routerLocation.pathname = location.pathname;
+                  return <Dashboard />;
+                }}
+              />
+            </Switch>
+          </MemoryRouter>
         </MockedProvider>
       );
 
@@ -96,6 +109,7 @@ describe("Pages", () => {
       });
 
       expect(acceptTeamInviteLinkCalled).toBe(true);
+      expect(routerLocation.pathname).toEqual("/");
       wrapper.unmount();
     });
 
@@ -103,26 +117,30 @@ describe("Pages", () => {
       const errorQuery = {
         ...validateLinkQuery,
         result: {
-          errors: [new GraphQLError('This link has expired')]
+          errors: [new GraphQLError("This link has expired")]
         }
-      }
+      };
       const wrapper = mount(
         <MockedProvider mocks={[errorQuery]}>
-          <TeamInviteSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <TeamInviteSuccessPage />
+          </MemoryRouter>
         </MockedProvider>
       );
 
       await act(async () => {
-        await wait(0)
-      })
+        await wait(0);
+      });
 
-      expect(wrapper.contains(<ErrorLayout />))
-    })
+      expect(wrapper.contains(<ErrorLayout />));
+    });
 
     it("should render an auth form if user is not authenticated", async () => {
       const wrapper = mount(
         <MockedProvider mocks={[validateLinkQuery]}>
-          <TeamInviteSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <TeamInviteSuccessPage />
+          </MemoryRouter>
         </MockedProvider>
       );
 

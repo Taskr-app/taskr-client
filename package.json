@@ -6,7 +6,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "codegen": "graphql-codegen --config codegen.yml",
-    "test": "react-scripts test",
+    "test": "jest --maxWorkers=4 --silent",
     "eject": "react-scripts eject"
   },
   "dependencies": {

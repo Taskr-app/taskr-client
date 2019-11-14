@@ -46,7 +46,6 @@ const TeamInviteSuccessPage: React.FC = () => {
       history.push("/");
       return;
     }
-
     if (data && validated) {
       const fetchData = async () => {
         await acceptTeamInviteLink();

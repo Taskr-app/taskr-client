@@ -11,27 +11,28 @@ import { act } from "react-dom/test-utils";
 import { GraphQLError } from "graphql";
 import ErrorLayout from "../../../../components/layouts/ErrorLayout";
 import AnonLayout from "../../../../components/layouts/AnonLayout";
+import { MemoryRouter, Route, Switch } from "react-router";
+import Dashboard from "../../../../pages/dashboard";
+import { queryStringify } from "../../../../lib/queryParser";
 
 describe("Pages", () => {
   describe("ProjectInviteSuccessPage", () => {
     const mockQuery = {
-      email: "dev2@email.com",
+      email: "dev@email.com",
       username: "dev",
       projectInviteLink: "qwe",
       id: 123,
-      key: "project-invite-dev2@email.com"
+      key: "project-invite-dev@email.com"
     };
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => ({
-      route: "/invite/project/success",
-      query: {
+    const routerLocation = {
+      pathname: "/invite/project/success",
+      search: queryStringify({
         email: mockQuery.email,
         id: mockQuery.projectInviteLink
-      },
-      // tslint:disable-next-line: no-empty
-      push: () => {}
-    }));
+      })
+    };
+
     let acceptProjectInviteLinkCalled = false;
     const meQuery = {
       request: {
@@ -87,7 +88,23 @@ describe("Pages", () => {
           mocks={[meQuery, validateLinkQuery, acceptProjectLinkQuery]}
           addTypename={false}
         >
-          <ProjectInviteSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <Switch>
+              <Route
+                exact
+                path="/invite/project/success"
+                render={() => <ProjectInviteSuccessPage />}
+              />
+              <Route
+                exact
+                path="/"
+                render={({ location }) => {
+                  routerLocation.pathname = location.pathname;
+                  return <Dashboard />;
+                }}
+              />
+            </Switch>
+          </MemoryRouter>
         </MockedProvider>
       );
 
@@ -96,6 +113,7 @@ describe("Pages", () => {
       });
 
       expect(acceptProjectInviteLinkCalled).toBe(true);
+      expect(routerLocation.pathname).toEqual("/");
       wrapper.unmount();
     });
 
@@ -109,7 +127,9 @@ describe("Pages", () => {
 
       const wrapper = mount(
         <MockedProvider mocks={[errorQuery]} addTypename={false}>
-          <ProjectInviteSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <ProjectInviteSuccessPage />
+          </MemoryRouter>
         </MockedProvider>
       );
 
@@ -123,7 +143,9 @@ describe("Pages", () => {
     it("should render an auth form if user is not authenticated", async () => {
       const wrapper = mount(
         <MockedProvider mocks={[validateLinkQuery]} addTypename={false}>
-          <ProjectInviteSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <ProjectInviteSuccessPage />
+          </MemoryRouter>
         </MockedProvider>
       );
 

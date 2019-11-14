@@ -9,6 +9,8 @@ import {
 import EmailVerificationSuccessPage from "../../../pages/email-verification/success";
 import { GraphQLError } from "graphql";
 import ErrorLayout from "../../../components/layouts/ErrorLayout";
+import { queryStringify } from "../../../lib/queryParser";
+import { MemoryRouter, Route } from "react-router";
 
 describe("Pages", () => {
   describe("EmailVerificationSuccessPage", () => {
@@ -16,16 +18,14 @@ describe("Pages", () => {
       email: "qwjwlqqwrq@email.com",
       verificationLink: "abc"
     };
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => ({
-      route: "/email-verification/success",
-      query: {
+
+    const routerLocation = {
+      pathname: "/email-verification/success",
+      search: queryStringify({
         email: mockQuery.email,
         id: mockQuery.verificationLink
-      },
-      // tslint:disable-next-line: no-empty
-      push: () => {}
-    }));
+      })
+    };
 
     it("fires register mutation on mount", async () => {
       let registerMutationCalled = false;
@@ -53,7 +53,13 @@ describe("Pages", () => {
 
       const wrapper = mount(
         <MockedProvider mocks={registerMock} addTypename={false}>
-          <EmailVerificationSuccessPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <Route
+              exact
+              path={routerLocation.pathname}
+              render={() => <EmailVerificationSuccessPage />}
+            />
+          </MemoryRouter>
         </MockedProvider>
       );
 
@@ -77,7 +83,7 @@ describe("Pages", () => {
             }
           },
           result: {
-            errors: [new GraphQLError('register error')]
+            errors: [new GraphQLError("register error")]
           }
         },
         {
@@ -100,12 +106,18 @@ describe("Pages", () => {
 
       const wrapper = mount(
         <MockedProvider mocks={resendVerificationLinkMock} addTypename={false}>
-          <EmailVerificationSuccessPage />
+            <MemoryRouter initialEntries={[routerLocation]}>
+              <Route
+                exact
+                path={routerLocation.pathname}
+                render={() => <EmailVerificationSuccessPage />}
+              />
+            </MemoryRouter>
         </MockedProvider>
       );
-      await act(async() => {
+      await act(async () => {
         await wait(0);
-        expect(wrapper.find(ErrorLayout)).toBeDefined()
+        expect(wrapper.find(ErrorLayout)).toBeDefined();
       });
     });
   });

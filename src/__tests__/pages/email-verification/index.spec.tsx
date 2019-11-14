@@ -4,11 +4,16 @@ import { act } from "react-dom/test-utils";
 import { MockedProvider, wait } from "@apollo/react-testing";
 import { ResendVerificationLinkDocument } from "../../../generated/graphql";
 import EmailVerificationPage from "../../../pages/email-verification";
+import { queryStringify } from "../../../lib/queryParser";
+import { MemoryRouter, Route } from "react-router";
 
 describe("Pages", () => {
   describe("EmailVerificationPage", () => {
     let resendVerificationLinkCalled = false;
-    const mockQuery = { email: "qwjwlqqwrq@email.com", verificationLink: 'abc' };
+    const mockQuery = {
+      email: "qwjwlqqwrq@email.com",
+      verificationLink: "abc"
+    };
     const mocks = [
       {
         request: {
@@ -28,17 +33,24 @@ describe("Pages", () => {
       }
     ];
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => ({
-      route: "/email-verification",
-      query: { email: mockQuery.email, id: mockQuery.verificationLink },
-      push: () => null
-    }));
+    const routerLocation = {
+      pathname: "/email-verification",
+      search: queryStringify({
+        email: mockQuery.email,
+        id: mockQuery.verificationLink
+      })
+    };
 
     it("fires resendVerificationLink mutation on clicking resend link", async () => {
       const wrapper = mount(
         <MockedProvider mocks={mocks} addTypename={false}>
-          <EmailVerificationPage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <Route
+              exact
+              path={routerLocation.pathname}
+              render={() => <EmailVerificationPage />}
+            />
+          </MemoryRouter>
         </MockedProvider>
       );
       await act(async () => {

@@ -26,6 +26,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
     },
     onCompleted: data => {
       setAccessToken(data.register.accessToken);
+      message.success(`Congratulations! Welcome to Taskr`, 2.5);
       getMe();
     },
     onError: () => {
@@ -63,12 +64,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
     },
     onError: err => errorMessage(err)
   });
-  const [getMe] = useMeLazyQuery({
-    onCompleted: () => {
-      message.success(`Congratulations! Welcome to Taskr`, 2.5);
-      history.push({ pathname: "/" });
-    }
-  });
+  const [getMe] = useMeLazyQuery();
 
   const resendVerificationEmail = async () => {
     await resendVerificationLink();

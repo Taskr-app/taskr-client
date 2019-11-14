@@ -11,27 +11,28 @@ import { act } from "react-dom/test-utils";
 import { GraphQLError } from "graphql";
 import ErrorLayout from "../../../../components/layouts/ErrorLayout";
 import AnonLayout from "../../../../components/layouts/AnonLayout";
+import { queryStringify } from "../../../../lib/queryParser";
+import { MemoryRouter, Route } from "react-router";
+import Dashboard from "../../../../pages/dashboard";
 
 describe("Pages", () => {
   describe("PublicProjectInvitePage", () => {
     const mockQuery = {
       email: "dev@email.com",
       id: 123,
-      projectId: 1241,
+      projectId: "1241",
       projectInviteLink: "abc",
       username: "dev"
     };
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => ({
-      route: "/invite/project/public",
-      query: {
+    const routerLocation = {
+      pathname: "/invite/project/public",
+      search: queryStringify({
         id: mockQuery.projectInviteLink,
         project: mockQuery.projectId
-      },
-      // tslint:disable-next-line: no-empty
-      push: () => {}
-    }));
+      })
+    };
+
     let acceptProjectLinkCalled = false;
     const meQuery = {
       request: {
@@ -78,9 +79,9 @@ describe("Pages", () => {
           data: {
             acceptPublicProjectLink: true
           }
-        }
+        };
       }
-    }
+    };
 
     it("fires acceptPublicProjectLink mutation on mount", async () => {
       const wrapper = mount(
@@ -88,17 +89,32 @@ describe("Pages", () => {
           mocks={[meQuery, validateQuery, acceptProjectLinkQuery]}
           addTypename={false}
         >
-          <PublicProjectInvitePage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <Route
+              exact
+              path={[routerLocation.pathname]}
+              render={() => <PublicProjectInvitePage />}
+            />
+            <Route
+              exact
+              path="/"
+              render={({ location }) => {
+                routerLocation.pathname = location.pathname;
+                return <Dashboard />;
+              }}
+            />
+          </MemoryRouter>
         </MockedProvider>
-      )
+      );
 
       await act(async () => {
         await wait(10);
       });
 
       expect(acceptProjectLinkCalled).toBe(true);
+      expect(routerLocation.pathname).toEqual("/");
       wrapper.unmount();
-    })
+    });
 
     it("should render an error layout if the link has expired", async () => {
       const errorQuery = {
@@ -110,7 +126,9 @@ describe("Pages", () => {
 
       const wrapper = mount(
         <MockedProvider mocks={[errorQuery]} addTypename={false}>
-          <PublicProjectInvitePage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <PublicProjectInvitePage />
+          </MemoryRouter>
         </MockedProvider>
       );
 
@@ -124,7 +142,9 @@ describe("Pages", () => {
     it("should render an auth form if user is not authenticated", async () => {
       const wrapper = mount(
         <MockedProvider mocks={[validateQuery]} addTypename={false}>
-          <PublicProjectInvitePage />
+          <MemoryRouter initialEntries={[routerLocation]}>
+            <PublicProjectInvitePage />
+          </MemoryRouter>
         </MockedProvider>
       );
 
