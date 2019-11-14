@@ -17,6 +17,6 @@
   },
   "rulesDirectory": [],
   "linterOptions": {
-    "exclude": ["node_modules", "generated/*.tsx", "lib/apollo.tsx"]
+    "exclude": ["node_modules", "**/generated/*.tsx", "lib/apollo.tsx"]
   }
 }
