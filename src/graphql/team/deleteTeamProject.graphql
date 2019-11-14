@@ -1,0 +1,6 @@
+mutation DeleteTeamProject($teamId: ID!, $projectId: ID!) {
+  deleteTeamProject(teamId: $teamId, projectId: $projectId) {
+    id
+    name
+  }
+}

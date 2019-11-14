@@ -1,0 +1,3 @@
+mutation DeleteTeamMember($userId: ID!, $teamId: ID!) {
+  deleteTeamMember(userId: $userId, teamId: $teamId)
+}

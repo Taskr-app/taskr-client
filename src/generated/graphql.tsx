@@ -73,6 +73,7 @@ export type Mutation = {
   acceptTeamInviteLink: Scalars['Boolean'],
   deleteTeamMember: Scalars['Boolean'],
   updateTeam: Team,
+  deleteTeamProject: Team,
   createTask: Task,
   updateTask: Task,
   deleteTask: Scalars['Boolean'],
@@ -239,6 +240,12 @@ export type MutationDeleteTeamMemberArgs = {
 
 export type MutationUpdateTeamArgs = {
   name: Scalars['String'],
+  teamId: Scalars['ID']
+};
+
+
+export type MutationDeleteTeamProjectArgs = {
+  projectId: Scalars['ID'],
   teamId: Scalars['ID']
 };
 
@@ -531,6 +538,31 @@ export type CreateTeamMutation = (
   ) }
 );
 
+export type DeleteTeamMemberMutationVariables = {
+  userId: Scalars['ID'],
+  teamId: Scalars['ID']
+};
+
+
+export type DeleteTeamMemberMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteTeamMember'>
+);
+
+export type DeleteTeamProjectMutationVariables = {
+  teamId: Scalars['ID'],
+  projectId: Scalars['ID']
+};
+
+
+export type DeleteTeamProjectMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTeamProject: (
+    { __typename?: 'Team' }
+    & Pick<Team, 'id' | 'name'>
+  ) }
+);
+
 export type GetUserTeamQueryVariables = {
   id: Scalars['ID']
 };
@@ -541,6 +573,13 @@ export type GetUserTeamQuery = (
   & { getUserTeam: (
     { __typename?: 'Team' }
     & Pick<Team, 'id' | 'name'>
+    & { members: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username'>
+    )>, projects: Array<(
+      { __typename?: 'Project' }
+      & Pick<Project, 'id' | 'name'>
+    )> }
   ) }
 );
 
@@ -564,6 +603,20 @@ export type SendTeamInviteLinkMutationVariables = {
 export type SendTeamInviteLinkMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'sendTeamInviteLink'>
+);
+
+export type UpdateTeamMutationVariables = {
+  teamId: Scalars['ID'],
+  name: Scalars['String']
+};
+
+
+export type UpdateTeamMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTeam: (
+    { __typename?: 'Team' }
+    & Pick<Team, 'id' | 'name'>
+  ) }
 );
 
 export type Auth_GoogleOAuthMutationVariables = {
@@ -871,11 +924,48 @@ export type CreateTeamMutationFn = ApolloReactCommon.MutationFunction<CreateTeam
 export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
 export type CreateTeamMutationResult = ApolloReactCommon.MutationResult<CreateTeamMutation>;
 export type CreateTeamMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
+export const DeleteTeamMemberDocument = gql`
+    mutation DeleteTeamMember($userId: ID!, $teamId: ID!) {
+  deleteTeamMember(userId: $userId, teamId: $teamId)
+}
+    `;
+export type DeleteTeamMemberMutationFn = ApolloReactCommon.MutationFunction<DeleteTeamMemberMutation, DeleteTeamMemberMutationVariables>;
+
+    export function useDeleteTeamMemberMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteTeamMemberMutation, DeleteTeamMemberMutationVariables>) {
+      return ApolloReactHooks.useMutation<DeleteTeamMemberMutation, DeleteTeamMemberMutationVariables>(DeleteTeamMemberDocument, baseOptions);
+    }
+export type DeleteTeamMemberMutationHookResult = ReturnType<typeof useDeleteTeamMemberMutation>;
+export type DeleteTeamMemberMutationResult = ApolloReactCommon.MutationResult<DeleteTeamMemberMutation>;
+export type DeleteTeamMemberMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteTeamMemberMutation, DeleteTeamMemberMutationVariables>;
+export const DeleteTeamProjectDocument = gql`
+    mutation DeleteTeamProject($teamId: ID!, $projectId: ID!) {
+  deleteTeamProject(teamId: $teamId, projectId: $projectId) {
+    id
+    name
+  }
+}
+    `;
+export type DeleteTeamProjectMutationFn = ApolloReactCommon.MutationFunction<DeleteTeamProjectMutation, DeleteTeamProjectMutationVariables>;
+
+    export function useDeleteTeamProjectMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteTeamProjectMutation, DeleteTeamProjectMutationVariables>) {
+      return ApolloReactHooks.useMutation<DeleteTeamProjectMutation, DeleteTeamProjectMutationVariables>(DeleteTeamProjectDocument, baseOptions);
+    }
+export type DeleteTeamProjectMutationHookResult = ReturnType<typeof useDeleteTeamProjectMutation>;
+export type DeleteTeamProjectMutationResult = ApolloReactCommon.MutationResult<DeleteTeamProjectMutation>;
+export type DeleteTeamProjectMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteTeamProjectMutation, DeleteTeamProjectMutationVariables>;
 export const GetUserTeamDocument = gql`
     query GetUserTeam($id: ID!) {
   getUserTeam(id: $id) {
     id
     name
+    members {
+      id
+      username
+    }
+    projects {
+      id
+      name
+    }
   }
 }
     `;
@@ -920,6 +1010,22 @@ export type SendTeamInviteLinkMutationFn = ApolloReactCommon.MutationFunction<Se
 export type SendTeamInviteLinkMutationHookResult = ReturnType<typeof useSendTeamInviteLinkMutation>;
 export type SendTeamInviteLinkMutationResult = ApolloReactCommon.MutationResult<SendTeamInviteLinkMutation>;
 export type SendTeamInviteLinkMutationOptions = ApolloReactCommon.BaseMutationOptions<SendTeamInviteLinkMutation, SendTeamInviteLinkMutationVariables>;
+export const UpdateTeamDocument = gql`
+    mutation UpdateTeam($teamId: ID!, $name: String!) {
+  updateTeam(teamId: $teamId, name: $name) {
+    id
+    name
+  }
+}
+    `;
+export type UpdateTeamMutationFn = ApolloReactCommon.MutationFunction<UpdateTeamMutation, UpdateTeamMutationVariables>;
+
+    export function useUpdateTeamMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateTeamMutation, UpdateTeamMutationVariables>) {
+      return ApolloReactHooks.useMutation<UpdateTeamMutation, UpdateTeamMutationVariables>(UpdateTeamDocument, baseOptions);
+    }
+export type UpdateTeamMutationHookResult = ReturnType<typeof useUpdateTeamMutation>;
+export type UpdateTeamMutationResult = ApolloReactCommon.MutationResult<UpdateTeamMutation>;
+export type UpdateTeamMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateTeamMutation, UpdateTeamMutationVariables>;
 export const Auth_GoogleOAuthDocument = gql`
     mutation Auth_GoogleOAuth($code: String!) {
   auth_googleOAuth(code: $code) {
