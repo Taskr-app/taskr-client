@@ -7,6 +7,7 @@
     "build": "react-scripts build",
     "codegen": "graphql-codegen --config codegen.yml",
     "test": "jest --maxWorkers=4 --silent",
+    "lint": "tslint --project tsconfig.json",
     "eject": "react-scripts eject"
   },
   "dependencies": {
