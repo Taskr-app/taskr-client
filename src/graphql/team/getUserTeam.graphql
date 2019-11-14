@@ -1,6 +1,14 @@
-query GetUserTeam($id:ID!) {
-  getUserTeam(id:$id) {
+query GetUserTeam($id: ID!) {
+  getUserTeam(id: $id) {
     id
     name
+    members {
+      id
+      username
+    }
+    projects {
+      id
+      name
+    }
   }
 }
