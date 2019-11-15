@@ -1,0 +1,7 @@
+subscription OnListCreated($projectId: ID!) {
+  onListCreated(projectId: $projectId) {
+    id
+    name
+    pos
+  }
+}
