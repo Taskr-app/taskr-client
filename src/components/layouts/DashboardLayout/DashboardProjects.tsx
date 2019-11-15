@@ -1,15 +1,15 @@
-import React from "react";
-import { useGetUserProjectsQuery } from "../../../generated/graphql";
-import { encode } from "../../../lib/hashids";
-import { useHistory } from "react-router";
+import React from 'react';
+import { useGetUserProjectsQuery, Project } from '../../../generated/graphql';
+import { encode } from '../../../lib/hashids';
+import { useHistory } from 'react-router';
 
 const DashboardProjects: React.FC = () => {
   const history = useHistory();
   const { data } = useGetUserProjectsQuery();
 
-  const handleClick = (id: string | number) => () => {
+  const handleClick = (project: Pick<Project, 'id' | 'name'>) => () => {
     history.push({
-      pathname: `/project/${encode(id)}`
+      pathname: `/project/${encode(project.id)}/${project.name}`
     });
   };
   return (
@@ -17,9 +17,9 @@ const DashboardProjects: React.FC = () => {
       {data!.getUserProjects.map(project => {
         return (
           <div
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
             key={project.id}
-            onClick={handleClick(project.id)}
+            onClick={handleClick(project)}
           >
             {project.name}
           </div>

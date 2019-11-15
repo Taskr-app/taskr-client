@@ -1,0 +1,3 @@
+mutation UpdateListName($name: String!, $id: ID!) {
+  updateListName(name: $name, id: $id)
+}
