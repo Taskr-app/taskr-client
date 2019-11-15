@@ -56,8 +56,7 @@ const TeamPage: React.FC = () => {
       return (
         <ul className={styles.projectList}>
           {data.getUserTeam.projects.map((project, idx) => (
-            <li key={idx}>
-              {/* <div className={styles.projectName}>{project.name}</div> */}
+            <li key={`team-project-${project.id}`}>
               <Link className={styles.projectName} to={`/project/${project.id}/${project.name}`}>{project.name}</Link>
             </li>
           ))}
