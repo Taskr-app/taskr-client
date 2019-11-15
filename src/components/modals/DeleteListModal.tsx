@@ -1,9 +1,7 @@
 import React from 'react';
-import Form, { FormComponentProps } from 'antd/lib/form';
-import { Modal, Input, Button } from 'antd';
+import { Modal } from 'antd';
 import { useModal } from '.';
 import { useDeleteListMutation } from '../../generated/graphql';
-import { useParams } from 'react-router';
 
 interface Props {
   name: string;

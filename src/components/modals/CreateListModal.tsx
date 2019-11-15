@@ -4,8 +4,6 @@ import { useModal } from '.';
 import { useCreateListMutation } from '../../generated/graphql';
 import { FormComponentProps } from 'antd/lib/form';
 import { errorMessage } from '../../lib/messageHandler';
-import { useParams } from 'react-router';
-import { decode } from '../../lib/hashids';
 
 interface Props extends FormComponentProps {
   projectId: string;

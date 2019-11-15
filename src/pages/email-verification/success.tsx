@@ -72,7 +72,6 @@ const EmailVerificationSuccessPage: React.FC = () => {
   };
 
   useEffect(() => {
-    let didCancel = false;
     if (!routeQueries.id || !routeQueries.email) {
       history.push("/");
     }
@@ -81,9 +80,6 @@ const EmailVerificationSuccessPage: React.FC = () => {
       await register();
     };
     fetchData();
-    return () => {
-      didCancel = true;
-    };
   }, []);
 
   if (registerError) {
