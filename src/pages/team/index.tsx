@@ -75,9 +75,25 @@ const TeamPage: React.FC = () => {
     }
   }
 
+  const renderTeamMembers = () => {
+    if (data) {
+      return (
+        <ul className={styles.teamMembers}>
+          {data.getUserTeam.members.map( (member, idx) => (
+            <li key={`team-member-${member.id}`}>
+              {member.username}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  }
+
+  console.log(data && data.getUserTeam)
   return (
     <DashboardLayout>
       <h1>{renderTeamName()}</h1>
+      <div>{renderTeamMembers()}</div>
       <div>{renderProjects()}</div>
       <Input value={value} onChange={e => setValue(e.currentTarget.value)} />
       <Button onClick={handleInviteMember}>Invite member</Button>
