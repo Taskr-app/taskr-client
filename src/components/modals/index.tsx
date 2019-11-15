@@ -1,53 +1,56 @@
-import React, { useState, createContext, useContext } from "react";
-import CreateTeamModal from "./CreateTeamModal";
-import CreateProjectModal from "./CreateProjectModal";
+import React, { useState, createContext, useContext } from 'react';
 
-export type ModalTypes = "" | "createTeam" | "createProject";
+export type ModalTypes = null | React.ReactNode;
 
 export interface ModalContextType {
-  modalKey: string;
+  modal: ModalTypes;
   showModal: (key: ModalTypes) => void;
   hideModal: () => void;
 }
 
 export const ModalContext = createContext<ModalContextType>({
-  modalKey: "",
+  modal: null,
   showModal: () => null,
   hideModal: () => null
 });
 
 export const useModal = () => {
-  const { showModal, hideModal } = useContext(ModalContext)
+  const { showModal, hideModal } = useContext(ModalContext);
 
-  return { showModal, hideModal }
-}
+  return { showModal, hideModal };
+};
 
 export const ModalProvider: React.FC = ({ children }) => {
-  const [modalKey, setModalKey] = useState<ModalTypes>("");
+  const [modal, setModal] = useState<ModalTypes>(null);
 
-  const showModal = () => (key: ModalTypes) => {
-    setModalKey(key);
+  const showModal = () => (modalComponent: ModalTypes) => {
+    setModal(modalComponent);
   };
 
   const hideModal = () => () => {
-    setModalKey('')
-  }
+    setModal(null);
+  };
 
   const mountModal = () => {
-    switch (modalKey) {
-      case "createTeam":
-        return <CreateTeamModal />;
-      case "createProject":
-        return <CreateProjectModal />
-      default:
-        return null;
-    }
+    // switch (modalKey) {
+    //   case 'createTeam':
+    //     return <CreateTeamModal />;
+    //   case 'createProject':
+    //     return <CreateProjectModal />;
+    //   case 'createList':
+    //     return <CreateListModal />;
+    //   case 'deleteList':
+    //     return <DeleteListModal />;
+    //   default:
+    //     return null;
+    // }
+    return modal;
   };
 
   return (
     <ModalContext.Provider
       value={{
-        modalKey,
+        modal,
         showModal: showModal(),
         hideModal: hideModal()
       }}
