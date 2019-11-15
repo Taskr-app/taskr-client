@@ -1,16 +1,23 @@
-.projectList {
-  list-style: none;
-  padding: 0;
-}
-
-
 // team name
 .teamName {
   font-size: 30px;
   font-weight: 600;
 }
 
+// team members
+.teamMembers {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+}
+
 // projects
+.projectList {
+  list-style: none;
+  padding: 0;
+}
+
 .projectName {
   cursor: pointer;
   color: rgba(0, 0, 0, 0.65);
