@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 import {
   useSendTeamInviteLinkMutation,
-  useGetUserTeamQuery
+  useGetUserTeamQuery,
+  useUpdateTeamMutation
 } from "../../generated/graphql";
 import { Button, Input, message, Skeleton } from "antd";
 import { errorMessage } from "../../lib/messageHandler";
@@ -20,6 +21,8 @@ interface RouteParams {
 const TeamPage: React.FC = () => {
   const params = useParams<RouteParams>()
   const [value, setValue] = useState("");
+  // const [name, setName] = useState({teamName: ""});
+  // const [newName] = useUpdateTeamMutation();
   const { data, loading } = useGetUserTeamQuery({
     variables: {
       id: decode(params.teamId)
@@ -66,11 +69,16 @@ const TeamPage: React.FC = () => {
     }
   }
 
+  // const updateName = (e: { target: { name: any; value: any; }; }) => {
+  //   const { name, value } = e.target;
+  //   setName(prevName => ({...prevName, [name]: value}))
+  // }
+  
   const renderTeamName = () => {
     if (data) {
       return (
         <div className={styles.teamName}>
-          {data.getUserTeam.name}          
+          {params.teamName}          
         </div>
       )
     }
@@ -90,10 +98,22 @@ const TeamPage: React.FC = () => {
     }
   }
 
-  console.log(data && data.getUserTeam)
+
+  // TEST
+  // console.log(params);
+  // params.teamName = name.teamName;
+  console.log(params);
+  console.log(name);
+  // console.log(useUpdateTeamMutation);
+  // console.log(data && data.getUserTeam)
+
   return (
     <DashboardLayout>
       <h1>{renderTeamName()}</h1>
+      {/* <form onSubmit={() => newName()}>
+        <input placeholder="Team Name" value={name.teamName} name="teamName" onChange={updateName}></input>
+        <button>edit</button>
+      </form> */}
       <div>{renderTeamMembers()}</div>
       <div>{renderProjects()}</div>
       <Input value={value} onChange={e => setValue(e.currentTarget.value)} />
