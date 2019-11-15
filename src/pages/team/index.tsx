@@ -65,11 +65,22 @@ const TeamPage: React.FC = () => {
     }
   }
 
+  const renderTeamName = () => {
+    if (data) {
+      return (
+        <div className={styles.teamName}>
+          {data.getUserTeam.name}          
+        </div>
+      )
+    }
+  }
+
   return (
     <DashboardLayout>
+      <h1>{renderTeamName()}</h1>
+      <div>{renderProjects()}</div>
       <Input value={value} onChange={e => setValue(e.currentTarget.value)} />
       <Button onClick={handleInviteMember}>Invite member</Button>
-      <div>{renderProjects()}</div>
     </DashboardLayout>
   );
 };
