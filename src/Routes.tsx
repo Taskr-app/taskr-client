@@ -1,21 +1,22 @@
-import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { ModalProvider } from "./components/modals";
-import AuthProvider from "./components/auth/AuthProvider";
-import Home from "./pages/home";
-import Login from "./pages/login";
-import Register from "./pages/register";
-import ForgotPassword from "./pages/forgot-password";
-import ForgotPasswordSuccess from "./pages/forgot-password/success";
-import ProjectInvitePublic from "./pages/invite/project/public";
-import ProjectInviteSuccess from "./pages/invite/project/success";
-import TeamInviteSuccess from "./pages/invite/team/success";
-import Dashboard from "./pages/dashboard";
-import Settings from "./pages/settings"
-import EmailVerificationPage from "./pages/email-verification";
-import EmailVerificationSuccessPage from "./pages/email-verification/success";
-import TeamPage from "./pages/team";
-import GoogleOAuth from "./pages/google";
+import React from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { ModalProvider } from './components/modals';
+import AuthProvider from './components/auth/AuthProvider';
+import Home from './pages/home';
+import Login from './pages/login';
+import Register from './pages/register';
+import ForgotPassword from './pages/forgot-password';
+import ForgotPasswordSuccess from './pages/forgot-password/success';
+import ProjectInvitePublic from './pages/invite/project/public';
+import ProjectInviteSuccess from './pages/invite/project/success';
+import TeamInviteSuccess from './pages/invite/team/success';
+import Dashboard from './pages/dashboard';
+import Settings from './pages/settings';
+import EmailVerificationPage from './pages/email-verification';
+import EmailVerificationSuccessPage from './pages/email-verification/success';
+import TeamPage from './pages/team';
+import GoogleOAuth from './pages/google';
+import ProjectPage from './pages/project';
 
 const Routes: React.FC = () => {
   return (
@@ -29,8 +30,16 @@ const Routes: React.FC = () => {
             <Route exact path="/register" component={Register} />
             <Route exact path="/google" component={GoogleOAuth} />
 
-            <Route exact path="/email-verification" component={EmailVerificationPage} />
-            <Route exact path="/email-verification/success" component={EmailVerificationSuccessPage} />
+            <Route
+              exact
+              path="/email-verification"
+              component={EmailVerificationPage}
+            />
+            <Route
+              exact
+              path="/email-verification/success"
+              component={EmailVerificationSuccessPage}
+            />
             <Route exact path="/forgot-password" component={ForgotPassword} />
             <Route
               exact
@@ -57,6 +66,11 @@ const Routes: React.FC = () => {
             <Route exact path="/settings" component={Settings} />
 
             <Route exact path="/team/:teamId/:teamName" component={TeamPage} />
+            <Route
+              exact
+              path="/project/:projectId/:projectName"
+              component={ProjectPage}
+            />
           </Switch>
         </AuthProvider>
       </ModalProvider>
