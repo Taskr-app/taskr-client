@@ -1,15 +1,15 @@
 import React from 'react';
 import { Form, Input } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { useUpdateListNameMutation } from '../generated/graphql';
+// import { useUpdateListNameMutation } from '../generated/graphql';
 
 interface Props extends FormComponentProps {
   title: string;
 }
 
 const ListTitleForm: React.FC<Props> = ({ title, form }) => {
-  const { getFieldDecorator, validateFields } = form;
-  const [updateListName] = useUpdateListNameMutation();
+  const { getFieldDecorator } = form;
+  // const [updateListName] = useUpdateListNameMutation();
 
   // submit when fieldtouched && !focus
   return (
