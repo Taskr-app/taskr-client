@@ -8,6 +8,8 @@ import { Button, Input, message, Skeleton } from "antd";
 import { errorMessage } from "../../lib/messageHandler";
 import { decode } from "../../lib/hashids";
 import { useParams } from "react-router";
+import styles from "./Team.module.scss";
+import { Link } from "react-router-dom";
 
 interface RouteParams {
   teamId: string;
@@ -49,10 +51,26 @@ const TeamPage: React.FC = () => {
     );
   }
 
+  const renderProjects = () => {
+    if (data) {
+      return (
+        <ul className={styles.projectList}>
+          {data.getUserTeam.projects.map((project, idx) => (
+            <li key={idx}>
+              {/* <div className={styles.projectName}>{project.name}</div> */}
+              <Link className={styles.projectName} to={`/project/${project.id}/${project.name}`}>{project.name}</Link>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  }
+
   return (
     <DashboardLayout>
       <Input value={value} onChange={e => setValue(e.currentTarget.value)} />
       <Button onClick={handleInviteMember}>Invite member</Button>
+      <div>{renderProjects()}</div>
     </DashboardLayout>
   );
 };
