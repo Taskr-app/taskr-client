@@ -10,6 +10,7 @@ import { decode } from "../../lib/hashids";
 import { useParams } from "react-router";
 import styles from "./Team.module.scss";
 import { Link } from "react-router-dom";
+import { encode } from '../../lib/hashids';
 
 interface RouteParams {
   teamId: string;
@@ -57,7 +58,7 @@ const TeamPage: React.FC = () => {
         <ul className={styles.projectList}>
           {data.getUserTeam.projects.map((project, idx) => (
             <li key={`team-project-${project.id}`}>
-              <Link className={styles.projectName} to={`/project/${project.id}/${project.name}`}>{project.name}</Link>
+              <Link className={styles.projectName} to={`/project/${encode(project.id)}/${project.name}`}>{project.name}</Link>
             </li>
           ))}
         </ul>
