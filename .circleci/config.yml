@@ -44,9 +44,6 @@ jobs:
             - dependency-cache-{{ checksum "yarn.lock" }}
             - dependency-cache-
       - run:
-          name: "Lint files"
-          command: yarn lint
-      - run:
           name: "React test suite"
           command: yarn test
 
