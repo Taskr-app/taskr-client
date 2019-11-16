@@ -3,15 +3,15 @@ import DashboardLayout from "../../components/layouts/DashboardLayout";
 import {
   useSendTeamInviteLinkMutation,
   useGetUserTeamQuery,
-  useUpdateTeamMutation
+  useUpdateTeamMutation,
+  GetUserTeamDocument
 } from "../../generated/graphql";
 import { Button, Input, message, Skeleton } from "antd";
 import { errorMessage } from "../../lib/messageHandler";
-import { decode } from "../../lib/hashids";
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 import styles from "./Team.module.scss";
 import { Link } from "react-router-dom";
-import { encode } from '../../lib/hashids';
+import { encode, decode } from '../../lib/hashids';
 
 interface RouteParams {
   teamId: string;
@@ -21,8 +21,22 @@ interface RouteParams {
 const TeamPage: React.FC = () => {
   const params = useParams<RouteParams>()
   const [value, setValue] = useState("");
-  // const [name, setName] = useState({teamName: ""});
-  // const [newName] = useUpdateTeamMutation();
+  const history = useHistory();
+  // Update Team Name
+  const [localName, setName] = useState({teamName: ""});       // Local state teamName to update input tag value.
+  const [updateName] = useUpdateTeamMutation({     
+    refetchQueries: [{ 
+      query: GetUserTeamDocument,
+      variables: {id: decode(params.teamId)}
+    }],
+    onCompleted: (data) => {
+      history.push({
+        pathname: `/team/${encode(data.updateTeam.id)}/${data.updateTeam.name}`
+      })
+    }
+  });
+
+  
   const { data, loading } = useGetUserTeamQuery({
     variables: {
       id: decode(params.teamId)
@@ -69,16 +83,11 @@ const TeamPage: React.FC = () => {
     }
   }
 
-  // const updateName = (e: { target: { name: any; value: any; }; }) => {
-  //   const { name, value } = e.target;
-  //   setName(prevName => ({...prevName, [name]: value}))
-  // }
-  
   const renderTeamName = () => {
     if (data) {
       return (
         <div className={styles.teamName}>
-          {params.teamName}          
+          {data.getUserTeam.name}          
         </div>
       )
     }
@@ -98,22 +107,32 @@ const TeamPage: React.FC = () => {
     }
   }
 
+  // Update Team Name
+  const updateLocalName = (e: { target: { name: any; value: any; }; }) => {
+    const { name, value } = e.target;
+    setName(prevName => ({...prevName, [name]: value}))
+  }
+
+  const handleSubmit = (e:React.SyntheticEvent) => {
+    e.preventDefault();
+    updateName({
+    variables: {
+      teamId: decode(params.teamId),
+      name: localName.teamName
+    }
+  })
+};
+
 
   // TEST
-  // console.log(params);
-  // params.teamName = name.teamName;
-  console.log(params);
-  console.log(name);
-  // console.log(useUpdateTeamMutation);
-  // console.log(data && data.getUserTeam)
 
   return (
     <DashboardLayout>
       <h1>{renderTeamName()}</h1>
-      {/* <form onSubmit={() => newName()}>
-        <input placeholder="Team Name" value={name.teamName} name="teamName" onChange={updateName}></input>
+      <form onSubmit={handleSubmit}>
+        <input placeholder="Team Name" value={localName.teamName} name="teamName" onChange={updateLocalName}></input>
         <button>edit</button>
-      </form> */}
+      </form>
       <div>{renderTeamMembers()}</div>
       <div>{renderProjects()}</div>
       <Input value={value} onChange={e => setValue(e.currentTarget.value)} />
