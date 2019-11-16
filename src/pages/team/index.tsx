@@ -4,7 +4,8 @@ import {
   useSendTeamInviteLinkMutation,
   useGetUserTeamQuery,
   useUpdateTeamMutation,
-  GetUserTeamDocument
+  GetUserTeamDocument,
+  useDeleteTeamProjectMutation
 } from "../../generated/graphql";
 import { Button, Input, message, Skeleton } from "antd";
 import { errorMessage } from "../../lib/messageHandler";
@@ -22,10 +23,11 @@ const TeamPage: React.FC = () => {
   const params = useParams<RouteParams>()
   const [val, setValue] = useState("");
   const history = useHistory();
+
   // Update Team Name
   const [localName, setName] = useState({teamName: ""});       // Local state teamName to update input tag value.
   const [updateName] = useUpdateTeamMutation({     
-    refetchQueries: [{ 
+    refetchQueries: [{                // Used refetchQueries!
       query: GetUserTeamDocument,
       variables: {id: decode(params.teamId)}
     }],
@@ -58,6 +60,28 @@ const TeamPage: React.FC = () => {
     });
   };
 
+// Delete Project
+  const [deleteProject] = useDeleteTeamProjectMutation({
+    onCompleted: (deleteData) => {
+      history.push({
+        pathname: `/project/${encode(deleteData.deleteTeamProject.id)}/${deleteData.deleteTeamProject.name}`
+      })
+    },
+    refetchQueries: [{                // Used refetchQueries!
+      query: GetUserTeamDocument,
+      variables: {id: decode(params.teamId)}
+    }]
+  });
+  const handleDeleteProject = (e:React.SyntheticEvent) => {
+    e.preventDefault();
+    deleteProject({
+      variables: {
+        teamId: decode(params.teamId),
+        projectId: e.currentTarget.id
+      }
+    })
+  }
+
   if (!loading && !data) {
     return null;
   }
@@ -76,6 +100,7 @@ const TeamPage: React.FC = () => {
           {data.getUserTeam.projects.map((project, idx) => (
             <li key={`team-project-${project.id}`}>
               <Link className={styles.projectName} to={`/project/${encode(project.id)}/${project.name}`}>{project.name}</Link>
+              <Button onClick={handleDeleteProject} id={`${project.id}`}>Delete Project</Button>
             </li>
           ))}
         </ul>
@@ -125,6 +150,7 @@ const TeamPage: React.FC = () => {
 
 
   // TEST
+  // console.log(data && data);
 
   return (
     <DashboardLayout>
