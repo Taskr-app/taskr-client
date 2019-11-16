@@ -15,37 +15,9 @@
 
 ### Getting started
 
-1. Create an `.env` file in `client/` following the `.env.sample` file
-2. Start the api server (cd into `/server` and run `yarn dev` after installing dependencies)
-3. Run `yarn codegen` from the client directory and it will automatically generate types, queries and the hooks for all your graphql queries and mutations.
-4. All types are generated in the `generated` folder and can be exported from there.
-5. `yarn codegen` will generate a watch server so make sure to turn it off if you don't need it anymore
-6. Run `yarn dev` to get started
-------
-
-##### Creating routes
-- Routes can be created in the `pages` directory. Every file there will be rendered as its own route in relation to its file name. _ie._ `home.tsx` will be rendered in `/home`.
-- `pages/index.tsx` is served on `/`
-- `pages/user/me.tsx` is served on `/user/me`
-- `pages/user/[userId].tsx` is served on `/user/:userId` with `userId` as a query params
-- You can always render a route directly from another component, however it will not modify the current route from the browser.
-- Always render new pages with the `Layout` component to render headers, title, etc.
-```jsx
-// pages/posts.tsx
-import Layout from '../components/common/Layout'
-
-const PostsPage = () => (
-    <Layout>
-        <div>
-            Posts
-        </div>
-    </Layout>
-)
-
-export default PostsPage
-```
-
-____
+1. Create an `.env` file in the root directory following the `.env.sample` file
+2. Run `yarn start` or `npm start`
+------  
 
 ### Graphql
 https://www.apollographql.com/docs/react/api/react-hooks/
@@ -126,7 +98,7 @@ const App = () => {
 ```
 
 ### Styling
-- Use CSS modules pattern and less
+- Use CSS modules pattern and scss
 - Avoid inline styles unless passing down as props
 ```css
 /** App.module.less */
@@ -136,20 +108,9 @@ const App = () => {
 }
 
 ```
-##### Theme
-Variables can be imported under `assets/themes.less`
-```css
-@import '../assets/themes.less`;
-
-.main {
-    display: flex;
-    background-color: @primary-color;
-}
-```
 
 ##### Antd themes
 https://ant.design/docs/react/customize-theme
-Antd themes can be changed in `next.config.js` under `lessLoaderOptions.modifyVars`
 
 ________
 
@@ -195,6 +156,7 @@ import { render } from 'enzyme';
 import Home from '../../pages/home';
 import { MockedProvider } from '@apollo/react-testing';
 import { MeDocument } from '../../generated/graphql';
+import { MemoryRouter } from 'react-router';
 
 describe('Pages', () => {
   describe('Home', () => {
@@ -214,7 +176,9 @@ describe('Pages', () => {
     it('should render and call me query', () => {
       render(
         <MockedProvider mocks={mocks} addTypename={false}>
-          <Home />
+          <MemoryRouter initialEntries={['/home']}>
+            <Home />
+          </MemoryRouter>
         </MockedProvider>
       );
     });
@@ -225,7 +189,7 @@ ____
 
 ### Making a pull request
 1. Assign a ticket to yourself on trello and move it to `Doing` column
-2. `git checkout -b client/feature`
+2. `git checkout -b feature`
 3. Make and commit changes, push and create a PR
 4. Resolve all merge conflicts
 5. Once PR passes the CI tests you can go ahead and `rebase and merge` to `master`
