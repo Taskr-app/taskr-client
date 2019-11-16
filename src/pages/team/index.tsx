@@ -20,7 +20,7 @@ interface RouteParams {
 
 const TeamPage: React.FC = () => {
   const params = useParams<RouteParams>()
-  const [value, setValue] = useState("");
+  const [val, setValue] = useState("");
   const history = useHistory();
   // Update Team Name
   const [localName, setName] = useState({teamName: ""});       // Local state teamName to update input tag value.
@@ -29,9 +29,9 @@ const TeamPage: React.FC = () => {
       query: GetUserTeamDocument,
       variables: {id: decode(params.teamId)}
     }],
-    onCompleted: (data) => {
+    onCompleted: (completedData) => {
       history.push({
-        pathname: `/team/${encode(data.updateTeam.id)}/${data.updateTeam.name}`
+        pathname: `/team/${encode(completedData.updateTeam.id)}/${completedData.updateTeam.name}`
       })
     }
   });
@@ -44,7 +44,7 @@ const TeamPage: React.FC = () => {
   });
   const [sendTeamInviteLink] = useSendTeamInviteLinkMutation({
     onCompleted: () => {
-      message.success(`A team invitation has been sent to ${value}`);
+      message.success(`A team invitation has been sent to ${val}`);
     },
     onError: err => errorMessage(err)
   });
@@ -53,7 +53,7 @@ const TeamPage: React.FC = () => {
     await sendTeamInviteLink({
       variables: {
         teamId: decode(params.teamId),
-        email: value
+        email: val
       }
     });
   };
@@ -130,12 +130,12 @@ const TeamPage: React.FC = () => {
     <DashboardLayout>
       <h1>{renderTeamName()}</h1>
       <form onSubmit={handleSubmit}>
-        <input placeholder="Team Name" value={localName.teamName} name="teamName" onChange={updateLocalName}></input>
+        <input placeholder="Team Name" value={localName.teamName} name="teamName" onChange={updateLocalName}/>
         <button>edit</button>
       </form>
       <div>{renderTeamMembers()}</div>
       <div>{renderProjects()}</div>
-      <Input value={value} onChange={e => setValue(e.currentTarget.value)} />
+      <Input value={val} onChange={e => setValue(e.currentTarget.value)} />
       <Button onClick={handleInviteMember}>Invite member</Button>
     </DashboardLayout>
   );
