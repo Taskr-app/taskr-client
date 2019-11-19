@@ -4,7 +4,12 @@ import { useAuth_GoogleOAuthMutation } from "../../generated/graphql";
 import { useHistory, useLocation } from "react-router";
 import { queryStringify, queryParse } from "../../lib/queryParser";
 
-const GoogleOAuth: React.FC = () => {
+/**
+ * @route "/google"
+ * @searchQueries { returnUrl?: Location.pathname }
+ */
+
+const GooglePage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
   const routeQueries = queryParse(location.search)
@@ -40,4 +45,4 @@ const GoogleOAuth: React.FC = () => {
   return <></>;
 };
 
-export default GoogleOAuth;
+export default GooglePage;
