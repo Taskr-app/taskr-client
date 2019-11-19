@@ -1,12 +1,13 @@
 import React from "react";
 import { useMeQuery, useLogoutMutation } from "../../../generated/graphql";
 import classNames from "classnames";
-import { Layout, Row, Col, Avatar, Dropdown, Menu, Icon } from "antd";
+import { Layout, Row, Col, Dropdown, Menu, Icon } from "antd";
 import styles from "./Header.module.scss";
 import { ButtonLink } from "../Button";
 import AnonHeader from "./AnonHeader";
 import { setAccessToken } from "../../../lib/accessToken";
 import { useHistory } from "react-router";
+import { DefaultUserAvatar } from "../Avatar";
 
 interface Props {
   dark?: number;
@@ -88,7 +89,9 @@ export const Header: React.FC<Props> = ({ dark }) => {
           <Row type="flex" justify="end">
             <Col span={3}>
               <Dropdown overlay={menu} placement="bottomRight">
-                <Avatar icon="user" alt="user" />
+                <div className={styles.avatarContainer}>
+                  <DefaultUserAvatar user={data.me} />
+                </div>
               </Dropdown>
             </Col>
           </Row>

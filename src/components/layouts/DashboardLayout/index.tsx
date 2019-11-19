@@ -15,6 +15,10 @@ const DashboardLayout: React.FC = ({ children }) => {
     history.push({ pathname: `/team/${encode(team.id)}/${team.name}` });
   };
 
+  const handleProjectsClick = () => {
+    history.push({ pathname: '/' })
+  }
+
   return (
     <Layout
       title="Taskr"
@@ -25,7 +29,7 @@ const DashboardLayout: React.FC = ({ children }) => {
             mode="inline"
             selectable={false}
           >
-            <Menu.Item key="projects">
+            <Menu.Item key="projects" onClick={handleProjectsClick}>
               <span className={styles.menuItem}>
                 <Icon type="project" style={{ color: "#8491A3" }} />
                 <span className={styles.text}>Projects</span>

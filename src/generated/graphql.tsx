@@ -571,7 +571,10 @@ export type GetUserProjectQuery = (
   & { getUserProject: (
     { __typename?: 'Project' }
     & Pick<Project, 'id' | 'name'>
-    & { lists: Array<(
+    & { owner: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username' | 'email'>
+    ), lists: Array<(
       { __typename?: 'List' }
       & Pick<List, 'id' | 'name' | 'pos'>
     )> }
@@ -585,7 +588,14 @@ export type GetUserProjectsQuery = (
   { __typename?: 'Query' }
   & { getUserProjects: Array<(
     { __typename?: 'Project' }
-    & Pick<Project, 'id' | 'name'>
+    & Pick<Project, 'id' | 'name' | 'desc'>
+    & { owner: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email' | 'username'>
+    ), members: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email' | 'username'>
+    )> }
   )> }
 );
 
@@ -1011,6 +1021,11 @@ export const GetUserProjectDocument = gql`
   getUserProject(id: $id) {
     id
     name
+    owner {
+      id
+      username
+      email
+    }
     lists {
       id
       name
@@ -1034,6 +1049,17 @@ export const GetUserProjectsDocument = gql`
   getUserProjects {
     id
     name
+    desc
+    owner {
+      id
+      email
+      username
+    }
+    members {
+      id
+      email
+      username
+    }
   }
 }
     `;

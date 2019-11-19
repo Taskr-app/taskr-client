@@ -29,7 +29,6 @@ const ProjectPage: React.FC = () => {
     variables: { id: projectId as string },
     onError: err => errorMessage(err)
   });
-
   const subscribeToNewLists = () => {
     subscribeToMore({
       document: OnListCreatedDocument,
