@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import ProjectLayout from '../../components/layouts/ProjectLayout';
-import styles from './Project.module.scss';
 import {
   useGetUserProjectQuery,
   OnListCreatedDocument,
@@ -9,10 +8,11 @@ import {
 import { errorMessage } from '../../lib/messageHandler';
 import { Button } from 'antd';
 import { useModal } from '../../components/modals';
-import List from '../../components/List';
 import CreateListModal from '../../components/modals/CreateListModal';
 import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import ListsContainer from './ListsContiner';
 
 interface RouteParams {
   projectId: string;
@@ -73,20 +73,32 @@ const ProjectPage: React.FC = () => {
     subscribeToDeletedLists();
   }, []);
 
+  const handleDragEnd = useCallback(() => {
+    console.log('drag end');
+  }, []);
+
   if (!data && loading) {
     return <div>loading</div>;
   }
 
   return (
-    <ProjectLayout title={params.projectName}>
-      <Button onClick={showCreateListModal}>Create List</Button>
-      <div className={styles.listsContainer}>
-        {data &&
-          data.getUserProject.lists.map((list: any, index: number) => (
-            <List id={list.id} key={list.id} name={list.name} />
-          ))}
-      </div>
-    </ProjectLayout>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <ProjectLayout title={params.projectName}>
+        <Button onClick={showCreateListModal}>Create List</Button>
+        {data && (
+          <Droppable droppableId={projectId.toString()}>
+            {(provided, snapshot) => {
+              return (
+                <ListsContainer
+                  provided={provided}
+                  lists={data.getUserProject.lists}
+                />
+              );
+            }}
+          </Droppable>
+        )}
+      </ProjectLayout>
+    </DragDropContext>
   );
 };
 
