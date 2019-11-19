@@ -12,4 +12,11 @@
   .headerContent {
     float: right;
   }
+
+  .avatarContainer {
+    height: 32px;
+    line-height: 32px;
+    display: inline-block;
+    cursor: default;
+  }
 }
