@@ -6,6 +6,7 @@ import ListTitleForm from './ListTitleForm';
 import { LinkText } from './common/Text';
 
 interface Props {
+  ref?: any;
   id: number;
   name: string;
 }
