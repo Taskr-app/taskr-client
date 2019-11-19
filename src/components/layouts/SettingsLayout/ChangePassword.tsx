@@ -7,7 +7,7 @@ import { errorMessage } from "../../../lib/messageHandler";
 const ChangePassword: React.FC<FormComponentProps> = ({ form }) => {
   const [changePassword, { loading }] = useChangePasswordMutation({
     onCompleted: () => {
-      message.success(`Your password has changed for the next time you login`);
+      message.success("Your password has changed for the next time you login");
       form.resetFields();
     },
     onError: err => errorMessage(err)

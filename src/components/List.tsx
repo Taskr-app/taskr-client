@@ -1,8 +1,9 @@
 import React from 'react';
-import { Card, Input } from 'antd';
+import { Card } from 'antd';
 import { useModal } from './modals';
 import DeleteListModal from './modals/DeleteListModal';
 import ListTitleForm from './ListTitleForm';
+import { LinkText } from './common/Text';
 
 interface Props {
   id: number;
@@ -21,7 +22,7 @@ const List: React.FC<Props> = ({ id, name }) => {
       title={<ListTitleForm defaultTitle={name} id={id} />}
       style={{ minWidth: 300 }}
       key={id}
-      extra={<a onClick={handleClick}>...</a>}
+      extra={<LinkText onClick={handleClick}>...</LinkText>}
     >
       <p>task filler</p>
       <p>task filler</p>

@@ -6,14 +6,16 @@ import { MenuItemIcon } from "../../common/Menu";
 import Layout from "../Layout";
 import { encode } from "../../../lib/hashids";
 import { useHistory } from "react-router";
+import CreateTeamModal from '../../modals/CreateTeamModal';
+import CreateProjectModal from '../../modals/CreateProjectModal';
 
 const DashboardLayout: React.FC = ({ children }) => {
   const history = useHistory();
   const { showModal } = useModal();
   const { data: teamData, loading: teamLoading } = useGetUserTeamsQuery();
   const { data: projectData, loading: projectLoading } = useGetUserProjectsQuery();
-  const showCreateTeamModal = () => showModal("createTeam");
-  const showCreateProjectModal = () => showModal("createProject")
+  const showCreateTeamModal = () => showModal(<CreateTeamModal />);
+  const showCreateProjectModal = () => showModal(<CreateProjectModal />)
 
   const handleProjectClick = (project: Pick<Project, "id" | "name">) => () => {
     history.push({ pathname: `/project/${encode(project.id)}/${project.name}` })

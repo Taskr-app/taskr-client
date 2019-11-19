@@ -7,7 +7,7 @@ const SettingsLayout: React.FC = ({ children }) => {
     <Layout
       sider={
         <>
-          <Menu style={{ height: '100%' }}>
+          <Menu style={{ height: "100%" }}>
             <Menu.Item>User settings</Menu.Item>
           </Menu>
         </>
