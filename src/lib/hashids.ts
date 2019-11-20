@@ -9,4 +9,6 @@ export const encode = (id: string | number) => {
     return hashids.encode(id)
   }
 }
-export const decode = (id: string) => hashids.decode(id)[0].toString();
+export const decode = (id: string) => {
+  return hashids.decode(id)[0].toString();
+}
