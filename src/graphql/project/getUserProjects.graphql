@@ -2,5 +2,16 @@ query GetUserProjects {
   getUserProjects {
     id
     name
+    desc
+    owner {
+      id
+      email
+      username
+    }
+    members {
+      id
+      email
+      username
+    }
   }
 }
