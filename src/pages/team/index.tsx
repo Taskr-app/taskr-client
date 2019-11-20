@@ -10,7 +10,7 @@ import {
 } from "../../generated/graphql";
 import { Button, Input, message, Skeleton } from "antd";
 import { errorMessage } from "../../lib/messageHandler";
-import { useParams, useHistory } from "react-router";
+import { useParams, useHistory, useLocation } from "react-router";
 import styles from "./Team.module.scss";
 import { Link } from "react-router-dom";
 import { encode, decode } from '../../lib/hashids';
@@ -39,12 +39,12 @@ const TeamPage: React.FC = () => {
     }
   });
 
-  
-  const { data, loading } = useGetUserTeamQuery({
+  const { data, loading, error } = useGetUserTeamQuery({
     variables: {
       id: decode(params.teamId)
     }
   });
+
   const [sendTeamInviteLink] = useSendTeamInviteLinkMutation({
     onCompleted: () => {
       message.success(`A team invitation has been sent to ${val}`);
@@ -126,7 +126,7 @@ const TeamPage: React.FC = () => {
           {data.getUserTeam.projects.map((project, idx) => (
             <li key={`team-project-${project.id}`}>
               <Link className={styles.projectName} to={`/project/${encode(project.id)}/${project.name}`}>{project.name}</Link>
-              {/* <Button onClick={handleDeleteProject} id={`${project.id}`}>Delete Project</Button> */}
+              <Button onClick={handleDeleteProject} id={`${project.id}`}>Delete Project</Button>
             </li>
           ))}
         </ul>
@@ -151,7 +151,7 @@ const TeamPage: React.FC = () => {
           {data.getUserTeam.members.map( (member, idx) => (
             <li key={`team-member-${member.id}`}>
               {member.username}
-              <Button onClick={handleDeleteMember} id={`${member.id}`}>Delete Member</Button>
+              {/* <Button onClick={handleDeleteMember} id={`${member.id}`}>Delete Member</Button> */}
             </li>
           ))}
         </ul>
@@ -177,9 +177,9 @@ const TeamPage: React.FC = () => {
 
 
   // TEST
-  console.log(data && data.getUserTeam.members);
+  // console.log(data && data.getUserTeam.members);
   // console.log(GetUserTeamDocument);
-  console.log('HI');
+  // console.log('HI');
   
   return (
     <DashboardLayout>
