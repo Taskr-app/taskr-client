@@ -73,7 +73,8 @@ const TeamPage: React.FC = () => {
     refetchQueries: [{                // Used refetchQueries!
       query: GetUserTeamDocument,
       variables: {id: decode(params.teamId)}
-    }]
+    }],
+    onError: err => errorMessage(err)
   });
   const handleDeleteProject = (e:React.SyntheticEvent) => {
     e.preventDefault();
@@ -90,7 +91,8 @@ const [deleteMember] = useDeleteTeamMemberMutation({
   refetchQueries: [{                 // Used refetchQueries!
     query: GetUserTeamDocument,
     variables: {id: decode(params.teamId)}
-  }]
+  }],
+  onError: err => errorMessage(err)
 })
 
 const handleDeleteMember = (e:React.SyntheticEvent) => {
