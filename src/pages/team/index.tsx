@@ -83,29 +83,23 @@ const TeamPage: React.FC = () => {
     })
   }
 
-// // Delete Team Member                // COME BACK TO IT AFTER TEAM API IS FINISHED 
-// const [deleteMember] = useDeleteTeamMemberMutation({
-//   refetchQueries: [{                 // Used refetchQueries!
-//     query: GetUserTeamDocument,
-//     variables: {id: decode(params.teamId)}
-//   }],
-//   // onCompleted: (deleteTeam) => {
-//   //   history.push({
-//   //     pathname: `/`
-//   //   })
-//   // }
-// })
+// // Delete Team Member               
+const [deleteMember] = useDeleteTeamMemberMutation({
+  refetchQueries: [{                 // Used refetchQueries!
+    query: GetUserTeamDocument,
+    variables: {id: decode(params.teamId)}
+  }]
+})
 
-// // @@@@@@@@@ NEED testing with more than one member @@@@@@@@@@@@
-// const handleDeleteMember = (e:React.SyntheticEvent) => {
-//     e.preventDefault();
-//     deleteMember({
-//       variables: {
-//         teamId: decode(params.teamId),
-//         userId: e.currentTarget.id
-//       }
-//     })
-//   }
+const handleDeleteMember = (e:React.SyntheticEvent) => {
+    e.preventDefault();
+    deleteMember({
+      variables: {
+        teamId: decode(params.teamId),
+        userId: e.currentTarget.id
+      }
+    })
+  }
 
 
   if (!loading && !data) {
@@ -151,7 +145,7 @@ const TeamPage: React.FC = () => {
           {data.getUserTeam.members.map( (member, idx) => (
             <li key={`team-member-${member.id}`}>
               {member.username}
-              {/* <Button onClick={handleDeleteMember} id={`${member.id}`}>Delete Member</Button> */}
+              <Button onClick={handleDeleteMember} id={`${member.id}`}>Delete Member</Button>
             </li>
           ))}
         </ul>
@@ -168,15 +162,17 @@ const TeamPage: React.FC = () => {
   const handleSubmit = (e:React.SyntheticEvent) => {
     e.preventDefault();
     updateName({
-    variables: {
-      teamId: decode(params.teamId),
-      name: localName.teamName
-    }
-  })
-};
+      variables: {
+        teamId: decode(params.teamId),
+        name: localName.teamName
+      }
+    })
+  };
 
 
   // TEST
+  // console.log(data.getUserTeam.members)
+
   // console.log(data && data.getUserTeam.members);
   // console.log(GetUserTeamDocument);
   // console.log('HI');
