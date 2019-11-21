@@ -5,7 +5,7 @@ import { MemoryRouter, Route } from "react-router";
 import Hashids from "hashids/cjs";
 import * as HashFactory from "../../lib/hashids";
 import { MockedProvider, wait } from "@apollo/react-testing";
-import { GetUserTeamDocument, UpdateTeamDocument, DeleteTeamProjectDocument } from '../../generated/graphql';
+import { GetUserTeamDocument, UpdateTeamDocument, DeleteTeamProjectDocument, DeleteTeamMemberDocument } from '../../generated/graphql';
 import { decode } from 'punycode';
 import { act } from "react-dom/test-utils";
 
@@ -28,8 +28,10 @@ describe("Pages", () => {
         id: HashFactory.decode(routerLocation.teamId),
         name: routerLocation.teamName,
         newName: "newTeamName",
-        projectId: "projectName",
-        projectName: "project-01"
+        projectId: "projectId",
+        projectName: "project-01",
+        memberId: "memberId",
+        memberName: "member-02"
       };
 
     it("should render and call getUserTeamQuery", async() => {
@@ -229,6 +231,78 @@ describe("Pages", () => {
 
     }); 
 
+    it("should delete a team member and call useDeleteTeamMemberMutation", async() => {
+      let deleteTeamMemberMutationCalled = false;
+      let getUserTeamQueryCalled = false;
+
+      const getUserTeamQuery = {
+        request: {
+          query: GetUserTeamDocument,
+          variables: {id: HashFactory.decode("asd")}
+        },
+        result: () => {
+          getUserTeamQueryCalled = true;
+            return {
+              data: {
+                getUserTeam: {
+                  id: mockQuery.id,
+                  name: mockQuery.name,
+                  members: [{
+                    id: mockQuery.memberId,
+                    username: mockQuery.memberName
+                  }],
+                  projects: [{
+                    id: mockQuery.projectId,
+                    name: mockQuery.projectName
+                  }]
+                } 
+              }
+            }
+          }
+        }
+
+        const deleteTeamMemberMutation = {
+          request: {
+            query: DeleteTeamMemberDocument,
+            variables: {
+              userId: mockQuery.memberId,
+              teamId: mockQuery.id
+            }
+          },
+          result: () => {
+            deleteTeamMemberMutationCalled = true;
+            return {
+              data: {
+                deleteTeamMember: {}
+              }
+            }
+          }
+        }
+
+        const wrapper = mount(
+          <MockedProvider mocks={[getUserTeamQuery, deleteTeamMemberMutation, getUserTeamQuery]} addTypename={false}>
+            <MemoryRouter initialEntries={[routerLocation.pathname]}>
+              <Route 
+                exact 
+                path={"/team/:teamId/:teamName"} 
+                render={() => <TeamPage />}
+                // component={TeamPage}
+              />
+            </MemoryRouter>
+          </MockedProvider>
+        )
+        await act(async() => {
+          await wait(0);
+  
+          wrapper.update();
+          wrapper.find(`button#${mockQuery.memberId}`).simulate('click');
+          
+          await wait(0);
+        })
+        expect(getUserTeamQueryCalled).toBe(true);
+        expect(deleteTeamMemberMutationCalled).toBe(true);
+
+    });
 
 
   });
