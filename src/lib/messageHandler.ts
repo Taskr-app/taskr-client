@@ -12,8 +12,15 @@ interface MessageProps {
  * @param messageOpts: { message?: string, duration?: number }
  */
 
+
+let netWorkErrorCount = 0;
 export const errorMessage = (err: ApolloError, messageOpts?: MessageProps) => {
-  err.graphQLErrors
+  if (err.networkError) {
+    netWorkErrorCount++;
+    return netWorkErrorCount > 2 ? message.error(err.networkError.message) : null
+  }
+
+  return err.graphQLErrors
     ? message.error(
         (messageOpts && messageOpts.message) || err.graphQLErrors[0].message,
         (messageOpts && messageOpts.duration) || 2

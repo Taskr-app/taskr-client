@@ -23,7 +23,7 @@
 https://www.apollographql.com/docs/react/api/react-hooks/
 - We are using apollo-client to connect to our apollo backend
 - Queries/mutations/subscriptions can be created under the `graphql` directory with the `*.graphql` extension
-- `yarn codegen` will create watch for any changes under `graphql` and create types, hooks, and the query itself within `generated/graphql`.
+- `yarn codegen` will create types, hooks, queries and mutations within `generated/graphql`.
 
 ##### Using queries
 ```jsx
@@ -79,10 +79,13 @@ If you need to fire a query manually rather than on component mount, you can use
 
 ```jsx
 import { useMeLazyQuery } from "../generated/graphql"
+import { useCallback } from "react"
 
 const App = () => {
     const [getMe, { called, loading, data }] = useMeLazyQuery();
-    const handleClick = () => getMe() // fetching me query
+    const handleClick = useCallback(() => {
+      getMe()
+    }, [data]) // fetching me query
 
     if (loading) {
         return <div>loading...</div>
@@ -136,10 +139,12 @@ export default () => (
 
 ##### Modals
 ```jsx
+import MyModalComponent from "../modals/MyModalComponent";
+
 const RandomPage = () => {
     const { showModal } = useModal()
     return (
-        <button onClick={() => showModal('welcome')}>Open Modal</button>
+        <button onClick={() => showModal(<MyModalComponent />)}>Open Modal</button>
     )
 }
 ```
@@ -174,7 +179,7 @@ describe('Pages', () => {
     ];
 
     it('should render and call me query', () => {
-      render(
+      mount(
         <MockedProvider mocks={mocks} addTypename={false}>
           <MemoryRouter initialEntries={['/home']}>
             <Home />
