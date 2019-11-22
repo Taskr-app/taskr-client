@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import ChangePassword from "../../components/layouts/SettingsLayout/ChangePassword";
-import SettingsLayout from "../../components/layouts/SettingsLayout";
-import { SubText, LinkText } from "../../components/common/Text";
-import { useMeQuery, useUpdateUsernameMutation } from "../../generated/graphql";
-import { EditButton } from "../../components/common/Input";
+import React, { useState } from 'react';
+import ChangePassword from '../../components/layouts/SettingsLayout/ChangePassword';
+import SettingsLayout from '../../components/layouts/SettingsLayout';
+import { SubText, LinkText } from '../../components/common/Text';
+import { useMeQuery, useUpdateUsernameMutation } from '../../generated/graphql';
+import { EditButton } from '../../components/common/Input';
 
-import styles from "./Settings.module.scss";
-import { errorMessage } from "../../lib/messageHandler";
+import styles from './Settings.module.scss';
+import { errorMessage } from '../../lib/messageHandler';
 
 const SettingsPage: React.FC = () => {
   const { data } = useMeQuery();
@@ -65,7 +65,7 @@ const SettingsPage: React.FC = () => {
           <div className={styles.labels}>
             <SubText>Username</SubText>
             <EditButton
-              name="username"
+              name='username'
               value={values.username}
               submit={handleUpdateUsername}
               onChange={handleInputChange}
@@ -77,7 +77,7 @@ const SettingsPage: React.FC = () => {
           <div className={styles.labels}>
             <LinkText
               onClick={handleChangePassword}
-              style={{ marginBottom: "15px" }}
+              style={{ marginBottom: '15px' }}
             >
               Change password
             </LinkText>

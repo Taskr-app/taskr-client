@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { useLoginMutation } from "../../generated/graphql";
+import React, { useState } from 'react';
+import { useLoginMutation } from '../../generated/graphql';
 
-import { setAccessToken } from "../../lib/accessToken";
-import Layout from "../../components/layouts/Layout";
-import { Form, Icon, Input, Button } from "antd";
-import { FormComponentProps } from "antd/lib/form";
-import AuthLayout from "../../components/auth/AuthLayout";
-import GoogleLogin from "../../components/auth/GoogleLogin";
+import { setAccessToken } from '../../lib/accessToken';
+import Layout from '../../components/layouts/Layout';
+import { Form, Icon, Input, Button } from 'antd';
+import { FormComponentProps } from 'antd/lib/form';
+import AuthLayout from '../../components/auth/AuthLayout';
+import GoogleLogin from '../../components/auth/GoogleLogin';
 
-import styles from "./Login.module.scss";
-import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useLocation } from "react-router";
-import { queryStringify, queryParse } from "../../lib/queryParser";
+import styles from './Login.module.scss';
+import { errorMessage } from '../../lib/messageHandler';
+import { useHistory, useLocation } from 'react-router';
+import { queryStringify, queryParse } from '../../lib/queryParser';
 
 const Login: React.FC<FormComponentProps> = ({ form }) => {
   const history = useHistory();
   const location = useLocation();
-  const routeQueries = queryParse(location.search)
+  const routeQueries = queryParse(location.search);
   const [forgotPassword, showForgotPassword] = useState(false);
   const [login, { loading }] = useLoginMutation({
     onCompleted: data => {
@@ -28,7 +28,7 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
           search: queryStringify({ ...queryParams })
         });
       } else {
-        history.push("/");
+        history.push('/');
       }
     },
     onError: err => {
@@ -55,51 +55,51 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
   const { getFieldDecorator } = form;
 
   return (
-    <Layout dark={1} title="Login | Taskr">
+    <Layout dark={1} title='Login | Taskr'>
       <AuthLayout>
         <Form onSubmit={handleSubmit}>
           <Form.Item hasFeedback>
-            {getFieldDecorator("email", {
-              initialValue: routeQueries.email ? routeQueries.email : "",
+            {getFieldDecorator('email', {
+              initialValue: routeQueries.email ? routeQueries.email : '',
               rules: [
-                { required: true, message: "Email field is required" },
-                { type: "email", message: "Not a a valid email address" }
+                { required: true, message: 'Email field is required' },
+                { type: 'email', message: 'Not a a valid email address' }
               ]
             })(
               <Input
                 prefix={
-                  <Icon type="user" style={{ color: "rgba(0,0,0,.25" }} />
+                  <Icon type='user' style={{ color: 'rgba(0,0,0,.25' }} />
                 }
-                placeholder="example@email.com"
+                placeholder='example@email.com'
               />
             )}
           </Form.Item>
           <Form.Item hasFeedback>
-            {getFieldDecorator("password", {
+            {getFieldDecorator('password', {
               rules: [
-                { required: true, message: "Password field is required" },
-                { min: 6, message: "Password must be at least 6 characters" }
+                { required: true, message: 'Password field is required' },
+                { min: 6, message: 'Password must be at least 6 characters' }
               ]
             })(
               <Input.Password
                 prefix={
-                  <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                  <Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />
                 }
-                placeholder="Password"
+                placeholder='Password'
               />
             )}
           </Form.Item>
 
           <Form.Item>
             {forgotPassword && (
-              <a href="/forgot-password" className={styles.forgotPassword}>
+              <a href='/forgot-password' className={styles.forgotPassword}>
                 Forgot your password?
               </a>
             )}
             <Button
-              htmlType="submit"
-              type="primary"
-              style={{ width: "100%" }}
+              htmlType='submit'
+              type='primary'
+              style={{ width: '100%' }}
               loading={loading}
             >
               Log in
@@ -112,4 +112,4 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
   );
 };
 
-export default Form.create({ name: "login" })(Login);
+export default Form.create({ name: 'login' })(Login);

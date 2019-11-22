@@ -1,32 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   useRegisterMutation,
   useResendVerificationLinkMutation,
   useMeLazyQuery
-} from "../../generated/graphql";
-import { setAccessToken } from "../../lib/accessToken";
-import { message, Button, Icon } from "antd";
-import Layout from "../../components/layouts/Layout";
-import ErrorLayout from "../../components/layouts/ErrorLayout";
-import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useLocation } from "react-router";
-import { queryStringify, queryParse } from "../../lib/queryParser";
+} from '../../generated/graphql';
+import { setAccessToken } from '../../lib/accessToken';
+import { message, Button, Icon } from 'antd';
+import Layout from '../../components/layouts/Layout';
+import ErrorLayout from '../../components/layouts/ErrorLayout';
+import { errorMessage } from '../../lib/messageHandler';
+import { useHistory, useLocation } from 'react-router';
+import { queryStringify, queryParse } from '../../lib/queryParser';
 
 const EmailVerificationSuccessPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const routeQueries = queryParse(location.search)
-  const [
-    register,
-    { error: registerError }
-  ] = useRegisterMutation({
+  const routeQueries = queryParse(location.search);
+  const [register, { error: registerError }] = useRegisterMutation({
     variables: {
       email: routeQueries.email,
       verificationLink: routeQueries.id
     },
     onCompleted: data => {
       setAccessToken(data.register.accessToken);
-      message.success(`Congratulations! Welcome to Taskr`, 2.5);
+      message.success('Congratulations! Welcome to Taskr', 2.5);
       getMe();
     },
     onError: () => {
@@ -35,18 +32,18 @@ const EmailVerificationSuccessPage: React.FC = () => {
           <span>
             The validation link you used has expired or is no longer valid.
           </span>
-          <Button type="link" onClick={resendVerificationEmail}>
+          <Button type='link' onClick={resendVerificationEmail}>
             Resend verification link
           </Button>
           <Icon
-            type="close-circle"
-            style={{ cursor: "pointer" }}
+            type='close-circle'
+            style={{ cursor: 'pointer' }}
             onClick={() => message.destroy()}
           />
         </span>,
         0
       );
-      history.push("/");
+      history.push('/');
     }
   });
   const [resendVerificationLink] = useResendVerificationLinkMutation({
@@ -55,7 +52,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
     },
     onCompleted: data => {
       history.push({
-        pathname: "/email-verification",
+        pathname: '/email-verification',
         search: queryStringify({
           email: routeQueries.email,
           id: data.resendVerificationLink
@@ -73,7 +70,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
 
   useEffect(() => {
     if (!routeQueries.id || !routeQueries.email) {
-      history.push("/");
+      history.push('/');
     }
 
     const fetchData = async () => {
