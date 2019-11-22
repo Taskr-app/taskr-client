@@ -340,12 +340,7 @@ describe("Pages", () => {
                 <Route path="/team/:teamId/:teamName" render={() => <TeamPage />} />
                 <Route path="/project/:projectId/:projectName" render={({ location }) => {
                   newRouterLocation = location.pathname;
-                  
-                  //TEST
-                  // console.log(location);
-                  // console.log('hi');
-
-                  return <ProjectPage />
+                  return <div />
                 }} />
               </Switch>
             </MemoryRouter>
@@ -362,7 +357,7 @@ describe("Pages", () => {
         })
         expect(getUserTeamQueryCalled).toBe(true);
         expect(wrapper.contains(<ProjectPage />))
-        expect(newRouterLocation).toEqual(`/project/abc/${mockQuery.projectName}`);
+        expect(newRouterLocation).toEqual(`/project/${HashFactory.encode(mockQuery.projectId)}/${mockQuery.projectName}`);
     });
     
 
