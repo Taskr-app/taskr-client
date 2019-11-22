@@ -123,7 +123,13 @@ const handleDeleteMember = (e:React.SyntheticEvent) => {
         <ul className={styles.projectList}>
           {data.getUserTeam.projects.map((project, idx) => (
             <li key={`team-project-${project.id}`}>
-              <Link className={styles.projectName} to={`/project/${encode(project.id)}/${project.name}`}>{project.name}</Link>
+              <div 
+                className={styles.projectName} 
+                id={`${project.id}`} 
+                onClick={() => {
+                  history.push(`/project/${encode(project.id)}/${project.name}`)
+                }}
+              >{project.name}</div>
               <Button onClick={handleDeleteProject} id={`${project.id}`}>Delete Project</Button>
             </li>
           ))}
