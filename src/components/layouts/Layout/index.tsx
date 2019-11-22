@@ -1,9 +1,9 @@
-import * as React from "react";
-import Helmet from 'react-helmet'
-import { Header } from "../../common/Header";
-import styles from "./Layout.module.scss";
-import classNames from "classnames";
-import { Layout as AntdLayout, Row, Col } from "antd";
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { Header } from '../../common/Header';
+import styles from './Layout.module.scss';
+import classNames from 'classnames';
+import { Layout as AntdLayout, Row, Col } from 'antd';
 
 type Props = {
   title?: string;
@@ -24,7 +24,7 @@ const Layout: React.FC<Props> = ({
   hide,
   dark,
   sider,
-  title = "Taskr"
+  title = 'Taskr'
 }) => {
   const layoutStyle = classNames(styles.layout, {
     [styles.dark]: dark
@@ -34,20 +34,20 @@ const Layout: React.FC<Props> = ({
     <AntdLayout className={layoutStyle}>
       <Helmet>
         <title>{title}</title>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       </Helmet>
       {!hide ? <Header dark={dark} /> : null}
 
       {sider ? (
         <div className={styles.layoutWithSider}>
-          <Row type="flex" style={{ height: "100%" }}>
+          <Row type='flex' style={{ height: '100%' }}>
             <Col span={5}>
               <div className={styles.sider}>{sider}</div>
             </Col>
 
             <Col span={16}>
-              <AntdLayout.Content style={{ paddingTop: "40px" }}>
+              <AntdLayout.Content style={{ paddingTop: '40px' }}>
                 {children}
               </AntdLayout.Content>
             </Col>

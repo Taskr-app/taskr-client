@@ -10,7 +10,9 @@
         "object-literal-sort-keys": 0,
         "no-console": 0,
         "no-implicit-dependencies": 0,
-        "interface-name": 0
+        "interface-name": 0,
+        "no-unused-vars": "error",
+        "quotes": ["error", "single"]
       }
     }
   ],
