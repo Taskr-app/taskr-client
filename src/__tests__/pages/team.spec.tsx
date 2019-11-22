@@ -1,21 +1,17 @@
 import React, { Component } from 'react';
-import { render, mount } from 'enzyme';
+import { render, mount, shallow } from 'enzyme';
 import TeamPage from '../../pages/team';
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter, Route, Switch, Redirect } from "react-router";
 import Hashids from "hashids/cjs";
 import * as HashFactory from "../../lib/hashids";
 import { MockedProvider, wait } from "@apollo/react-testing";
 import { GetUserTeamDocument, UpdateTeamDocument, DeleteTeamProjectDocument, DeleteTeamMemberDocument } from '../../generated/graphql';
-import { decode } from 'punycode';
 import { act } from "react-dom/test-utils";
+import { createMemoryHistory } from 'history'
+import ProjectPage from '../../pages/project';
 
 describe("Pages", () => {
   describe("Team", () => {
-    // const hashids = new Hashids("abc", 10);
-    // jest
-    //   .spyOn(HashFactory, "decode")
-    //   .mockImplementation((id: string) => hashids.decode(id).toString());
-
       jest.spyOn(HashFactory, "decode").mockImplementation((_id: string) => "1");
 
       const routerLocation = {
@@ -222,7 +218,7 @@ describe("Pages", () => {
           await wait(0);
   
           wrapper.update();
-          wrapper.find(`button#${mockQuery.projectId}`).simulate('click');
+          wrapper.find(`Button#${mockQuery.projectId}`).simulate('click');
           
           await wait(0);
         })
@@ -295,7 +291,7 @@ describe("Pages", () => {
           await wait(0);
   
           wrapper.update();
-          wrapper.find(`button#${mockQuery.memberId}`).simulate('click');
+          wrapper.find(`Button#${mockQuery.memberId}`).simulate('click');
           
           await wait(0);
         })
@@ -304,6 +300,71 @@ describe("Pages", () => {
 
     });
 
+    it("should change route when clicking a project", async() => {
+      jest.spyOn(HashFactory, "encode").mockImplementation((_id: string | number) => "abc");
+
+      let getUserTeamQueryCalled = false;
+
+      let newRouterLocation = "/team/teamId/teamName";
+
+      const getUserTeamQuery = {
+        request: {
+          query: GetUserTeamDocument,
+          variables: {id: mockQuery.id}
+        },
+        result: () => {
+          getUserTeamQueryCalled = true;
+            return {
+              data: {
+                getUserTeam: {
+                  id: mockQuery.id,
+                  name: mockQuery.name,
+                  members: [{
+                    id: mockQuery.memberId,
+                    username: mockQuery.memberName
+                  }],
+                  projects: [{
+                    id: mockQuery.projectId,
+                    name: mockQuery.projectName
+                  }]
+                } 
+              }
+            }
+          }
+        }
+
+        const wrapper = mount(
+          <MockedProvider mocks={[getUserTeamQuery]} addTypename={false}>
+            <MemoryRouter initialEntries={[newRouterLocation]}>
+              <Switch>
+                <Route path="/team/:teamId/:teamName" render={() => <TeamPage />} />
+                <Route path="/project/:projectId/:projectName" render={({ location }) => {
+                  newRouterLocation = location.pathname;
+                  
+                  //TEST
+                  // console.log(location);
+                  // console.log('hi');
+
+                  return <ProjectPage />
+                }} />
+              </Switch>
+            </MemoryRouter>
+          </MockedProvider>
+        )
+
+        await act(async() => {
+          await wait(0);
+          wrapper.update();
+  
+          wrapper.find(`div#${mockQuery.projectId}`).simulate('click');
+
+          await wait(0);
+        })
+        expect(getUserTeamQueryCalled).toBe(true);
+        expect(wrapper.contains(<ProjectPage />))
+        expect(newRouterLocation).toEqual(`/project/abc/${mockQuery.projectName}`);
+    });
+    
 
   });
 });
