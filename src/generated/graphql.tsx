@@ -11,7 +11,10 @@ export type Scalars = {
   Float: number,
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any,
+  /** String value that is a hex color code ie. #FFFFFF */
+  HexColor: any,
 };
+
 
 
 export type ImageResponse = {
@@ -25,6 +28,14 @@ export type ImageResponse = {
   url: Scalars['String'],
   secure_url: Scalars['String'],
   original_filename: Scalars['String'],
+};
+
+export type Label = {
+   __typename?: 'Label',
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  color: Scalars['HexColor'],
+  project: Project,
 };
 
 export type List = {
@@ -46,7 +57,6 @@ export type Mutation = {
    __typename?: 'Mutation',
   deleteTeam: Team,
   deleteList: List,
-  deleteProject: Project,
   sendVerificationLink: Scalars['String'],
   resendVerificationLink: Scalars['String'],
   register: LoginResponse,
@@ -62,6 +72,7 @@ export type Mutation = {
   revokeRefreshToken: Scalars['Boolean'],
   createProject: Project,
   updateProject: Scalars['Boolean'],
+  deleteProject: Scalars['Boolean'],
   sendProjectInviteLink: Scalars['String'],
   acceptProjectInviteLink: Scalars['Boolean'],
   acceptPublicProjectLink: Scalars['Boolean'],
@@ -77,6 +88,11 @@ export type Mutation = {
   createTask: Task,
   updateTask: Task,
   deleteTask: Scalars['Boolean'],
+  createLabel: Scalars['Boolean'],
+  assignLabel: Scalars['Boolean'],
+  updateLabel: Scalars['Boolean'],
+  removeTaskLabel: Scalars['Boolean'],
+  deleteLabel: Scalars['Boolean'],
 };
 
 
@@ -86,11 +102,6 @@ export type MutationDeleteTeamArgs = {
 
 
 export type MutationDeleteListArgs = {
-  id: Scalars['ID']
-};
-
-
-export type MutationDeleteProjectArgs = {
   id: Scalars['ID']
 };
 
@@ -174,6 +185,11 @@ export type MutationUpdateProjectArgs = {
   teamId?: Maybe<Scalars['ID']>,
   desc?: Maybe<Scalars['String']>,
   name?: Maybe<Scalars['String']>,
+  id: Scalars['ID']
+};
+
+
+export type MutationDeleteProjectArgs = {
   id: Scalars['ID']
 };
 
@@ -270,6 +286,37 @@ export type MutationDeleteTaskArgs = {
   taskId: Scalars['ID']
 };
 
+
+export type MutationCreateLabelArgs = {
+  color: Scalars['HexColor'],
+  name: Scalars['String'],
+  projectId: Scalars['ID']
+};
+
+
+export type MutationAssignLabelArgs = {
+  labelId: Scalars['ID'],
+  taskId: Scalars['ID']
+};
+
+
+export type MutationUpdateLabelArgs = {
+  id: Scalars['ID'],
+  name?: Maybe<Scalars['String']>,
+  color?: Maybe<Scalars['HexColor']>
+};
+
+
+export type MutationRemoveTaskLabelArgs = {
+  taskId: Scalars['ID'],
+  labelId: Scalars['ID']
+};
+
+
+export type MutationDeleteLabelArgs = {
+  id: Scalars['ID']
+};
+
 export type Project = {
    __typename?: 'Project',
   id: Scalars['Int'],
@@ -289,8 +336,6 @@ export type Query = {
   getTeam: Team,
   getAllLists: Array<List>,
   getList: List,
-  getAllProjects: Array<Project>,
-  getProject: Project,
   me: User,
   loginGoogleOAuth: Scalars['String'],
   getUserProject: Project,
@@ -301,6 +346,7 @@ export type Query = {
   getUserTeam: Team,
   getUserTeams: Array<Team>,
   getListTasks: Array<Task>,
+  getProjectLabels: Array<Label>,
 };
 
 
@@ -310,11 +356,6 @@ export type QueryGetTeamArgs = {
 
 
 export type QueryGetListArgs = {
-  id: Scalars['ID']
-};
-
-
-export type QueryGetProjectArgs = {
   id: Scalars['ID']
 };
 
@@ -353,6 +394,11 @@ export type QueryGetUserTeamArgs = {
 
 export type QueryGetListTasksArgs = {
   listId: Scalars['ID']
+};
+
+
+export type QueryGetProjectLabelsArgs = {
+  projectId: Scalars['ID']
 };
 
 export type Subscription = {
@@ -403,6 +449,7 @@ export type Task = {
   dueDate?: Maybe<Scalars['DateTime']>,
   pos: Scalars['Float'],
   list: List,
+  project: Project,
 };
 
 export type Team = {
@@ -412,6 +459,7 @@ export type Team = {
   created_at: Scalars['DateTime'],
   updated_at: Scalars['DateTime'],
   members: Array<User>,
+  owner: User,
   projects: Array<Project>,
 };
 
@@ -425,6 +473,7 @@ export type User = {
   created_at: Scalars['DateTime'],
   updated_at: Scalars['DateTime'],
   ownedProjects: Array<Project>,
+  ownedTeams: Array<Team>,
   projects: Array<Project>,
   teams: Array<Team>,
 };
