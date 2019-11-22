@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { setAccessToken } from "../../lib/accessToken";
-import { useAuth_GoogleOAuthMutation } from "../../generated/graphql";
-import { useHistory, useLocation } from "react-router";
-import { queryStringify, queryParse } from "../../lib/queryParser";
+import React, { useEffect } from 'react';
+import { setAccessToken } from '../../lib/accessToken';
+import { useAuth_GoogleOAuthMutation } from '../../generated/graphql';
+import { useHistory, useLocation } from 'react-router';
+import { queryStringify, queryParse } from '../../lib/queryParser';
 
 /**
  * @route "/google"
@@ -12,7 +12,7 @@ import { queryStringify, queryParse } from "../../lib/queryParser";
 const GooglePage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const routeQueries = queryParse(location.search)
+  const routeQueries = queryParse(location.search);
   const { code, state }: { code?: string; state?: string } = routeQueries;
   const [auth] = useAuth_GoogleOAuthMutation({
     onCompleted: data => {
@@ -31,7 +31,7 @@ const GooglePage: React.FC = () => {
       }
     }
   });
-  
+
   useEffect(() => {
     if (code) {
       const fetchGoogleUser = async () => {

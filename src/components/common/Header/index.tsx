@@ -1,13 +1,13 @@
-import React from "react";
-import { useMeQuery, useLogoutMutation } from "../../../generated/graphql";
-import classNames from "classnames";
-import { Layout, Row, Col, Dropdown, Menu, Icon } from "antd";
-import styles from "./Header.module.scss";
-import { ButtonLink } from "../Button";
-import AnonHeader from "./AnonHeader";
-import { setAccessToken } from "../../../lib/accessToken";
-import { useHistory } from "react-router";
-import { DefaultUserAvatar } from "../Avatar";
+import React from 'react';
+import { useMeQuery, useLogoutMutation } from '../../../generated/graphql';
+import classNames from 'classnames';
+import { Layout, Row, Col, Dropdown, Menu, Icon } from 'antd';
+import styles from './Header.module.scss';
+import { ButtonLink } from '../Button';
+import AnonHeader from './AnonHeader';
+import { setAccessToken } from '../../../lib/accessToken';
+import { useHistory } from 'react-router';
+import { DefaultUserAvatar } from '../Avatar';
 
 interface Props {
   dark?: number;
@@ -18,9 +18,9 @@ export const Header: React.FC<Props> = ({ dark }) => {
   const { data } = useMeQuery();
   const [logout, { client }] = useLogoutMutation({
     onCompleted: async () => {
-      setAccessToken("");
+      setAccessToken('');
       await client!.clearStore();
-      history.push("/login");
+      history.push('/login');
     }
   });
 
@@ -34,11 +34,11 @@ export const Header: React.FC<Props> = ({ dark }) => {
 
   const handleMenuClick = async ({ key }: { key: string }) => {
     switch (key) {
-      case "settings": {
-        history.push("/settings");
+      case 'settings': {
+        history.push('/settings');
         break;
       }
-      case "logout": {
+      case 'logout': {
         logout();
         break;
       }
@@ -54,15 +54,15 @@ export const Header: React.FC<Props> = ({ dark }) => {
         {data.me.username} ({data.me.email})
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key="settings">
+      <Menu.Item key='settings'>
         <span>
-          <Icon type="setting" />
+          <Icon type='setting' />
           <span>Settings</span>
         </span>
       </Menu.Item>
-      <Menu.Item key="logout">
+      <Menu.Item key='logout'>
         <span>
-          <Icon type="logout" />
+          <Icon type='logout' />
           <span>Log out</span>
         </span>
       </Menu.Item>
@@ -75,10 +75,10 @@ export const Header: React.FC<Props> = ({ dark }) => {
         <Col span={8}>
           <Row>
             <Col span={4}>
-              <ButtonLink path="/">
+              <ButtonLink path='/'>
                 <img
                   src={`${process.env.PUBLIC_URL}/logo/header.png`}
-                  alt="Home"
+                  alt='Home'
                   height={16}
                 />
               </ButtonLink>
@@ -86,9 +86,9 @@ export const Header: React.FC<Props> = ({ dark }) => {
           </Row>
         </Col>
         <Col span={16}>
-          <Row type="flex" justify="end">
+          <Row type='flex' justify='end'>
             <Col span={3}>
-              <Dropdown overlay={menu} placement="bottomRight">
+              <Dropdown overlay={menu} placement='bottomRight'>
                 <div className={styles.avatarContainer}>
                   <DefaultUserAvatar user={data.me} />
                 </div>

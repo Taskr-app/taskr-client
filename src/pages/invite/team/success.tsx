@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import Layout from "../../../components/layouts/Layout";
+import React, { useEffect } from 'react';
+import Layout from '../../../components/layouts/Layout';
 import {
   useMeQuery,
   useAcceptTeamInviteLinkMutation,
   useValidateLinkQuery
-} from "../../../generated/graphql";
-import AnonLayout from "../../../components/layouts/AnonLayout";
-import { errorMessage } from "../../../lib/messageHandler";
-import ErrorLayout from "../../../components/layouts/ErrorLayout";
-import { useHistory, useLocation } from "react-router";
-import { queryStringify, queryParse } from "../../../lib/queryParser";
+} from '../../../generated/graphql';
+import AnonLayout from '../../../components/layouts/AnonLayout';
+import { errorMessage } from '../../../lib/messageHandler';
+import ErrorLayout from '../../../components/layouts/ErrorLayout';
+import { useHistory, useLocation } from 'react-router';
+import { queryStringify, queryParse } from '../../../lib/queryParser';
 
 /**
  * @route '/invite/team/success
@@ -19,7 +19,7 @@ import { queryStringify, queryParse } from "../../../lib/queryParser";
 const TeamInviteSuccessPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const routeQueries = queryParse(location.search)
+  const routeQueries = queryParse(location.search);
   const { data, loading } = useMeQuery();
   const { data: validated, loading: validateLoading } = useValidateLinkQuery({
     variables: {
@@ -36,14 +36,14 @@ const TeamInviteSuccessPage: React.FC = () => {
       teamInviteLink: routeQueries.id
     },
     onCompleted: () => {
-      history.push({ pathname: "/" });
+      history.push({ pathname: '/' });
     },
     onError: err => errorMessage(err)
   });
 
   useEffect(() => {
     if (!routeQueries.id || !routeQueries.email) {
-      history.push("/");
+      history.push('/');
       return;
     }
     if (data && validated) {
@@ -52,17 +52,14 @@ const TeamInviteSuccessPage: React.FC = () => {
       };
       fetchData();
     }
-  }, [
-    data,
-    validated,
-  ]);
+  }, [data, validated]);
 
   const handleSignup = () => {
     history.push({
-      pathname: "/register",
+      pathname: '/register',
       search: queryStringify({
-        returnUrl: "/invite/team/success",
-        registerKey: "team-invite",
+        returnUrl: '/invite/team/success',
+        registerKey: 'team-invite',
         ...routeQueries
       })
     });
@@ -70,10 +67,10 @@ const TeamInviteSuccessPage: React.FC = () => {
 
   const handleLogin = () => {
     history.push({
-      pathname: "/login",
+      pathname: '/login',
       search: queryStringify({
-        returnUrl: "/invite/team/success",
-        registerKey: "team-invite",
+        returnUrl: '/invite/team/success',
+        registerKey: 'team-invite',
         ...routeQueries
       })
     });
@@ -81,7 +78,7 @@ const TeamInviteSuccessPage: React.FC = () => {
 
   if (!validated && !validateLoading) {
     return (
-      <ErrorLayout message={"This link has expired or has already been used"} />
+      <ErrorLayout message={'This link has expired or has already been used'} />
     );
   }
 

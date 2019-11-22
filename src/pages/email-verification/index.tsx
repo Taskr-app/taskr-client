@@ -1,31 +1,31 @@
-import React, { useEffect } from "react";
-import Layout from "../../components/layouts/Layout";
-import { SubText } from "../../components/common/Text";
-import { Button, message, PageHeader, Empty } from "antd";
-import { useResendVerificationLinkMutation } from "../../generated/graphql";
-import { errorMessage } from "../../lib/messageHandler";
-import { useHistory, useLocation } from "react-router";
-import { queryStringify, queryParse } from "../../lib/queryParser";
+import React, { useEffect } from 'react';
+import Layout from '../../components/layouts/Layout';
+import { SubText } from '../../components/common/Text';
+import { Button, message, PageHeader, Empty } from 'antd';
+import { useResendVerificationLinkMutation } from '../../generated/graphql';
+import { errorMessage } from '../../lib/messageHandler';
+import { useHistory, useLocation } from 'react-router';
+import { queryStringify, queryParse } from '../../lib/queryParser';
 
 const EmailVerificationPage = () => {
   const history = useHistory();
   const location = useLocation();
-  const routeQueries = queryParse(location.search)
+  const routeQueries = queryParse(location.search);
   const [resendVerificationLink] = useResendVerificationLinkMutation({
     variables: {
       email: routeQueries.email
     },
-    onCompleted: (data) => {
+    onCompleted: data => {
       history.push({
-        pathname: "/email-verification",
+        pathname: '/email-verification',
         search: queryStringify({
           email: routeQueries.email,
           id: data.resendVerificationLink
         })
-      })
-      message.success('Email verification sent')
+      });
+      message.success('Email verification sent');
     },
-    onError: (err) => errorMessage(err)
+    onError: err => errorMessage(err)
   });
 
   const resendVerificationEmail = async () => {
@@ -34,7 +34,7 @@ const EmailVerificationPage = () => {
 
   useEffect(() => {
     if (!routeQueries.id || !routeQueries.email) {
-      history.push("/");
+      history.push('/');
     }
   }, []);
 
@@ -42,7 +42,7 @@ const EmailVerificationPage = () => {
 
   return (
     <Layout hide={1}>
-      <PageHeader title="Thanks for signing up to Taskr" onBack={goBack}>
+      <PageHeader title='Thanks for signing up to Taskr' onBack={goBack}>
         <SubText>
           Click on the verification link from your email to confirm your
           verification.
@@ -56,7 +56,7 @@ const EmailVerificationPage = () => {
       <Empty
         image={`${process.env.PUBLIC_URL}/email/4x/mobile-chat@4x.png`}
         imageStyle={{
-          marginTop: "60px"
+          marginTop: '60px'
         }}
         description={
           <span>
@@ -65,7 +65,9 @@ const EmailVerificationPage = () => {
           </span>
         }
       >
-        <Button type="link" onClick={resendVerificationEmail}>Resend verification link</Button>
+        <Button type='link' onClick={resendVerificationEmail}>
+          Resend verification link
+        </Button>
       </Empty>
     </Layout>
   );

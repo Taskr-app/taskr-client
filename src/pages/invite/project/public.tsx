@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import Layout from "../../../components/layouts/Layout";
+import React, { useEffect } from 'react';
+import Layout from '../../../components/layouts/Layout';
 import {
   useMeQuery,
   useAcceptPublicProjectLinkMutation,
   useValidatePublicProjectLinkQuery
-} from "../../../generated/graphql";
-import AnonLayout from "../../../components/layouts/AnonLayout";
-import { errorMessage } from "../../../lib/messageHandler";
-import ErrorLayout from "../../../components/layouts/ErrorLayout";
-import { useHistory, useLocation } from "react-router";
-import { queryStringify, queryParse } from "../../../lib/queryParser";
+} from '../../../generated/graphql';
+import AnonLayout from '../../../components/layouts/AnonLayout';
+import { errorMessage } from '../../../lib/messageHandler';
+import ErrorLayout from '../../../components/layouts/ErrorLayout';
+import { useHistory, useLocation } from 'react-router';
+import { queryStringify, queryParse } from '../../../lib/queryParser';
 
 const ProjectInvitePublicPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const routeQueries = queryParse(location.search)
+  const routeQueries = queryParse(location.search);
   const { data, loading } = useMeQuery();
   const {
     data: validated,
@@ -33,13 +33,13 @@ const ProjectInvitePublicPage: React.FC = () => {
       link: routeQueries.id,
       projectId: routeQueries.project
     },
-    onCompleted: () => history.push({ pathname: "/" }),
+    onCompleted: () => history.push({ pathname: '/' }),
     onError: err => errorMessage(err)
   });
 
   useEffect(() => {
     if (!routeQueries.project || !routeQueries.id) {
-      history.push("/");
+      history.push('/');
     }
     if (data && validated) {
       const fetchData = async () => {
@@ -47,22 +47,19 @@ const ProjectInvitePublicPage: React.FC = () => {
       };
       fetchData();
     }
-  }, [
-    data,
-    validated
-  ]);
+  }, [data, validated]);
 
   const handleSignup = () => {
     history.push({
-      pathname: "/register"
+      pathname: '/register'
     });
   };
 
   const handleLogin = () => {
     history.push({
-      pathname: "/login",
+      pathname: '/login',
       search: queryStringify({
-        returnUrl: "/invite/project/public",
+        returnUrl: '/invite/project/public',
         ...routeQueries
       })
     });
@@ -70,7 +67,7 @@ const ProjectInvitePublicPage: React.FC = () => {
 
   if (!validated && !validateLoading) {
     return (
-      <ErrorLayout message={"This link has expired, ask for a new one :D"} />
+      <ErrorLayout message={'This link has expired, ask for a new one :D'} />
     );
   }
 

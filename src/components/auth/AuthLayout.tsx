@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './Auth.module.scss';
 import { HeaderText, SubText, LinkText } from '../common/Text';
 import { useLocation } from 'react-router';
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 
 interface Props {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ const AuthLayout: React.FC<Props> = ({ children }) => {
   const authText: { [index: string]: any } = {
     '/login': {
       greeting: 'Log in to Taskr',
-      alt: "Don't have an account?",
+      alt: 'Don\'t have an account?',
       altLink: 'Sign up',
       altHref: '/register'
     },
@@ -26,13 +26,13 @@ const AuthLayout: React.FC<Props> = ({ children }) => {
     },
     '/forgot-password': {
       greeting: 'Forgot password',
-      alt: "Go back to",
+      alt: 'Go back to',
       altLink: 'Log in',
       altHref: '/login'
     },
     '/forgot-password/success': {
       greeting: 'Reset password',
-      alt: "Go back to",
+      alt: 'Go back to',
       altLink: 'Log in',
       altHref: '/login'
     }

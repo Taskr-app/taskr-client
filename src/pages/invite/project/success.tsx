@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import Layout from "../../../components/layouts/Layout";
+import React, { useEffect } from 'react';
+import Layout from '../../../components/layouts/Layout';
 import {
   useMeQuery,
   useAcceptProjectInviteLinkMutation,
   useValidateLinkQuery
-} from "../../../generated/graphql";
-import AnonLayout from "../../../components/layouts/AnonLayout";
-import ErrorLayout from "../../../components/layouts/ErrorLayout";
-import { errorMessage } from "../../../lib/messageHandler";
-import { useHistory, useLocation } from "react-router";
-import { queryStringify, queryParse } from "../../../lib/queryParser";
+} from '../../../generated/graphql';
+import AnonLayout from '../../../components/layouts/AnonLayout';
+import ErrorLayout from '../../../components/layouts/ErrorLayout';
+import { errorMessage } from '../../../lib/messageHandler';
+import { useHistory, useLocation } from 'react-router';
+import { queryStringify, queryParse } from '../../../lib/queryParser';
 
 const ProjectInviteSuccessPage: React.FC = () => {
   const history = useHistory();
-  const location = useLocation()
-  const routeQueries = queryParse(location.search)
+  const location = useLocation();
+  const routeQueries = queryParse(location.search);
   const { data, loading } = useMeQuery();
   const { data: validated, loading: validateLoading } = useValidateLinkQuery({
     variables: {
@@ -22,7 +22,7 @@ const ProjectInviteSuccessPage: React.FC = () => {
       link: routeQueries.id
     },
     onError: err => {
-      errorMessage(err)
+      errorMessage(err);
     }
   });
   const [acceptProjectInviteLink] = useAcceptProjectInviteLinkMutation({
@@ -30,13 +30,13 @@ const ProjectInviteSuccessPage: React.FC = () => {
       email: routeQueries.email,
       projectInviteLink: routeQueries.id
     },
-    onCompleted: () => history.push({ pathname: "/" }),
-    onError: (err) => errorMessage(err)
+    onCompleted: () => history.push({ pathname: '/' }),
+    onError: err => errorMessage(err)
   });
 
   useEffect(() => {
     if (!routeQueries.id || !routeQueries.email) {
-      history.push("/");
+      history.push('/');
     }
 
     if (data && validated) {
@@ -49,10 +49,10 @@ const ProjectInviteSuccessPage: React.FC = () => {
 
   const handleSignup = () => {
     history.push({
-      pathname: "/register",
+      pathname: '/register',
       search: queryStringify({
-        returnUrl: "/invite/project/success",
-        registerKey: "project-invite",
+        returnUrl: '/invite/project/success',
+        registerKey: 'project-invite',
         ...routeQueries
       })
     });
@@ -60,10 +60,10 @@ const ProjectInviteSuccessPage: React.FC = () => {
 
   const handleLogin = () => {
     history.push({
-      pathname: "/login",
+      pathname: '/login',
       search: queryStringify({
-        returnUrl: "/invite/project/success",
-        registerKey: "project-invite",
+        returnUrl: '/invite/project/success',
+        registerKey: 'project-invite',
         ...routeQueries
       })
     });
@@ -71,7 +71,7 @@ const ProjectInviteSuccessPage: React.FC = () => {
 
   if (!validated && !validateLoading) {
     return (
-      <ErrorLayout message={"This link has expired or has already been used"} />
+      <ErrorLayout message={'This link has expired or has already been used'} />
     );
   }
   if (!loading && !data) {
