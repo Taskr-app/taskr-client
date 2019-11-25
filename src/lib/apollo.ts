@@ -79,7 +79,16 @@ const webSocketURI = process.env.REACT_APP_GRAPHQL_URL!.replace(
 const wsLink = new WebSocketLink({
   uri: webSocketURI,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: () => {
+      const token = getAccessToken();
+      return {
+        headers: {
+          ...Headers,
+          authorization: token ? `bearer ${token}` : ''
+        }
+      }
+    }
   }
 });
 

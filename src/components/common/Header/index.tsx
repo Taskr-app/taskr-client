@@ -8,6 +8,8 @@ import AnonHeader from './AnonHeader';
 import { setAccessToken } from '../../../lib/accessToken';
 import { useHistory } from 'react-router';
 import { DefaultUserAvatar } from '../Avatar';
+import NotificationsIcon from './NotificationsIcon';
+import CreateIcon from './CreateIcon';
 
 interface Props {
   dark?: number;
@@ -87,7 +89,13 @@ export const Header: React.FC<Props> = ({ dark }) => {
         </Col>
         <Col span={16}>
           <Row type='flex' justify='end'>
-            <Col span={3}>
+            <Col span={2}>
+              <CreateIcon />
+            </Col>
+            <Col span={2}>
+              {data.me && <NotificationsIcon user={data.me} />}
+            </Col>
+            <Col span={2}>
               <Dropdown overlay={menu} placement='bottomRight'>
                 <div className={styles.avatarContainer}>
                   <DefaultUserAvatar user={data.me} />
