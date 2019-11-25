@@ -79,6 +79,8 @@ export type Mutation = {
   createList: List,
   updateListName: Scalars['Boolean'],
   updateListPos: Scalars['Boolean'],
+  createNotification: Scalars['Boolean'],
+  deleteNotification: Scalars['Boolean'],
   createTeam: Team,
   sendTeamInviteLink: Scalars['String'],
   acceptTeamInviteLink: Scalars['Boolean'],
@@ -231,6 +233,16 @@ export type MutationUpdateListPosArgs = {
 };
 
 
+export type MutationCreateNotificationArgs = {
+  userId: Scalars['ID']
+};
+
+
+export type MutationDeleteNotificationArgs = {
+  id: Scalars['ID']
+};
+
+
 export type MutationCreateTeamArgs = {
   name: Scalars['String']
 };
@@ -317,6 +329,15 @@ export type MutationDeleteLabelArgs = {
   id: Scalars['ID']
 };
 
+export type Notifications = {
+   __typename?: 'Notifications',
+  id: Scalars['ID'],
+  date: Scalars['DateTime'],
+  userId: Scalars['ID'],
+  type: Scalars['String'],
+  read: Scalars['Boolean'],
+};
+
 export type Project = {
    __typename?: 'Project',
   id: Scalars['Int'],
@@ -343,6 +364,8 @@ export type Query = {
   getPublicProjectLink: Scalars['String'],
   validateLink: Scalars['Boolean'],
   validatePublicProjectLink: Scalars['Boolean'],
+  getNotifications: Array<Notifications>,
+  getNotification: Notifications,
   getUserTeam: Team,
   getUserTeams: Array<Team>,
   getListTasks: Array<Task>,
@@ -387,6 +410,11 @@ export type QueryValidatePublicProjectLinkArgs = {
 };
 
 
+export type QueryGetNotificationArgs = {
+  id: Scalars['ID']
+};
+
+
 export type QueryGetUserTeamArgs = {
   id: Scalars['ID']
 };
@@ -406,6 +434,7 @@ export type Subscription = {
   onListCreated: List,
   onListDeleted: List,
   onListUpdated: List,
+  newNotification: Notifications,
   newTask: Task,
   updatedTask: Task,
   deletedTask: Task,
@@ -424,6 +453,11 @@ export type SubscriptionOnListDeletedArgs = {
 
 export type SubscriptionOnListUpdatedArgs = {
   projectId: Scalars['ID']
+};
+
+
+export type SubscriptionNewNotificationArgs = {
+  userId: Scalars['ID']
 };
 
 
@@ -562,6 +596,30 @@ export type UpdateListNameMutationVariables = {
 export type UpdateListNameMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'updateListName'>
+);
+
+export type GetNotificationsQueryVariables = {};
+
+
+export type GetNotificationsQuery = (
+  { __typename?: 'Query' }
+  & { getNotifications: Array<(
+    { __typename?: 'Notifications' }
+    & Pick<Notifications, 'id' | 'userId' | 'type' | 'read'>
+  )> }
+);
+
+export type NewNotificationSubscriptionVariables = {
+  userId: Scalars['ID']
+};
+
+
+export type NewNotificationSubscription = (
+  { __typename?: 'Subscription' }
+  & { newNotification: (
+    { __typename?: 'Notifications' }
+    & Pick<Notifications, 'id' | 'date' | 'userId' | 'type' | 'read'>
+  ) }
 );
 
 export type AcceptProjectInviteLinkMutationVariables = {
@@ -1008,6 +1066,43 @@ export type UpdateListNameMutationFn = ApolloReactCommon.MutationFunction<Update
 export type UpdateListNameMutationHookResult = ReturnType<typeof useUpdateListNameMutation>;
 export type UpdateListNameMutationResult = ApolloReactCommon.MutationResult<UpdateListNameMutation>;
 export type UpdateListNameMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateListNameMutation, UpdateListNameMutationVariables>;
+export const GetNotificationsDocument = gql`
+    query GetNotifications {
+  getNotifications {
+    id
+    userId
+    type
+    read
+  }
+}
+    `;
+
+    export function useGetNotificationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+      return ApolloReactHooks.useQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, baseOptions);
+    }
+      export function useGetNotificationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+        return ApolloReactHooks.useLazyQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, baseOptions);
+      }
+      
+export type GetNotificationsQueryHookResult = ReturnType<typeof useGetNotificationsQuery>;
+export type GetNotificationsQueryResult = ApolloReactCommon.QueryResult<GetNotificationsQuery, GetNotificationsQueryVariables>;
+export const NewNotificationDocument = gql`
+    subscription NewNotification($userId: ID!) {
+  newNotification(userId: $userId) {
+    id
+    date
+    userId
+    type
+    read
+  }
+}
+    `;
+
+    export function useNewNotificationSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewNotificationSubscription, NewNotificationSubscriptionVariables>) {
+      return ApolloReactHooks.useSubscription<NewNotificationSubscription, NewNotificationSubscriptionVariables>(NewNotificationDocument, baseOptions);
+    }
+export type NewNotificationSubscriptionHookResult = ReturnType<typeof useNewNotificationSubscription>;
+export type NewNotificationSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNotificationSubscription>;
 export const AcceptProjectInviteLinkDocument = gql`
     mutation AcceptProjectInviteLink($email: String!, $projectInviteLink: String!) {
   acceptProjectInviteLink(email: $email, projectInviteLink: $projectInviteLink)
