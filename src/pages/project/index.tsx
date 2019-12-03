@@ -14,6 +14,7 @@ import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ListsContainer from './ListsContainer';
+import InviteMemberModal from '../../components/modals/InviteMemberModal';
 
 interface RouteParams {
   projectId: string;
@@ -31,6 +32,8 @@ const ProjectPage: React.FC = () => {
   const { showModal } = useModal();
   const showCreateListModal = () =>
     showModal(<CreateListModal projectId={projectId} />);
+  const showInviteMemberModal = () =>
+    showModal(<InviteMemberModal projectId={projectId} />);
 
   const {
     data,
@@ -163,6 +166,7 @@ const ProjectPage: React.FC = () => {
       <ProjectLayout
         title={params.projectName}
         createListModal={showCreateListModal}
+        inviteMemberModal={showInviteMemberModal}
       >
         {data && (
           <Droppable droppableId={projectId.toString()} direction="horizontal">
@@ -170,7 +174,6 @@ const ProjectPage: React.FC = () => {
               return (
                 <ListsContainer
                   provided={provided}
-                  // lists={data.getUserProject.lists}
                   lists={renderLists}
                   style={getBoardStyle(snapshot.isDraggingOver)}
                 />
