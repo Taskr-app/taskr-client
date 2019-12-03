@@ -7,12 +7,14 @@ interface Props {
   children: React.ReactNode;
   title: string;
   createListModal: () => void;
+  inviteMemberModal: () => void;
 }
 
 const ProjectLayout: React.FC<Props> = ({
   children,
   title,
-  createListModal
+  createListModal,
+  inviteMemberModal
 }) => {
   return (
     <Layout>
@@ -20,6 +22,7 @@ const ProjectLayout: React.FC<Props> = ({
         <div className={styles.header}>
           <h1>{title}</h1>
           <Button onClick={createListModal}>Create List</Button>
+          <Button onClick={inviteMemberModal}>Invite</Button>
         </div>
         <div className={styles.content}>{children}</div>
       </div>
