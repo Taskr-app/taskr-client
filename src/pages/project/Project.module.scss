@@ -1,9 +1,4 @@
 .listsContainer {
-  display: flex;
-  flex-direction: row;
-  background-color: blue;
-}
-
-.listContainer {
-  background-color: green;
+  min-width: 100vw;
+  overflow-x: auto;
 }

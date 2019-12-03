@@ -32,18 +32,6 @@ export const ModalProvider: React.FC = ({ children }) => {
   };
 
   const mountModal = () => {
-    // switch (modalKey) {
-    //   case 'createTeam':
-    //     return <CreateTeamModal />;
-    //   case 'createProject':
-    //     return <CreateProjectModal />;
-    //   case 'createList':
-    //     return <CreateListModal />;
-    //   case 'deleteList':
-    //     return <DeleteListModal />;
-    //   default:
-    //     return null;
-    // }
     return modal;
   };
 

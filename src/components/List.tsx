@@ -21,7 +21,7 @@ const List: React.FC<Props> = ({ id, name }) => {
   return (
     <Card
       title={<ListTitleForm defaultTitle={name} id={id} />}
-      style={{ minWidth: 300 }}
+      style={{ minWidth: 300, margin: 4 }}
       key={id}
       extra={<LinkText onClick={handleClick}>...</LinkText>}
     >

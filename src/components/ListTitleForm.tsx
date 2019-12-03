@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Form, Input } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { useUpdateListNameMutation } from '../generated/graphql';
+import styles from './ListTitleForm.module.scss';
 
 interface Props extends FormComponentProps {
   defaultTitle: string;
@@ -20,15 +21,18 @@ const ListTitleForm: React.FC<Props> = ({ defaultTitle, form, id }) => {
     <Form>
       <Form.Item>
         {getFieldDecorator('name', {
-          rules: [{ required: true, message: 'List name is required' }]
-        })}
-        <Input
-          onBlur={() => updateListName()}
-          value={title}
-          ref={inputRef}
-          onChange={e => setTitle(e.target.value)}
-          onPressEnter={() => inputRef.current!.blur()}
-        />
+          rules: [{ required: true, message: 'List name is required' }],
+          initialValue: title
+        })(
+          <Input
+            onBlur={() => updateListName()}
+            ref={inputRef}
+            onChange={e => setTitle(e.target.value)}
+            onPressEnter={() => inputRef.current!.blur()}
+            style={{ border: 'none' }}
+            className={styles.input}
+          />
+        )}
       </Form.Item>
     </Form>
   );

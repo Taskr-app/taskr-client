@@ -1,22 +1,22 @@
-import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { ModalProvider } from "./components/modals";
-import AuthProvider from "./components/auth/AuthProvider";
-import Home from "./pages/home";
-import Login from "./pages/login";
-import Register from "./pages/register";
-import ForgotPassword from "./pages/forgot-password";
-import ForgotPasswordSuccess from "./pages/forgot-password/success";
-import ProjectInvitePublic from "./pages/invite/project/public";
-import ProjectInviteSuccess from "./pages/invite/project/success";
-import TeamInviteSuccess from "./pages/invite/team/success";
-import Dashboard from "./pages/dashboard";
-import Settings from "./pages/settings";
-import EmailVerificationPage from "./pages/email-verification";
-import EmailVerificationSuccessPage from "./pages/email-verification/success";
-import TeamPage from "./pages/team";
-import GoogleOAuth from "./pages/google";
-import ProjectPage from "./pages/project";
+import React from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { ModalProvider } from './components/modals';
+import AuthProvider from './components/auth/AuthProvider';
+import Home from './pages/home';
+import Login from './pages/login';
+import Register from './pages/register';
+import ForgotPassword from './pages/forgot-password';
+import ForgotPasswordSuccess from './pages/forgot-password/success';
+import ProjectInvitePublic from './pages/invite/project/public';
+import ProjectInviteSuccess from './pages/invite/project/success';
+import TeamInviteSuccess from './pages/invite/team/success';
+import Dashboard from './pages/dashboard';
+import Settings from './pages/settings';
+import EmailVerificationPage from './pages/email-verification';
+import EmailVerificationSuccessPage from './pages/email-verification/success';
+import TeamPage from './pages/team';
+import GoogleOAuth from './pages/google';
+import ProjectPage from './pages/project';
 
 const Routes: React.FC = () => {
   return (
