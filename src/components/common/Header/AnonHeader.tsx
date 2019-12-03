@@ -1,9 +1,9 @@
-import React from "react";
-import { Layout, Row, Col, Button } from "antd";
-import { NavLink, useLocation } from "react-router-dom";
-import classNames from "classnames";
+import React from 'react';
+import { Layout, Row, Col, Button } from 'antd';
+import { NavLink, useLocation } from 'react-router-dom';
+import classNames from 'classnames';
 
-import styles from "./Header.module.scss";
+import styles from './Header.module.scss';
 
 interface Props {
   dark?: number;
@@ -20,11 +20,11 @@ const AnonHeader: React.FC<Props> = ({ dark }) => {
         <Col span={8}>
           <Row>
             <Col span={4}>
-              <NavLink to="/home">
-                <Button type="link" ghost={dark ? true : false}>
+              <NavLink to='/home'>
+                <Button type='link' ghost={dark ? true : false}>
                   <img
                     src={`${process.env.PUBLIC_URL}/logo/header-white.png`}
-                    alt="Home"
+                    alt='Home'
                     height={16}
                   />
                 </Button>
@@ -33,13 +33,13 @@ const AnonHeader: React.FC<Props> = ({ dark }) => {
           </Row>
         </Col>
         <Col span={16}>
-          <Row type="flex" justify="end">
+          <Row type='flex' justify='end'>
             <Col span={3}>
               <NavLink
                 // to={{ pathname: "/login", query: { ...router.query } }}
-                to={{ pathname: "/login", search: location.search }}
+                to={{ pathname: '/login', search: location.search }}
               >
-                <Button type="link" ghost={dark ? true : false}>
+                <Button type='link' ghost={dark ? true : false}>
                   Login
                 </Button>
               </NavLink>
@@ -48,11 +48,11 @@ const AnonHeader: React.FC<Props> = ({ dark }) => {
               <NavLink
                 // href={{ pathname: "/register", query: { ...router.query } }}
                 to={{
-                  pathname: "/register",
+                  pathname: '/register',
                   search: location.search
                 }}
               >
-                <Button type="link" ghost={dark ? true : false}>
+                <Button type='link' ghost={dark ? true : false}>
                   Signup
                 </Button>
               </NavLink>

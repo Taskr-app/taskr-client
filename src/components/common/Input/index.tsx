@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Input, Icon, Button } from "antd";
+import React, { useState, useRef, useEffect } from 'react';
+import { Input, Icon, Button } from 'antd';
 
-import styles from "./Input.module.scss";
+import styles from './Input.module.scss';
 
 interface EditButtonProps {
   defaultValue: string;
@@ -36,17 +36,17 @@ export const EditButton: React.FC<EditButtonProps> = ({
   };
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-    onChange(e)
+    onChange(e);
   };
 
   const handleBlur = (e: React.FormEvent<HTMLInputElement>) => {
     handleInput(false);
-    clearValue(e)
+    clearValue(e);
   };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
-    submit()
-  }
+    submit();
+  };
 
   return (
     <div className={styles.editButton}>
@@ -61,13 +61,13 @@ export const EditButton: React.FC<EditButtonProps> = ({
         onChange={handleChange}
         ref={inputRef}
         onPressEnter={handleSubmit}
-        addonAfter={<Icon type="edit" onClick={handleEdit} />}
+        addonAfter={<Icon type='edit' onClick={handleEdit} />}
         onBlur={handleBlur}
         {...props}
       />
 
       {inputEnabled && (
-        <Button type="primary" onMouseDown={handleSubmit}>
+        <Button type='primary' onMouseDown={handleSubmit}>
           Save
         </Button>
       )}

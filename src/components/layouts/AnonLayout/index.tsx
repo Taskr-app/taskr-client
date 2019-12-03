@@ -1,8 +1,8 @@
-import React from "react";
-import styles from "./AnonLayout.module.scss";
-import { Button } from "antd";
-import { HeaderText, SubText } from "../../common/Text";
-import Layout from "../Layout";
+import React from 'react';
+import styles from './AnonLayout.module.scss';
+import { Button } from 'antd';
+import { HeaderText, SubText } from '../../common/Text';
+import Layout from '../Layout';
 
 interface Props {
   handleSignup: () => void;
@@ -21,11 +21,11 @@ const AnonLayout: React.FC<Props> = ({ handleSignup, handleLogin }) => {
         </SubText>
 
         <div className={styles.buttonContainer}>
-          <Button type="primary" onClick={handleSignup} size="large">
+          <Button type='primary' onClick={handleSignup} size='large'>
             Sign up
           </Button>
 
-          <Button onClick={handleLogin} size="large">
+          <Button onClick={handleLogin} size='large'>
             Log in
           </Button>
         </div>

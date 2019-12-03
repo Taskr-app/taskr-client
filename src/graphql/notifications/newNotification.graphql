@@ -1,0 +1,9 @@
+subscription NewNotification($userId: ID!) {
+  newNotification(userId: $userId) {
+    id
+    date
+    userId
+    type
+    read
+  }
+}

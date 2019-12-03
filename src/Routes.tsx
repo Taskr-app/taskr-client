@@ -15,7 +15,7 @@ import Settings from './pages/settings';
 import EmailVerificationPage from './pages/email-verification';
 import EmailVerificationSuccessPage from './pages/email-verification/success';
 import TeamPage from './pages/team';
-import GoogleOAuth from './pages/google';
+import GooglePage from './pages/google';
 import ProjectPage from './pages/project';
 
 const Routes: React.FC = () => {
@@ -28,7 +28,7 @@ const Routes: React.FC = () => {
             <Route exact path="/home" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
-            <Route exact path="/google" component={GoogleOAuth} />
+            <Route exact path="/google" component={GooglePage} />
 
             <Route
               exact

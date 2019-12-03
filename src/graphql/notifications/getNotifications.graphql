@@ -1,0 +1,8 @@
+query GetNotifications {
+  getNotifications {
+    id
+    userId
+    type
+    read
+  }
+}

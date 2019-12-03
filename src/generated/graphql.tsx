@@ -11,7 +11,10 @@ export type Scalars = {
   Float: number,
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any,
+  /** String value that is a hex color code ie. #FFFFFF */
+  HexColor: any,
 };
+
 
 
 export type ImageResponse = {
@@ -25,6 +28,14 @@ export type ImageResponse = {
   url: Scalars['String'],
   secure_url: Scalars['String'],
   original_filename: Scalars['String'],
+};
+
+export type Label = {
+   __typename?: 'Label',
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  color: Scalars['HexColor'],
+  project: Project,
 };
 
 export type List = {
@@ -77,6 +88,15 @@ export type Mutation = {
   createTask: Task,
   updateTask: Task,
   deleteTask: Scalars['Boolean'],
+  addTaskMember: Scalars['Boolean'],
+  removeTaskMember: Scalars['Boolean'],
+  createLabel: Scalars['Boolean'],
+  assignLabel: Scalars['Boolean'],
+  updateLabel: Scalars['Boolean'],
+  removeTaskLabel: Scalars['Boolean'],
+  deleteLabel: Scalars['Boolean'],
+  createNotification: Scalars['Boolean'],
+  deleteNotification: Scalars['Boolean'],
 };
 
 
@@ -262,12 +282,74 @@ export type MutationUpdateTaskArgs = {
   desc?: Maybe<Scalars['String']>,
   name?: Maybe<Scalars['String']>,
   listId?: Maybe<Scalars['ID']>,
-  taskId: Scalars['ID']
+  id: Scalars['ID']
 };
 
 
 export type MutationDeleteTaskArgs = {
   taskId: Scalars['ID']
+};
+
+
+export type MutationAddTaskMemberArgs = {
+  userId: Scalars['ID'],
+  id: Scalars['ID']
+};
+
+
+export type MutationRemoveTaskMemberArgs = {
+  userId: Scalars['ID'],
+  id: Scalars['ID']
+};
+
+
+export type MutationCreateLabelArgs = {
+  color: Scalars['HexColor'],
+  name: Scalars['String'],
+  projectId: Scalars['ID']
+};
+
+
+export type MutationAssignLabelArgs = {
+  labelId: Scalars['ID'],
+  taskId: Scalars['ID']
+};
+
+
+export type MutationUpdateLabelArgs = {
+  id: Scalars['ID'],
+  name?: Maybe<Scalars['String']>,
+  color?: Maybe<Scalars['HexColor']>
+};
+
+
+export type MutationRemoveTaskLabelArgs = {
+  taskId: Scalars['ID'],
+  labelId: Scalars['ID']
+};
+
+
+export type MutationDeleteLabelArgs = {
+  id: Scalars['ID']
+};
+
+
+export type MutationCreateNotificationArgs = {
+  userId: Scalars['ID']
+};
+
+
+export type MutationDeleteNotificationArgs = {
+  id: Scalars['ID']
+};
+
+export type Notifications = {
+   __typename?: 'Notifications',
+  id: Scalars['ID'],
+  date: Scalars['DateTime'],
+  userId: Scalars['ID'],
+  type: Scalars['String'],
+  read: Scalars['Boolean'],
 };
 
 export type Project = {
@@ -300,6 +382,9 @@ export type Query = {
   getUserTeam: Team,
   getUserTeams: Array<Team>,
   getListTasks: Array<Task>,
+  getProjectLabels: Array<Label>,
+  getNotifications: Array<Notifications>,
+  getNotification: Notifications,
 };
 
 
@@ -354,6 +439,16 @@ export type QueryGetListTasksArgs = {
   listId: Scalars['ID']
 };
 
+
+export type QueryGetProjectLabelsArgs = {
+  projectId: Scalars['ID']
+};
+
+
+export type QueryGetNotificationArgs = {
+  id: Scalars['ID']
+};
+
 export type Subscription = {
    __typename?: 'Subscription',
   onListCreated: List,
@@ -363,6 +458,9 @@ export type Subscription = {
   newTask: Task,
   updatedTask: Task,
   deletedTask: Task,
+  addedTaskMember: Task,
+  removedTaskMember: Task,
+  newNotification: Notifications,
 };
 
 
@@ -400,6 +498,21 @@ export type SubscriptionDeletedTaskArgs = {
   taskId: Scalars['Int']
 };
 
+
+export type SubscriptionAddedTaskMemberArgs = {
+  taskId: Scalars['Int']
+};
+
+
+export type SubscriptionRemovedTaskMemberArgs = {
+  taskId: Scalars['Int']
+};
+
+
+export type SubscriptionNewNotificationArgs = {
+  userId: Scalars['ID']
+};
+
 export type Task = {
    __typename?: 'Task',
   id: Scalars['ID'],
@@ -408,6 +521,8 @@ export type Task = {
   dueDate?: Maybe<Scalars['DateTime']>,
   pos: Scalars['Float'],
   list: List,
+  project: Project,
+  users: Array<User>,
 };
 
 export type Team = {
@@ -434,6 +549,7 @@ export type User = {
   ownedTeams: Array<Team>,
   projects: Array<Project>,
   teams: Array<Team>,
+  tasks: Array<Task>,
 };
 
 export type ValidateLinkQueryVariables = {
@@ -573,6 +689,30 @@ export type UpdateListPosMutation = (
   & Pick<Mutation, 'updateListPos'>
 );
 
+export type GetNotificationsQueryVariables = {};
+
+
+export type GetNotificationsQuery = (
+  { __typename?: 'Query' }
+  & { getNotifications: Array<(
+    { __typename?: 'Notifications' }
+    & Pick<Notifications, 'id' | 'userId' | 'type' | 'read'>
+  )> }
+);
+
+export type NewNotificationSubscriptionVariables = {
+  userId: Scalars['ID']
+};
+
+
+export type NewNotificationSubscription = (
+  { __typename?: 'Subscription' }
+  & { newNotification: (
+    { __typename?: 'Notifications' }
+    & Pick<Notifications, 'id' | 'date' | 'userId' | 'type' | 'read'>
+  ) }
+);
+
 export type AcceptProjectInviteLinkMutationVariables = {
   email: Scalars['String'],
   projectInviteLink: Scalars['String']
@@ -629,7 +769,10 @@ export type GetUserProjectQuery = (
   & { getUserProject: (
     { __typename?: 'Project' }
     & Pick<Project, 'id' | 'name'>
-    & { lists: Array<(
+    & { owner: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username' | 'email'>
+    ), lists: Array<(
       { __typename?: 'List' }
       & Pick<List, 'id' | 'name' | 'pos'>
     )> }
@@ -643,7 +786,14 @@ export type GetUserProjectsQuery = (
   { __typename?: 'Query' }
   & { getUserProjects: Array<(
     { __typename?: 'Project' }
-    & Pick<Project, 'id' | 'name'>
+    & Pick<Project, 'id' | 'name' | 'desc'>
+    & { owner: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email' | 'username'>
+    ), members: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email' | 'username'>
+    )> }
   )> }
 );
 
@@ -1069,6 +1219,43 @@ export type UpdateListPosMutationFn = ApolloReactCommon.MutationFunction<UpdateL
 export type UpdateListPosMutationHookResult = ReturnType<typeof useUpdateListPosMutation>;
 export type UpdateListPosMutationResult = ApolloReactCommon.MutationResult<UpdateListPosMutation>;
 export type UpdateListPosMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateListPosMutation, UpdateListPosMutationVariables>;
+export const GetNotificationsDocument = gql`
+    query GetNotifications {
+  getNotifications {
+    id
+    userId
+    type
+    read
+  }
+}
+    `;
+
+    export function useGetNotificationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+      return ApolloReactHooks.useQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, baseOptions);
+    }
+      export function useGetNotificationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+        return ApolloReactHooks.useLazyQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, baseOptions);
+      }
+      
+export type GetNotificationsQueryHookResult = ReturnType<typeof useGetNotificationsQuery>;
+export type GetNotificationsQueryResult = ApolloReactCommon.QueryResult<GetNotificationsQuery, GetNotificationsQueryVariables>;
+export const NewNotificationDocument = gql`
+    subscription NewNotification($userId: ID!) {
+  newNotification(userId: $userId) {
+    id
+    date
+    userId
+    type
+    read
+  }
+}
+    `;
+
+    export function useNewNotificationSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewNotificationSubscription, NewNotificationSubscriptionVariables>) {
+      return ApolloReactHooks.useSubscription<NewNotificationSubscription, NewNotificationSubscriptionVariables>(NewNotificationDocument, baseOptions);
+    }
+export type NewNotificationSubscriptionHookResult = ReturnType<typeof useNewNotificationSubscription>;
+export type NewNotificationSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNotificationSubscription>;
 export const AcceptProjectInviteLinkDocument = gql`
     mutation AcceptProjectInviteLink($email: String!, $projectInviteLink: String!) {
   acceptProjectInviteLink(email: $email, projectInviteLink: $projectInviteLink)
@@ -1131,6 +1318,11 @@ export const GetUserProjectDocument = gql`
   getUserProject(id: $id) {
     id
     name
+    owner {
+      id
+      username
+      email
+    }
     lists {
       id
       name
@@ -1154,6 +1346,17 @@ export const GetUserProjectsDocument = gql`
   getUserProjects {
     id
     name
+    desc
+    owner {
+      id
+      email
+      username
+    }
+    members {
+      id
+      email
+      username
+    }
   }
 }
     `;

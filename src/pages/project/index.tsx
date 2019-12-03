@@ -1,24 +1,18 @@
 import React, { useEffect, useCallback } from 'react';
 import ProjectLayout from '../../components/layouts/ProjectLayout';
 import {
-  useGetUserProjectQuery,
   OnListCreatedDocument,
   OnListDeletedDocument,
-  useUpdateListPosMutation,
-  OnListUpdatedDocument,
-  OnListMovedDocument,
   useGetProjectListsQuery,
-  useOnListCreatedSubscription,
-  useOnListMovedSubscription,
-  useOnListDeletedSubscription
+  useUpdateListPosMutation,
+  useOnListMovedSubscription
 } from '../../generated/graphql';
 import { errorMessage } from '../../lib/messageHandler';
-import { Button } from 'antd';
 import { useModal } from '../../components/modals';
 import CreateListModal from '../../components/modals/CreateListModal';
 import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ListsContainer from './ListsContainer';
 
 interface RouteParams {
@@ -130,7 +124,6 @@ const ProjectPage: React.FC = () => {
 
         // destination is first on list
         if (destination.index === 0) {
-          // TODO disable rerender on mutation
           await updateListPos({
             variables: {
               id: draggableId,
