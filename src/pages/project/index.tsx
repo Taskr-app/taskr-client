@@ -5,7 +5,8 @@ import {
   OnListDeletedDocument,
   useGetProjectListsQuery,
   useUpdateListPosMutation,
-  useOnListMovedSubscription
+  useOnListMovedSubscription,
+  useGetUserProjectQuery
 } from '../../generated/graphql';
 import { errorMessage } from '../../lib/messageHandler';
 import { useModal } from '../../components/modals';
@@ -45,6 +46,10 @@ const ProjectPage: React.FC = () => {
     subscribeToMore
   } = useGetProjectListsQuery({
     variables: { projectId: projectId as string },
+    onError: err => errorMessage(err)
+  });
+  useGetUserProjectQuery({
+    variables: { id: projectId as string },
     onError: err => errorMessage(err)
   });
 

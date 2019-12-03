@@ -772,10 +772,7 @@ export type GetUserProjectQuery = (
     & { owner: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username' | 'email'>
-    ), lists: Array<(
-      { __typename?: 'List' }
-      & Pick<List, 'id' | 'name' | 'pos'>
-    )> }
+    ) }
   ) }
 );
 
@@ -1322,11 +1319,6 @@ export const GetUserProjectDocument = gql`
       id
       username
       email
-    }
-    lists {
-      id
-      name
-      pos
     }
   }
 }
