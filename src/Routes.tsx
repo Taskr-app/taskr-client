@@ -63,7 +63,7 @@ const Routes: React.FC = () => {
               component={TeamInviteSuccess}
             />
 
-            <Route exact path='/settings' component={Settings} />
+            <Route path='/settings' component={Settings} />
 
             <Route exact path='/team/:teamId/:teamName' component={TeamPage} />
             <Route

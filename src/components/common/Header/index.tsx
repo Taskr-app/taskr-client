@@ -7,7 +7,7 @@ import { ButtonLink } from '../Button';
 import AnonHeader from './AnonHeader';
 import { setAccessToken } from '../../../lib/accessToken';
 import { useHistory } from 'react-router';
-import { DefaultUserAvatar } from '../Avatar';
+import { UserAvatar } from '../Avatar';
 import NotificationsIcon from './NotificationsIcon';
 import CreateIcon from './CreateIcon';
 
@@ -98,7 +98,7 @@ export const Header: React.FC<Props> = ({ dark }) => {
             <Col span={2}>
               <Dropdown overlay={menu} placement='bottomRight'>
                 <div className={styles.avatarContainer}>
-                  <DefaultUserAvatar user={data.me} />
+                  <UserAvatar user={data.me} />
                 </div>
               </Dropdown>
             </Col>
