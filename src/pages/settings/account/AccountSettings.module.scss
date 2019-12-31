@@ -1,0 +1,87 @@
+.accountSettings {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  padding: 10px;
+
+  p {
+    margin: 0;
+  }
+
+  .left {
+    flex: 0 1 auto;
+
+    .avatarSettings {
+      position: relative;
+      .avatar {
+        height: 125px;
+        width: 125px;
+        border-radius: 50%;
+      }
+
+      .avatarCover {
+        position: absolute;
+        opacity: 0;
+        border-radius: 50%;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 3;
+        transition: opacity 200ms ease;
+        color: transparent;
+        font-size: 0.7rem;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        cursor: pointer;
+        outline: none;
+        
+        &:hover {
+          color: #FFF;
+          opacity: 1;
+          box-shadow: inset 0 0 120px rgba(0,0,0,.75);
+        }
+      }
+
+      .empty {
+        border: 1px dashed #e8e8e8;
+        border-radius: 50%;
+      }
+
+      .addIcon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 75%;
+        z-index: 6;
+      }
+    }
+  }
+
+  .right {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 40px;
+    font-size: 0.9rem;
+  }
+
+  .edit {
+    max-width: 300px;
+  }
+
+  .end {
+    margin-left: auto;
+  }
+
+  .bottom {
+    margin-top: auto;
+  }
+  .cancel {
+    margin-right: 15px;
+  }
+}

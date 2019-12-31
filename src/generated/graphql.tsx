@@ -13,22 +13,11 @@ export type Scalars = {
   DateTime: any,
   /** String value that is a hex color code ie. #FFFFFF */
   HexColor: any,
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any,
 };
 
 
-
-export type ImageResponse = {
-   __typename?: 'ImageResponse',
-  public_id: Scalars['String'],
-  width: Scalars['Float'],
-  height: Scalars['Float'],
-  format: Scalars['String'],
-  created_at: Scalars['String'],
-  bytes: Scalars['Float'],
-  url: Scalars['String'],
-  secure_url: Scalars['String'],
-  original_filename: Scalars['String'],
-};
 
 export type Label = {
    __typename?: 'Label',
@@ -63,8 +52,7 @@ export type Mutation = {
   login: LoginResponse,
   logout: Scalars['Boolean'],
   auth_googleOAuth: LoginResponse,
-  createAvatar: ImageResponse,
-  updateAvatar: ImageResponse,
+  uploadAvatar: Scalars['Boolean'],
   updateUsername: User,
   sendForgotPasswordLink: Scalars['String'],
   forgotPassword: Scalars['Boolean'],
@@ -79,8 +67,6 @@ export type Mutation = {
   createList: List,
   updateListName: Scalars['Boolean'],
   updateListPos: Scalars['Boolean'],
-  createNotification: Scalars['Boolean'],
-  deleteNotification: Scalars['Boolean'],
   createTeam: Team,
   sendTeamInviteLink: Scalars['String'],
   acceptTeamInviteLink: Scalars['Boolean'],
@@ -90,11 +76,15 @@ export type Mutation = {
   createTask: Task,
   updateTask: Task,
   deleteTask: Scalars['Boolean'],
+  addTaskMember: Scalars['Boolean'],
+  removeTaskMember: Scalars['Boolean'],
   createLabel: Scalars['Boolean'],
   assignLabel: Scalars['Boolean'],
   updateLabel: Scalars['Boolean'],
   removeTaskLabel: Scalars['Boolean'],
   deleteLabel: Scalars['Boolean'],
+  createNotification: Scalars['Boolean'],
+  deleteNotification: Scalars['Boolean'],
 };
 
 
@@ -138,13 +128,8 @@ export type MutationAuth_GoogleOAuthArgs = {
 };
 
 
-export type MutationCreateAvatarArgs = {
-  image: Scalars['String']
-};
-
-
-export type MutationUpdateAvatarArgs = {
-  image: Scalars['String']
+export type MutationUploadAvatarArgs = {
+  image: Scalars['Upload']
 };
 
 
@@ -233,16 +218,6 @@ export type MutationUpdateListPosArgs = {
 };
 
 
-export type MutationCreateNotificationArgs = {
-  userId: Scalars['ID']
-};
-
-
-export type MutationDeleteNotificationArgs = {
-  id: Scalars['ID']
-};
-
-
 export type MutationCreateTeamArgs = {
   name: Scalars['String']
 };
@@ -290,12 +265,24 @@ export type MutationUpdateTaskArgs = {
   desc?: Maybe<Scalars['String']>,
   name?: Maybe<Scalars['String']>,
   listId?: Maybe<Scalars['ID']>,
-  taskId: Scalars['ID']
+  id: Scalars['ID']
 };
 
 
 export type MutationDeleteTaskArgs = {
   taskId: Scalars['ID']
+};
+
+
+export type MutationAddTaskMemberArgs = {
+  userId: Scalars['ID'],
+  id: Scalars['ID']
+};
+
+
+export type MutationRemoveTaskMemberArgs = {
+  userId: Scalars['ID'],
+  id: Scalars['ID']
 };
 
 
@@ -326,6 +313,16 @@ export type MutationRemoveTaskLabelArgs = {
 
 
 export type MutationDeleteLabelArgs = {
+  id: Scalars['ID']
+};
+
+
+export type MutationCreateNotificationArgs = {
+  userId: Scalars['ID']
+};
+
+
+export type MutationDeleteNotificationArgs = {
   id: Scalars['ID']
 };
 
@@ -364,12 +361,12 @@ export type Query = {
   getPublicProjectLink: Scalars['String'],
   validateLink: Scalars['Boolean'],
   validatePublicProjectLink: Scalars['Boolean'],
-  getNotifications: Array<Notifications>,
-  getNotification: Notifications,
   getUserTeam: Team,
   getUserTeams: Array<Team>,
   getListTasks: Array<Task>,
   getProjectLabels: Array<Label>,
+  getNotifications: Array<Notifications>,
+  getNotification: Notifications,
 };
 
 
@@ -410,11 +407,6 @@ export type QueryValidatePublicProjectLinkArgs = {
 };
 
 
-export type QueryGetNotificationArgs = {
-  id: Scalars['ID']
-};
-
-
 export type QueryGetUserTeamArgs = {
   id: Scalars['ID']
 };
@@ -429,15 +421,22 @@ export type QueryGetProjectLabelsArgs = {
   projectId: Scalars['ID']
 };
 
+
+export type QueryGetNotificationArgs = {
+  id: Scalars['ID']
+};
+
 export type Subscription = {
    __typename?: 'Subscription',
   onListCreated: List,
   onListDeleted: List,
   onListUpdated: List,
-  newNotification: Notifications,
   newTask: Task,
   updatedTask: Task,
   deletedTask: Task,
+  addedTaskMember: Task,
+  removedTaskMember: Task,
+  newNotification: Notifications,
 };
 
 
@@ -456,11 +455,6 @@ export type SubscriptionOnListUpdatedArgs = {
 };
 
 
-export type SubscriptionNewNotificationArgs = {
-  userId: Scalars['ID']
-};
-
-
 export type SubscriptionNewTaskArgs = {
   listId: Scalars['Int']
 };
@@ -475,6 +469,21 @@ export type SubscriptionDeletedTaskArgs = {
   taskId: Scalars['Int']
 };
 
+
+export type SubscriptionAddedTaskMemberArgs = {
+  taskId: Scalars['Int']
+};
+
+
+export type SubscriptionRemovedTaskMemberArgs = {
+  taskId: Scalars['Int']
+};
+
+
+export type SubscriptionNewNotificationArgs = {
+  userId: Scalars['ID']
+};
+
 export type Task = {
    __typename?: 'Task',
   id: Scalars['ID'],
@@ -484,6 +493,7 @@ export type Task = {
   pos: Scalars['Float'],
   list: List,
   project: Project,
+  users: Array<User>,
 };
 
 export type Team = {
@@ -497,12 +507,13 @@ export type Team = {
   projects: Array<Project>,
 };
 
+
 export type User = {
    __typename?: 'User',
   id: Scalars['ID'],
   email: Scalars['String'],
   username: Scalars['String'],
-  avatar: Scalars['String'],
+  avatar?: Maybe<Scalars['String']>,
   auth: Scalars['String'],
   created_at: Scalars['DateTime'],
   updated_at: Scalars['DateTime'],
@@ -510,6 +521,7 @@ export type User = {
   ownedTeams: Array<Team>,
   projects: Array<Project>,
   teams: Array<Team>,
+  tasks: Array<Task>,
 };
 
 export type ValidateLinkQueryVariables = {
@@ -698,10 +710,10 @@ export type GetUserProjectsQuery = (
     & Pick<Project, 'id' | 'name' | 'desc'>
     & { owner: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'username'>
+      & Pick<User, 'id' | 'email' | 'username' | 'avatar'>
     ), members: Array<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'username'>
+      & Pick<User, 'id' | 'email' | 'username' | 'avatar'>
     )> }
   )> }
 );
@@ -897,7 +909,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'username'>
+    & Pick<User, 'id' | 'email' | 'username' | 'avatar'>
   ) }
 );
 
@@ -959,6 +971,16 @@ export type UpdateUsernameMutation = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'username'>
   ) }
+);
+
+export type UploadAvatarMutationVariables = {
+  image: Scalars['Upload']
+};
+
+
+export type UploadAvatarMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'uploadAvatar'>
 );
 
 
@@ -1198,11 +1220,13 @@ export const GetUserProjectsDocument = gql`
       id
       email
       username
+      avatar
     }
     members {
       id
       email
       username
+      avatar
     }
   }
 }
@@ -1451,6 +1475,7 @@ export const MeDocument = gql`
     id
     email
     username
+    avatar
   }
 }
     `;
@@ -1535,3 +1560,16 @@ export type UpdateUsernameMutationFn = ApolloReactCommon.MutationFunction<Update
 export type UpdateUsernameMutationHookResult = ReturnType<typeof useUpdateUsernameMutation>;
 export type UpdateUsernameMutationResult = ApolloReactCommon.MutationResult<UpdateUsernameMutation>;
 export type UpdateUsernameMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
+export const UploadAvatarDocument = gql`
+    mutation UploadAvatar($image: Upload!) {
+  uploadAvatar(image: $image)
+}
+    `;
+export type UploadAvatarMutationFn = ApolloReactCommon.MutationFunction<UploadAvatarMutation, UploadAvatarMutationVariables>;
+
+    export function useUploadAvatarMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UploadAvatarMutation, UploadAvatarMutationVariables>) {
+      return ApolloReactHooks.useMutation<UploadAvatarMutation, UploadAvatarMutationVariables>(UploadAvatarDocument, baseOptions);
+    }
+export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
+export type UploadAvatarMutationResult = ApolloReactCommon.MutationResult<UploadAvatarMutation>;
+export type UploadAvatarMutationOptions = ApolloReactCommon.BaseMutationOptions<UploadAvatarMutation, UploadAvatarMutationVariables>;
