@@ -1,32 +1,33 @@
-import * as React from "react";
-import { mount } from "enzyme";
-import { MockedProvider, wait } from "@apollo/react-testing";
+import * as React from 'react';
+import { mount } from 'enzyme';
+import { MockedProvider, wait } from '@apollo/react-testing';
 import {
   MeDocument,
   ValidateLinkDocument,
   AcceptProjectInviteLinkDocument
-} from "../../../../generated/graphql";
-import ProjectInviteSuccessPage from "../../../../pages/invite/project/success";
-import { act } from "react-dom/test-utils";
-import { GraphQLError } from "graphql";
-import ErrorLayout from "../../../../components/layouts/ErrorLayout";
-import AnonLayout from "../../../../components/layouts/AnonLayout";
-import { MemoryRouter, Route, Switch } from "react-router";
-import Dashboard from "../../../../pages/dashboard";
-import { queryStringify } from "../../../../lib/queryParser";
+} from '../../../../generated/graphql';
+import ProjectInviteSuccessPage from '../../../../pages/invite/project/success';
+import { act } from 'react-dom/test-utils';
+import { GraphQLError } from 'graphql';
+import ErrorLayout from '../../../../components/layouts/ErrorLayout';
+import AnonLayout from '../../../../components/layouts/AnonLayout';
+import { MemoryRouter, Route, Switch } from 'react-router';
+import Dashboard from '../../../../pages/dashboard';
+import { queryStringify } from '../../../../lib/queryParser';
 
-describe("Pages", () => {
-  describe("ProjectInviteSuccessPage", () => {
+describe('Pages', () => {
+  describe('ProjectInviteSuccessPage', () => {
     const mockQuery = {
-      email: "dev@email.com",
-      username: "dev",
-      projectInviteLink: "qwe",
+      email: 'dev@email.com',
+      username: 'dev',
+      projectInviteLink: 'qwe',
       id: 123,
-      key: "project-invite-dev@email.com"
+      key: 'project-invite-dev@email.com',
+      avatar: null
     };
 
     const routerLocation = {
-      pathname: "/invite/project/success",
+      pathname: '/invite/project/success',
       search: queryStringify({
         email: mockQuery.email,
         id: mockQuery.projectInviteLink
@@ -43,7 +44,8 @@ describe("Pages", () => {
           me: {
             id: mockQuery.id,
             email: mockQuery.email,
-            username: mockQuery.username
+            username: mockQuery.username,
+            avatar: mockQuery.avatar
           }
         },
         loading: false
@@ -82,7 +84,7 @@ describe("Pages", () => {
       }
     };
 
-    it("fires acceptProjectInviteLink mutation on mount", async () => {
+    it('fires acceptProjectInviteLink mutation on mount', async () => {
       const wrapper = mount(
         <MockedProvider
           mocks={[meQuery, validateLinkQuery, acceptProjectLinkQuery]}
@@ -92,12 +94,12 @@ describe("Pages", () => {
             <Switch>
               <Route
                 exact
-                path="/invite/project/success"
+                path='/invite/project/success'
                 render={() => <ProjectInviteSuccessPage />}
               />
               <Route
                 exact
-                path="/"
+                path='/'
                 render={({ location }) => {
                   routerLocation.pathname = location.pathname;
                   return <Dashboard />;
@@ -113,11 +115,11 @@ describe("Pages", () => {
       });
 
       expect(acceptProjectInviteLinkCalled).toBe(true);
-      expect(routerLocation.pathname).toEqual("/");
+      expect(routerLocation.pathname).toEqual('/');
       wrapper.unmount();
     });
 
-    it("should render an error layout if the link has expired", async () => {
+    it('should render an error layout if the link has expired', async () => {
       const errorQuery = {
         ...validateLinkQuery,
         result: {
@@ -140,7 +142,7 @@ describe("Pages", () => {
       expect(wrapper.contains(<ErrorLayout />));
     });
 
-    it("should render an auth form if user is not authenticated", async () => {
+    it('should render an auth form if user is not authenticated', async () => {
       const wrapper = mount(
         <MockedProvider mocks={[validateLinkQuery]} addTypename={false}>
           <MemoryRouter initialEntries={[routerLocation]}>

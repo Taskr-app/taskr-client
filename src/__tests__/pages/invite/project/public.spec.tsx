@@ -1,32 +1,33 @@
-import * as React from "react";
-import { mount } from "enzyme";
-import { MockedProvider, wait } from "@apollo/react-testing";
+import * as React from 'react';
+import { mount } from 'enzyme';
+import { MockedProvider, wait } from '@apollo/react-testing';
 import {
   MeDocument,
   ValidatePublicProjectLinkDocument,
   AcceptPublicProjectLinkDocument
-} from "../../../../generated/graphql";
-import PublicProjectInvitePage from "../../../../pages/invite/project/public";
-import { act } from "react-dom/test-utils";
-import { GraphQLError } from "graphql";
-import ErrorLayout from "../../../../components/layouts/ErrorLayout";
-import AnonLayout from "../../../../components/layouts/AnonLayout";
-import { queryStringify } from "../../../../lib/queryParser";
-import { MemoryRouter, Route } from "react-router";
-import Dashboard from "../../../../pages/dashboard";
+} from '../../../../generated/graphql';
+import PublicProjectInvitePage from '../../../../pages/invite/project/public';
+import { act } from 'react-dom/test-utils';
+import { GraphQLError } from 'graphql';
+import ErrorLayout from '../../../../components/layouts/ErrorLayout';
+import AnonLayout from '../../../../components/layouts/AnonLayout';
+import { queryStringify } from '../../../../lib/queryParser';
+import { MemoryRouter, Route } from 'react-router';
+import Dashboard from '../../../../pages/dashboard';
 
-describe("Pages", () => {
-  describe("PublicProjectInvitePage", () => {
+describe('Pages', () => {
+  describe('PublicProjectInvitePage', () => {
     const mockQuery = {
-      email: "dev@email.com",
+      email: 'dev@email.com',
       id: 123,
-      projectId: "1241",
-      projectInviteLink: "abc",
-      username: "dev"
+      projectId: '1241',
+      projectInviteLink: 'abc',
+      username: 'dev',
+      avatar: null
     };
 
     const routerLocation = {
-      pathname: "/invite/project/public",
+      pathname: '/invite/project/public',
       search: queryStringify({
         id: mockQuery.projectInviteLink,
         project: mockQuery.projectId
@@ -43,7 +44,8 @@ describe("Pages", () => {
           me: {
             id: mockQuery.id,
             email: mockQuery.email,
-            username: mockQuery.username
+            username: mockQuery.username,
+            avatar: mockQuery.avatar
           }
         },
         loading: false
@@ -83,7 +85,7 @@ describe("Pages", () => {
       }
     };
 
-    it("fires acceptPublicProjectLink mutation on mount", async () => {
+    it('fires acceptPublicProjectLink mutation on mount', async () => {
       const wrapper = mount(
         <MockedProvider
           mocks={[meQuery, validateQuery, acceptProjectLinkQuery]}
@@ -97,7 +99,7 @@ describe("Pages", () => {
             />
             <Route
               exact
-              path="/"
+              path='/'
               render={({ location }) => {
                 routerLocation.pathname = location.pathname;
                 return <Dashboard />;
@@ -112,15 +114,15 @@ describe("Pages", () => {
       });
 
       expect(acceptProjectLinkCalled).toBe(true);
-      expect(routerLocation.pathname).toEqual("/");
+      expect(routerLocation.pathname).toEqual('/');
       wrapper.unmount();
     });
 
-    it("should render an error layout if the link has expired", async () => {
+    it('should render an error layout if the link has expired', async () => {
       const errorQuery = {
         ...validateQuery,
         result: {
-          errors: [new GraphQLError(`This link has expired`)]
+          errors: [new GraphQLError('This link has expired')]
         }
       };
 
@@ -139,7 +141,7 @@ describe("Pages", () => {
       expect(wrapper.contains(<ErrorLayout />));
     });
 
-    it("should render an auth form if user is not authenticated", async () => {
+    it('should render an auth form if user is not authenticated', async () => {
       const wrapper = mount(
         <MockedProvider mocks={[validateQuery]} addTypename={false}>
           <MemoryRouter initialEntries={[routerLocation]}>
