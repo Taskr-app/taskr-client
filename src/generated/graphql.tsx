@@ -53,7 +53,9 @@ export type Mutation = {
   logout: Scalars['Boolean'],
   auth_googleOAuth: LoginResponse,
   uploadAvatar: Scalars['Boolean'],
-  updateUsername: User,
+  updateUsername: Scalars['Boolean'],
+  sendNewEmailLink: Scalars['Boolean'],
+  updateEmail: Scalars['Boolean'],
   sendForgotPasswordLink: Scalars['String'],
   forgotPassword: Scalars['Boolean'],
   changePassword: Scalars['Boolean'],
@@ -135,6 +137,18 @@ export type MutationUploadAvatarArgs = {
 
 export type MutationUpdateUsernameArgs = {
   username: Scalars['String']
+};
+
+
+export type MutationSendNewEmailLinkArgs = {
+  email: Scalars['String']
+};
+
+
+export type MutationUpdateEmailArgs = {
+  verificationLink: Scalars['String'],
+  password?: Maybe<Scalars['String']>,
+  email: Scalars['String']
 };
 
 
@@ -514,7 +528,7 @@ export type User = {
   email: Scalars['String'],
   username: Scalars['String'],
   avatar?: Maybe<Scalars['String']>,
-  auth: Scalars['String'],
+  auth: UserAuthType,
   created_at: Scalars['DateTime'],
   updated_at: Scalars['DateTime'],
   ownedProjects: Array<Project>,
@@ -523,6 +537,12 @@ export type User = {
   teams: Array<Team>,
   tasks: Array<Task>,
 };
+
+/** User auth type for auth column (WEBSITE | GOOGLE) */
+export enum UserAuthType {
+  Website = 'WEBSITE',
+  Google = 'GOOGLE'
+}
 
 export type ValidateLinkQueryVariables = {
   key: Scalars['String'],
@@ -907,10 +927,9 @@ export type MeQueryVariables = {};
 
 export type MeQuery = (
   { __typename?: 'Query' }
-  & { me: (
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'username' | 'avatar'>
-  ) }
+  & { me: { __typename?: 'User' }
+    & UserFragment
+   }
 );
 
 export type RegisterMutationVariables = {
@@ -949,6 +968,16 @@ export type SendForgotPasswordLinkMutation = (
   & Pick<Mutation, 'sendForgotPasswordLink'>
 );
 
+export type SendNewEmailLinkMutationVariables = {
+  email: Scalars['String']
+};
+
+
+export type SendNewEmailLinkMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'sendNewEmailLink'>
+);
+
 export type SendVerificationLinkMutationVariables = {
   email: Scalars['String'],
   password: Scalars['String']
@@ -960,6 +989,18 @@ export type SendVerificationLinkMutation = (
   & Pick<Mutation, 'sendVerificationLink'>
 );
 
+export type UpdateEmailMutationVariables = {
+  email: Scalars['String'],
+  verificationLink: Scalars['String'],
+  password?: Maybe<Scalars['String']>
+};
+
+
+export type UpdateEmailMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateEmail'>
+);
+
 export type UpdateUsernameMutationVariables = {
   username: Scalars['String']
 };
@@ -967,10 +1008,7 @@ export type UpdateUsernameMutationVariables = {
 
 export type UpdateUsernameMutation = (
   { __typename?: 'Mutation' }
-  & { updateUsername: (
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'username'>
-  ) }
+  & Pick<Mutation, 'updateUsername'>
 );
 
 export type UploadAvatarMutationVariables = {
@@ -983,7 +1021,20 @@ export type UploadAvatarMutation = (
   & Pick<Mutation, 'uploadAvatar'>
 );
 
+export type UserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'email' | 'username' | 'avatar' | 'auth'>
+);
 
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  id
+  email
+  username
+  avatar
+  auth
+}
+    `;
 export const ValidateLinkDocument = gql`
     query ValidateLink($key: String!, $link: String!) {
   validateLink(key: $key, link: $link)
@@ -1472,13 +1523,10 @@ export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<Logout
 export const MeDocument = gql`
     query Me {
   me {
-    id
-    email
-    username
-    avatar
+    ...User
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 
     export function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>) {
       return ApolloReactHooks.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
@@ -1530,6 +1578,19 @@ export type SendForgotPasswordLinkMutationFn = ApolloReactCommon.MutationFunctio
 export type SendForgotPasswordLinkMutationHookResult = ReturnType<typeof useSendForgotPasswordLinkMutation>;
 export type SendForgotPasswordLinkMutationResult = ApolloReactCommon.MutationResult<SendForgotPasswordLinkMutation>;
 export type SendForgotPasswordLinkMutationOptions = ApolloReactCommon.BaseMutationOptions<SendForgotPasswordLinkMutation, SendForgotPasswordLinkMutationVariables>;
+export const SendNewEmailLinkDocument = gql`
+    mutation SendNewEmailLink($email: String!) {
+  sendNewEmailLink(email: $email)
+}
+    `;
+export type SendNewEmailLinkMutationFn = ApolloReactCommon.MutationFunction<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>;
+
+    export function useSendNewEmailLinkMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>) {
+      return ApolloReactHooks.useMutation<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>(SendNewEmailLinkDocument, baseOptions);
+    }
+export type SendNewEmailLinkMutationHookResult = ReturnType<typeof useSendNewEmailLinkMutation>;
+export type SendNewEmailLinkMutationResult = ApolloReactCommon.MutationResult<SendNewEmailLinkMutation>;
+export type SendNewEmailLinkMutationOptions = ApolloReactCommon.BaseMutationOptions<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>;
 export const SendVerificationLinkDocument = gql`
     mutation SendVerificationLink($email: String!, $password: String!) {
   sendVerificationLink(email: $email, password: $password)
@@ -1543,13 +1604,22 @@ export type SendVerificationLinkMutationFn = ApolloReactCommon.MutationFunction<
 export type SendVerificationLinkMutationHookResult = ReturnType<typeof useSendVerificationLinkMutation>;
 export type SendVerificationLinkMutationResult = ApolloReactCommon.MutationResult<SendVerificationLinkMutation>;
 export type SendVerificationLinkMutationOptions = ApolloReactCommon.BaseMutationOptions<SendVerificationLinkMutation, SendVerificationLinkMutationVariables>;
+export const UpdateEmailDocument = gql`
+    mutation UpdateEmail($email: String!, $verificationLink: String!, $password: String) {
+  updateEmail(email: $email, verificationLink: $verificationLink, password: $password)
+}
+    `;
+export type UpdateEmailMutationFn = ApolloReactCommon.MutationFunction<UpdateEmailMutation, UpdateEmailMutationVariables>;
+
+    export function useUpdateEmailMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateEmailMutation, UpdateEmailMutationVariables>) {
+      return ApolloReactHooks.useMutation<UpdateEmailMutation, UpdateEmailMutationVariables>(UpdateEmailDocument, baseOptions);
+    }
+export type UpdateEmailMutationHookResult = ReturnType<typeof useUpdateEmailMutation>;
+export type UpdateEmailMutationResult = ApolloReactCommon.MutationResult<UpdateEmailMutation>;
+export type UpdateEmailMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateEmailMutation, UpdateEmailMutationVariables>;
 export const UpdateUsernameDocument = gql`
     mutation UpdateUsername($username: String!) {
-  updateUsername(username: $username) {
-    id
-    email
-    username
-  }
+  updateUsername(username: $username)
 }
     `;
 export type UpdateUsernameMutationFn = ApolloReactCommon.MutationFunction<UpdateUsernameMutation, UpdateUsernameMutationVariables>;

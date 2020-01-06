@@ -8,7 +8,7 @@ const SettingsLayout: React.FC = ({ children }) => {
 
   return (
     <Layout
-      title='Settings'
+      title='Settings | Taskr'
       sider={
         <>
           <Menu style={{ height: '100%' }} mode='inline' selectable={false}>

@@ -1,0 +1,3 @@
+mutation SendNewEmailLink($email: String!) {
+  sendNewEmailLink(email: $email)
+}

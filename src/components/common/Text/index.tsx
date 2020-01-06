@@ -38,6 +38,12 @@ export const SubText:React.FC<Props> = ({ children, ...props }) => {
   )
 }
 
+export const DescriptionText:React.FC<Props> = ({ children, ... props }) => {
+  return (
+    <p className={textStyle(styles.descriptionText, props)} {...props}>{children}</p>
+  )
+}
+
 export const LinkText:React.FC<Props> = ({ children, ...props }) => {
   return (
     <span className={textStyle(styles.linkText, props)} {...props}>{children}</span>

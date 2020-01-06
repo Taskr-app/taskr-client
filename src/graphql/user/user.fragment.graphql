@@ -1,0 +1,7 @@
+fragment User on User {
+  id
+  email
+  username
+  avatar
+  auth
+}
