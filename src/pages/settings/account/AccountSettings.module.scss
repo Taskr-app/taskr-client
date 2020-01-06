@@ -13,6 +13,8 @@
 
     .avatarSettings {
       position: relative;
+      outline: none;
+
       .avatar {
         height: 125px;
         width: 125px;
@@ -36,13 +38,13 @@
         justify-content: center;
         align-items: center;
         font-weight: bold;
-        cursor: pointer;
         outline: none;
-        
+        cursor: pointer;
+
         &:hover {
-          color: #FFF;
+          color: #fff;
           opacity: 1;
-          box-shadow: inset 0 0 120px rgba(0,0,0,.75);
+          box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.75);
         }
       }
 
@@ -53,8 +55,9 @@
 
       .addIcon {
         position: absolute;
+        cursor: pointer;
         top: 0;
-        right: 0;
+        right: 5px;
         opacity: 75%;
         z-index: 6;
       }

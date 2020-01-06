@@ -4,15 +4,17 @@ import styles from './AccountSettings.module.scss';
 import { User } from '../../../generated/graphql';
 import classNames from 'classnames';
 import { cloudinary } from '../../../lib/cloudinary';
-import { Empty, Avatar } from 'antd';
+import { Empty, Avatar, Icon } from 'antd';
 import { useDropzone } from 'react-dropzone';
 
-interface Props {
-  user: Partial<User>;
-  editing?: boolean;
+type Props = {
+  editing: boolean
+  user: Partial<User>
+  setFile?: React.Dispatch<React.SetStateAction<File | null>>
+
 }
 
-const AccountAvatar: React.FC<Props> = ({ user, editing }) => {
+const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
   const [preview, setPreview] = useState('');
   const { acceptedFiles, getInputProps, getRootProps } = useDropzone({
     onDrop: useCallback(
@@ -28,6 +30,10 @@ const AccountAvatar: React.FC<Props> = ({ user, editing }) => {
   const avatarStyle = classNames(styles.avatar, {
     [styles.edit]: editing
   });
+
+  useEffect(() => {
+    setFile && setFile(acceptedFiles[0])
+  }, [acceptedFiles[0]])
 
   const renderImagePreview = () => {
     if (preview) {
@@ -56,11 +62,14 @@ const AccountAvatar: React.FC<Props> = ({ user, editing }) => {
     );
   };
 
+  const rootProps = editing
+    ? getRootProps({ className: styles.avatarSettings })
+    : null;
   return (
-    <div className={styles.avatarSettings}>
+    <div className={styles.avatarSettings} {...rootProps}>
       {renderImagePreview()}
       {editing && (
-        <div {...getRootProps({ className: styles.avatarCover })}>
+        <div className={styles.avatarCover}>
           <input {...getInputProps()} />
           <span>CHANGE AVATAR</span>
         </div>
@@ -68,7 +77,11 @@ const AccountAvatar: React.FC<Props> = ({ user, editing }) => {
 
       {editing && (
         <div className={styles.addIcon}>
-          <Avatar icon='file-add' />
+          <Avatar
+            icon={<Icon type='file-add' style={{ opacity: '0.6' }} />}
+            style={{ backgroundColor: '#dcddde', color: 'black' }}
+            shape='circle'
+          />
         </div>
       )}
     </div>

@@ -30,7 +30,7 @@ const AccountSettingsPage: React.FC = () => {
         <div className={styles.accountSettings}>
           <>
             <div className={styles.left}>
-              <AccountAvatar user={data.me} />
+              <AccountAvatar user={data.me} editing={false} />
             </div>
 
             <div className={styles.right}>

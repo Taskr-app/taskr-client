@@ -1,0 +1,3 @@
+mutation UpdateEmail($email: String!, $verificationLink: String!, $password: String) {
+  updateEmail(email: $email, verificationLink: $verificationLink, password: $password)
+}
