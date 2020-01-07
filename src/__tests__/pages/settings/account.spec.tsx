@@ -9,18 +9,10 @@ import {
 import { MockedProvider, wait } from '@apollo/react-testing';
 import AccountSettingsPage from '../../../pages/settings/account';
 import { mount } from 'enzyme';
-import styles from '../../../pages/settings/account/AccountSettings.module.scss';
 import { act } from 'react-dom/test-utils';
-import { MemoryRouter, Route } from 'react-router';
 import AccountSettingsForm from '../../../pages/settings/account/AccountSettingsForm';
-
-/**
- * TODO
- * 1. Should test for editing render statements (2)
- * 2. Should test updateUserName Mutation
- * 3. Should test updateEmail Mutation
- * 4. Should test uploadAvatar Mutation
- */
+import { mockUser } from '../../utils/mockUser';
+import { mockMeQuery } from '../../utils/mockQueries';
 
 describe('Pages', () => {
   describe('settings/account', () => {
@@ -32,11 +24,7 @@ describe('Pages', () => {
     window.URL.revokeObjectURL = jest.fn();
 
     const mockQuery = {
-      id: 123,
-      email: 'dev@email.com',
-      username: 'dev',
-      avatar: null,
-      auth: UserAuthType.Website,
+      ...mockUser,
       newUsername: 'dev2',
       newEmail: 'dev2@email.com',
       image: {
@@ -44,24 +32,6 @@ describe('Pages', () => {
         path: 'cat.jpg',
         size: 200,
         type: 'image/jpeg'
-      }
-    };
-
-    const meQuery = {
-      request: {
-        query: MeDocument
-      },
-      result: {
-        data: {
-          me: {
-            id: mockQuery.id,
-            email: mockQuery.email,
-            username: mockQuery.username,
-            avatar: mockQuery.avatar,
-            auth: mockQuery.auth
-          }
-        },
-        loading: false
       }
     };
 
@@ -87,15 +57,15 @@ describe('Pages', () => {
         query: SendNewEmailLinkDocument,
         variables: {
           email: mockQuery.newEmail
-        },
-        result: () => {
-          sendNewEmailLinkMutationCalled = true;
-          return {
-            data: {
-              sendNewEmailLink: true
-            }
-          };
         }
+      },
+      result: () => {
+        sendNewEmailLinkMutationCalled = true;
+        return {
+          data: {
+            sendNewEmailLink: true
+          }
+        };
       }
     };
 
@@ -118,7 +88,7 @@ describe('Pages', () => {
 
     it("should render user's information when editing prop is false and render AccountSettingsForm if true", async () => {
       const wrapper = mount(
-        <MockedProvider mocks={[meQuery]} addTypename={false}>
+        <MockedProvider mocks={[mockMeQuery]} addTypename={false}>
           <AccountSettingsPage />
         </MockedProvider>
       );
@@ -151,9 +121,9 @@ describe('Pages', () => {
       const wrapper = mount(
         <MockedProvider
           mocks={[
-            meQuery,
+            mockMeQuery,
             updateUsernameMutation,
-            meQuery,
+            mockMeQuery,
             sendNewEmailLinkMutation
           ]}
           addTypename={false}
@@ -175,6 +145,7 @@ describe('Pages', () => {
         });
         wrapper.find('form').simulate('submit');
         await wait(0);
+        await wait(0)
       });
 
       expect(updateUsernameMutationCalled).toBe(true);
@@ -184,7 +155,7 @@ describe('Pages', () => {
     it('should call uploadAvatar mutation when a file image is dropped', async () => {
       const wrapper = mount(
         <MockedProvider
-          mocks={[meQuery, uploadAvatarMutation, meQuery]}
+          mocks={[mockMeQuery, uploadAvatarMutation, mockMeQuery]}
           addTypename={false}
         >
           <AccountSettingsForm handleEdit={() => null} />
@@ -200,7 +171,7 @@ describe('Pages', () => {
           preventDefault: () => {},
           persist: () => {}
         });
-        await wait(0)
+        await wait(0);
         wrapper.find('form').simulate('submit');
         await wait(0);
       });

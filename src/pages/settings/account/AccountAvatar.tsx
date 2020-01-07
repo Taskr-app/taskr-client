@@ -17,7 +17,6 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
   const { acceptedFiles, getInputProps, getRootProps } = useDropzone({
     onDrop: useCallback(
       ([file]) => {
-        console.log('ondrop: ', file);
         setPreview(URL.createObjectURL(file));
       },
       [setPreview, preview]
@@ -31,8 +30,6 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
   });
 
   useEffect(() => {
-    console.log('SETTING FILE: ', setFile)
-    console.log(acceptedFiles[0])
     setFile && setFile(acceptedFiles[0]);
   }, [acceptedFiles[0]]);
 

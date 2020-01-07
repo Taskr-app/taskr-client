@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ChangePassword from './ChangePassword';
-import { SubText, LinkText } from '../../../components/common/Text';
+import { SubText } from '../../../components/common/Text';
 import { useMeQuery } from '../../../generated/graphql';
 import styles from './AccountSettings.module.scss';
 import { Button, Divider } from 'antd';
@@ -10,20 +10,14 @@ import AccountSettingsForm from './AccountSettingsForm';
 const AccountSettingsPage: React.FC = () => {
   const { data } = useMeQuery();
   const [editing, handleEdit] = useState(false);
-  const [changePassword, showChangePassword] = useState(false);
-
   const toggleEditing = () => handleEdit(!editing);
 
   if (!data) {
     return <></>;
   }
 
-  const handleChangePassword = () => {
-    showChangePassword(!changePassword);
-  };
-
   return (
-    <div>
+    <>
       {editing ? (
         <AccountSettingsForm handleEdit={toggleEditing} />
       ) : (
@@ -57,15 +51,9 @@ const AccountSettingsPage: React.FC = () => {
       <Divider />
 
       <div className={styles.labels}>
-        <LinkText
-          onClick={handleChangePassword}
-          style={{ marginBottom: '15px' }}
-        >
-          Change password
-        </LinkText>
-        {changePassword && <ChangePassword />}
+        <ChangePassword />
       </div>
-    </div>
+    </>
   );
 };
 
