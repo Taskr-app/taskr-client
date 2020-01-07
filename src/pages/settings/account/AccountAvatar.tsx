@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './AccountSettings.module.scss';
 import { User } from '../../../generated/graphql';
@@ -8,17 +7,17 @@ import { Empty, Avatar, Icon } from 'antd';
 import { useDropzone } from 'react-dropzone';
 
 type Props = {
-  editing: boolean
-  user: Partial<User>
-  setFile?: React.Dispatch<React.SetStateAction<File | null>>
-
-}
+  editing: boolean;
+  user: Partial<User>;
+  setFile?: React.Dispatch<React.SetStateAction<File | null>>;
+};
 
 const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
   const [preview, setPreview] = useState('');
   const { acceptedFiles, getInputProps, getRootProps } = useDropzone({
     onDrop: useCallback(
       ([file]) => {
+        console.log('ondrop: ', file);
         setPreview(URL.createObjectURL(file));
       },
       [setPreview, preview]
@@ -32,8 +31,10 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
   });
 
   useEffect(() => {
-    setFile && setFile(acceptedFiles[0])
-  }, [acceptedFiles[0]])
+    console.log('SETTING FILE: ', setFile)
+    console.log(acceptedFiles[0])
+    setFile && setFile(acceptedFiles[0]);
+  }, [acceptedFiles[0]]);
 
   const renderImagePreview = () => {
     if (preview) {

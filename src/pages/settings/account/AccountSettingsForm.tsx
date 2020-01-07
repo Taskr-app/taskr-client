@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import styles from './AccountSettings.module.scss';
 import classNames from 'classnames';
@@ -39,7 +38,7 @@ const AccountSettingsForm: React.FC<FormComponentProps & Props> = ({
   });
   const [uploadAvatar] = useUploadAvatarMutation({
     onError: err => errorMessage(err)
-  })
+  });
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const { validateFields } = form;
@@ -67,7 +66,7 @@ const AccountSettingsForm: React.FC<FormComponentProps & Props> = ({
             image: file
           },
           refetchQueries: [{ query: MeDocument }]
-        })
+        });
       }
       handleEdit();
     });

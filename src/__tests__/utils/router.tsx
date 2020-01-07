@@ -1,9 +1,9 @@
-import React from "react";
-import { Router } from "react-router-dom";
-import { render } from "enzyme";
+import React from 'react';
+import { Router } from 'react-router-dom';
+import { render } from 'enzyme';
 import createMemoryHistory, {
   MemoryHistory
-} from "history/createMemoryHistory";
+} from 'history/createMemoryHistory';
 
 interface RenderWithRouterProps {
   route?: string;
@@ -14,7 +14,7 @@ interface RenderWithRouterProps {
 export const renderWithRouter = (
   ui: React.ReactElement<any>,
   {
-    route = "/",
+    route = '/',
     history = createMemoryHistory({ initialEntries: [route] })
   }: RenderWithRouterProps = {}
 ) => {

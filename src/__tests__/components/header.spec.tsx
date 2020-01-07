@@ -1,14 +1,14 @@
-import * as React from "react";
-import { render, mount } from "enzyme";
-import { MockedProvider, wait } from "@apollo/react-testing";
-import { MeDocument } from "../../generated/graphql";
-import { Header } from "../../components/common/Header";
-import AnonHeader from "../../components/common/Header/AnonHeader";
-import { act } from "react-dom/test-utils";
-import { MemoryRouter } from "react-router";
+import * as React from 'react';
+import { render, mount } from 'enzyme';
+import { MockedProvider, wait } from '@apollo/react-testing';
+import { MeDocument } from '../../generated/graphql';
+import { Header } from '../../components/common/Header';
+import AnonHeader from '../../components/common/Header/AnonHeader';
+import { act } from 'react-dom/test-utils';
+import { MemoryRouter } from 'react-router';
 
-describe("Component", () => {
-  describe("Header", () => {
+describe('Component', () => {
+  describe('Header', () => {
     const mocks = [
       {
         request: {
@@ -16,13 +16,13 @@ describe("Component", () => {
         },
         result: {
           data: {
-            me: { id: 1, email: "example@email.com" }
+            me: { id: 1, email: 'example@email.com' }
           }
         }
       }
     ];
 
-    it("should render AnonHeader if user is not authenticated", async () => {
+    it('should render AnonHeader if user is not authenticated', async () => {
       const wrapper = mount(
         <MockedProvider mocks={[]}>
           <MemoryRouter>
@@ -38,7 +38,7 @@ describe("Component", () => {
       expect(wrapper.find(AnonHeader).length).toEqual(1);
     });
 
-    it("should render without error", () => {
+    it('should render without error', () => {
       render(
         <MockedProvider mocks={mocks} addTypename={false}>
           <MemoryRouter>

@@ -6,7 +6,8 @@ import {
   useValidateLinkQuery,
   useUpdateEmailMutation,
   useMeQuery,
-  useLogoutMutation
+  useLogoutMutation,
+  UserAuthType
 } from '../../generated/graphql';
 import { useLocation, useHistory, Link } from 'react-router-dom';
 import { queryParse } from '../../lib/queryParser';
@@ -19,7 +20,6 @@ import { setAccessToken } from '../../lib/accessToken';
 
 const NewEmailSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
   const { data } = useMeQuery();
-  // eslint-disable-next-line no-unused-vars
   const history = useHistory();
   const location = useLocation();
   const routeQueries = queryParse(location.search);
@@ -44,19 +44,19 @@ const NewEmailSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
       verificationLink: routeQueries.id
     },
     onCompleted: () => {
-      message.success('Your email has been successfully changed.')
-      logout()
+      message.success('Your email has been successfully changed.');
+      logout();
     },
     onError: err => errorMessage(err)
   });
 
   useEffect(() => {
     if (!routeQueries.id || !routeQueries.email) {
-      history.push('/')
+      history.push('/');
       return;
     }
 
-    if (validated && data && data.me.auth === 'WEBSITE') {
+    if (validated && data && data.me.auth === UserAuthType.Website) {
       const fetchData = async () => {
         await updateEmail();
       };
@@ -110,17 +110,17 @@ const NewEmailSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
               verificationLink: routeQueries.id,
               password
             }
-          })
+          });
         }
-      })
-    }
+      });
+    };
 
     return (
       <Layout hide={1} dark={1}>
         <div className={styles.container}>
           <AuthLayout>
             <Form onSubmit={handleSubmit}>
-              <DescriptionText style={{ marginBottom: '25px'}}>
+              <DescriptionText style={{ marginBottom: '25px' }}>
                 You will need to set a new password for your new email address
                 because your current email address is using Google's OAuth
                 services. You will still be able to login through Google's OAuth

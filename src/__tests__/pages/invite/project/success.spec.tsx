@@ -2,9 +2,8 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { MockedProvider, wait } from '@apollo/react-testing';
 import {
-  MeDocument,
   ValidateLinkDocument,
-  AcceptProjectInviteLinkDocument
+  AcceptProjectInviteLinkDocument,
 } from '../../../../generated/graphql';
 import ProjectInviteSuccessPage from '../../../../pages/invite/project/success';
 import { act } from 'react-dom/test-utils';
@@ -14,16 +13,15 @@ import AnonLayout from '../../../../components/layouts/AnonLayout';
 import { MemoryRouter, Route, Switch } from 'react-router';
 import Dashboard from '../../../../pages/dashboard';
 import { queryStringify } from '../../../../lib/queryParser';
+import { mockUser } from '../../../utils/mockUser';
+import { mockMeQuery } from '../../../utils/mockQueries';
 
 describe('Pages', () => {
   describe('ProjectInviteSuccessPage', () => {
     const mockQuery = {
-      email: 'dev@email.com',
-      username: 'dev',
+      ...mockUser,
       projectInviteLink: 'qwe',
-      id: 123,
       key: 'project-invite-dev@email.com',
-      avatar: null
     };
 
     const routerLocation = {
@@ -35,22 +33,7 @@ describe('Pages', () => {
     };
 
     let acceptProjectInviteLinkCalled = false;
-    const meQuery = {
-      request: {
-        query: MeDocument
-      },
-      result: {
-        data: {
-          me: {
-            id: mockQuery.id,
-            email: mockQuery.email,
-            username: mockQuery.username,
-            avatar: mockQuery.avatar
-          }
-        },
-        loading: false
-      }
-    };
+
     const validateLinkQuery = {
       request: {
         query: ValidateLinkDocument,
@@ -87,7 +70,7 @@ describe('Pages', () => {
     it('fires acceptProjectInviteLink mutation on mount', async () => {
       const wrapper = mount(
         <MockedProvider
-          mocks={[meQuery, validateLinkQuery, acceptProjectLinkQuery]}
+          mocks={[mockMeQuery, validateLinkQuery, acceptProjectLinkQuery]}
           addTypename={false}
         >
           <MemoryRouter initialEntries={[routerLocation]}>
@@ -123,7 +106,7 @@ describe('Pages', () => {
       const errorQuery = {
         ...validateLinkQuery,
         result: {
-          errors: [new GraphQLError(`This link has expired`)]
+          errors: [new GraphQLError('This link has expired')]
         }
       };
 
@@ -139,7 +122,7 @@ describe('Pages', () => {
         await wait(0);
       });
 
-      expect(wrapper.contains(<ErrorLayout />));
+      expect(wrapper.containsMatchingElement(<ErrorLayout />)).toBe(true);
     });
 
     it('should render an auth form if user is not authenticated', async () => {
