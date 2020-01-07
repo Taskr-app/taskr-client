@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ChangePassword from './ChangePassword';
 import { SubText } from '../../../components/common/Text';
-import { useMeQuery } from '../../../generated/graphql';
+import { useMeQuery, UserAuthType } from '../../../generated/graphql';
 import styles from './AccountSettings.module.scss';
 import { Button, Divider } from 'antd';
 import AccountAvatar from './AccountAvatar';
@@ -51,7 +51,7 @@ const AccountSettingsPage: React.FC = () => {
       <Divider />
 
       <div className={styles.labels}>
-        <ChangePassword />
+        {data.me.auth !== UserAuthType.Google && <ChangePassword />}
       </div>
     </>
   );
