@@ -4,7 +4,8 @@ import { MockedProvider, wait } from '@apollo/react-testing';
 import {
   MeDocument,
   ValidatePublicProjectLinkDocument,
-  AcceptPublicProjectLinkDocument
+  AcceptPublicProjectLinkDocument,
+  UserAuthType
 } from '../../../../generated/graphql';
 import PublicProjectInvitePage from '../../../../pages/invite/project/public';
 import { act } from 'react-dom/test-utils';
@@ -23,7 +24,8 @@ describe('Pages', () => {
       projectId: '1241',
       projectInviteLink: 'abc',
       username: 'dev',
-      avatar: null
+      avatar: null,
+      auth: UserAuthType.Website
     };
 
     const routerLocation = {
@@ -45,7 +47,8 @@ describe('Pages', () => {
             id: mockQuery.id,
             email: mockQuery.email,
             username: mockQuery.username,
-            avatar: mockQuery.avatar
+            avatar: mockQuery.avatar,
+            auth: mockQuery.auth
           }
         },
         loading: false

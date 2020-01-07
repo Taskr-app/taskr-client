@@ -4,7 +4,8 @@ import { MockedProvider, wait } from '@apollo/react-testing';
 import {
   AcceptTeamInviteLinkDocument,
   MeDocument,
-  ValidateLinkDocument
+  ValidateLinkDocument,
+  UserAuthType
 } from '../../../../generated/graphql';
 import TeamInviteSuccessPage from '../../../../pages/invite/team/success';
 import { act } from 'react-dom/test-utils';
@@ -22,7 +23,8 @@ describe('Pages', () => {
       username: 'dev',
       teamInviteLink: 'abc',
       key: 'team-invite-dev@email.com',
-      avatar: null
+      avatar: null,
+      auth: UserAuthType.Website
     };
 
     let acceptTeamInviteLinkCalled = false;
@@ -36,7 +38,8 @@ describe('Pages', () => {
             id: mockQuery.id,
             email: mockQuery.email,
             username: mockQuery.username,
-            avatar: mockQuery.avatar
+            avatar: mockQuery.avatar,
+            auth: mockQuery.auth
           }
         },
         loading: false

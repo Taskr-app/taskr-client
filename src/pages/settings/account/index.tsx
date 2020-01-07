@@ -23,8 +23,8 @@ const AccountSettingsPage: React.FC = () => {
   };
 
   return (
-    <>
-      {!editing ? (
+    <div>
+      {editing ? (
         <AccountSettingsForm handleEdit={toggleEditing} />
       ) : (
         <div className={styles.accountSettings}>
@@ -65,7 +65,7 @@ const AccountSettingsPage: React.FC = () => {
         </LinkText>
         {changePassword && <ChangePassword />}
       </div>
-    </>
+    </div>
   );
 };
 
