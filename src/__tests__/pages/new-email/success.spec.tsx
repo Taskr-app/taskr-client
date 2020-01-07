@@ -140,7 +140,7 @@ describe('Pages', () => {
       expect(wrapper.containsMatchingElement(<Input />));
     });
 
-    it.only('should log the user out and redirect to login screen once their email is successfully updated', async () => {
+    it('should log the user out and redirect to login screen once their email is successfully updated', async () => {
       const wrapper = mount(
         <MockedProvider
           mocks={[
