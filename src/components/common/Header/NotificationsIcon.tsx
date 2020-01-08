@@ -29,19 +29,15 @@ const NotificationsIcon: React.FC<Props> = ({ user }) => {
   }, []);
   const notifications = (data && data.getNotifications) || [];
 
-    const menu = (
-      <Menu>
-        {notifications.map(notification => {
-          return (
-            <Menu.Item key={notification.id}>
-              {notification.type}
-            </Menu.Item>
-          )
-        })}
-      </Menu>
-    )
+  const menu = (
+    <Menu>
+      {notifications.map(notification => {
+        return <Menu.Item key={notification.id}>{notification.type}</Menu.Item>;
+      })}
+    </Menu>
+  );
   return (
-    <Dropdown overlay={menu}>
+    <Dropdown overlay={menu} disabled={!notifications.length}>
       <Badge count={notifications.length}>
         <Avatar
           icon={<Icon type='bell' theme='filled' />}
