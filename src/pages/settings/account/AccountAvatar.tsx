@@ -14,6 +14,7 @@ type Props = {
 
 const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
   const [preview, setPreview] = useState('');
+  const [imageError, handleImageError] = useState<boolean>(false)
   const { acceptedFiles, getInputProps, getRootProps } = useDropzone({
     onDrop: useCallback(
       ([file]) => {
@@ -22,6 +23,7 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
       [setPreview, preview]
     )
   });
+
   useEffect(() => {
     URL.revokeObjectURL(preview);
   }, [preview]);
@@ -33,24 +35,30 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
     setFile && setFile(acceptedFiles[0]);
   }, [acceptedFiles[0]]);
 
-  const renderImagePreview = () => {
+  const renderImagePreview = useCallback(() => {
     if (preview) {
       return <img className={avatarStyle} src={preview} alt='' />;
     }
 
-    if (user.avatar) {
-      return (
-        <img
-          className={avatarStyle}
-          src={cloudinary.url(user.avatar, {
-            height: 125,
-            width: 125,
-            radius: 'max',
-            gravity: 'face'
-          })}
-          alt=''
-        />
-      );
+    if (user.avatar && !imageError) {
+      const cloudinaryUrl = cloudinary.url(user.avatar, {
+        height: 125,
+        width: 125,
+        radius: 'max',
+        gravity: 'face'
+      });
+      const toggleImageError = () => handleImageError(true)
+
+      if (cloudinaryUrl) {
+        return (
+          <img
+            className={avatarStyle}
+            src={cloudinaryUrl}
+            alt=''
+            onError={toggleImageError}
+          />
+        );
+      }
     }
 
     return (
@@ -58,7 +66,7 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </div>
     );
-  };
+  }, [preview, imageError, editing])
 
   const rootProps = editing
     ? getRootProps({ className: styles.avatarSettings })

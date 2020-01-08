@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { User } from '../../../generated/graphql';
 import { Avatar } from 'antd';
 import { cloudinary } from '../../../lib/cloudinary';
@@ -12,22 +12,26 @@ interface UserAvatarProps {
 }
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({ user, ...style }) => {
+  const [imageError, handleImageError] = useState<boolean>(false)
   const letterToColor = useCallback(() => {
     const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
     const letter = user.username[0].toUpperCase();
     return colorList[Math.floor((letter.toUpperCase().charCodeAt(0) - 64) / 6)];
   }, [user.username]);
 
-  if (user.avatar) {
+  if (user.avatar && !imageError) {
     const imageSource = cloudinary.url(user.avatar, {
       height: 50,
       width: 50,
       radius: 'max',
       gravity: 'face'
     });
+
+    const toggleImageError = () => handleImageError(true)
+
     return (
       <div>
-        <Avatar icon={<img src={imageSource} alt='' />} />
+        <Avatar icon={<img src={imageSource} alt='' onError={toggleImageError} />} />
       </div>
     );
   }
