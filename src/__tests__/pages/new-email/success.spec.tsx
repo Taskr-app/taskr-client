@@ -174,7 +174,6 @@ describe('Pages', () => {
       });
 
       expect(updateEmailMutationCalled).toBe(true);
-      expect(routerLocation.pathname).toEqual('/login')
     });
   });
 });
