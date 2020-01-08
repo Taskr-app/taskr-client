@@ -120,6 +120,7 @@ describe('Pages', () => {
 
       await act(async () => {
         await wait(0);
+        wrapper.update();
       });
 
       expect(wrapper.containsMatchingElement(<ErrorLayout />)).toBe(true);
