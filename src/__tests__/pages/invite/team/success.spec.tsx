@@ -1,27 +1,30 @@
-import * as React from "react";
-import { mount } from "enzyme";
-import { MockedProvider, wait } from "@apollo/react-testing";
+import * as React from 'react';
+import { mount } from 'enzyme';
+import { MockedProvider, wait } from '@apollo/react-testing';
 import {
   AcceptTeamInviteLinkDocument,
   MeDocument,
-  ValidateLinkDocument
-} from "../../../../generated/graphql";
-import TeamInviteSuccessPage from "../../../../pages/invite/team/success";
-import { act } from "react-dom/test-utils";
-import AnonLayout from "../../../../components/layouts/AnonLayout";
-import { GraphQLError } from "graphql";
-import ErrorLayout from "../../../../components/layouts/ErrorLayout";
-import { MemoryRouter, Switch, Route } from "react-router";
-import Dashboard from "../../../../pages/dashboard";
+  ValidateLinkDocument,
+  UserAuthType
+} from '../../../../generated/graphql';
+import TeamInviteSuccessPage from '../../../../pages/invite/team/success';
+import { act } from 'react-dom/test-utils';
+import AnonLayout from '../../../../components/layouts/AnonLayout';
+import { GraphQLError } from 'graphql';
+import ErrorLayout from '../../../../components/layouts/ErrorLayout';
+import { MemoryRouter, Switch, Route } from 'react-router';
+import Dashboard from '../../../../pages/dashboard';
 
-describe("Pages", () => {
-  describe("TeamInviteSuccessPage", () => {
+describe('Pages', () => {
+  describe('TeamInviteSuccessPage', () => {
     const mockQuery = {
       id: 178,
-      email: "dev@email.com",
-      username: "dev",
-      teamInviteLink: "abc",
-      key: "team-invite-dev@email.com"
+      email: 'dev@email.com',
+      username: 'dev',
+      teamInviteLink: 'abc',
+      key: 'team-invite-dev@email.com',
+      avatar: null,
+      auth: UserAuthType.Website
     };
 
     let acceptTeamInviteLinkCalled = false;
@@ -34,7 +37,9 @@ describe("Pages", () => {
           me: {
             id: mockQuery.id,
             email: mockQuery.email,
-            username: mockQuery.username
+            username: mockQuery.username,
+            avatar: mockQuery.avatar,
+            auth: mockQuery.auth
           }
         },
         loading: false
@@ -75,10 +80,10 @@ describe("Pages", () => {
     };
 
     const routerLocation = {
-      pathname: "/invite/team/success",
+      pathname: '/invite/team/success',
       search: `?email=${mockQuery.email}&id=${mockQuery.teamInviteLink}`
     };
-    it("fires acceptTeamInvite mutation on mount", async () => {
+    it('fires acceptTeamInvite mutation on mount', async () => {
       const wrapper = mount(
         <MockedProvider
           mocks={[meQuery, validateLinkQuery, acceptTeamLinkInviteQuery]}
@@ -88,12 +93,12 @@ describe("Pages", () => {
             <Switch>
               <Route
                 exact
-                path="/invite/team/success"
+                path='/invite/team/success'
                 render={() => <TeamInviteSuccessPage />}
               />
               <Route
                 exact
-                path="/"
+                path='/'
                 render={({ location }) => {
                   routerLocation.pathname = location.pathname;
                   return <Dashboard />;
@@ -109,15 +114,15 @@ describe("Pages", () => {
       });
 
       expect(acceptTeamInviteLinkCalled).toBe(true);
-      expect(routerLocation.pathname).toEqual("/");
+      expect(routerLocation.pathname).toEqual('/');
       wrapper.unmount();
     });
 
-    it("should render an error layout if the link has expired", async () => {
+    it('should render an error layout if the link has expired', async () => {
       const errorQuery = {
         ...validateLinkQuery,
         result: {
-          errors: [new GraphQLError("This link has expired")]
+          errors: [new GraphQLError('This link has expired')]
         }
       };
       const wrapper = mount(
@@ -135,7 +140,7 @@ describe("Pages", () => {
       expect(wrapper.contains(<ErrorLayout />));
     });
 
-    it("should render an auth form if user is not authenticated", async () => {
+    it('should render an auth form if user is not authenticated', async () => {
       const wrapper = mount(
         <MockedProvider mocks={[validateLinkQuery]}>
           <MemoryRouter initialEntries={[routerLocation]}>

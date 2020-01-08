@@ -5,7 +5,7 @@ import Layout from '../Layout';
 import styles from './ErrorLayout.module.scss'
 
 interface Props {
-  message?: string
+  message?: string | React.ReactNode
 }
 
 /**

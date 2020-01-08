@@ -1,11 +1,10 @@
 import React from 'react';
 import { useGetUserTeamsQuery, Team } from '../../../generated/graphql';
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
 import Layout from '../Layout';
 import { encode } from '../../../lib/hashids';
 import { useHistory } from 'react-router';
-
-import styles from './DashboardLayout.module.scss';
+import SideMenuItem from '../../common/Menu/SideMenuItem';
 
 const DashboardLayout: React.FC = ({ children }) => {
   const history = useHistory();
@@ -26,25 +25,15 @@ const DashboardLayout: React.FC = ({ children }) => {
         <>
           <Menu style={{ height: '100%' }} mode='inline' selectable={false}>
             <Menu.Item key='projects' onClick={handleProjectsClick}>
-              <span className={styles.menuItem}>
-                <Icon type='project' style={{ color: '#8491A3' }} />
-                <span className={styles.text}>Projects</span>
-              </span>
+              <SideMenuItem label='Projects' icon='project' />
             </Menu.Item>
+
             <Menu.Item key='tasks'>
-              <span className={styles.menuItem}>
-                <Icon type='code' style={{ color: '#8491A3' }} />
-                <span className={styles.text}>My Tasks</span>
-              </span>
+              <SideMenuItem icon='code' label='My Tasks' />
             </Menu.Item>
             <Menu.SubMenu
               key='teams'
-              title={
-                <span className={styles.menuItem}>
-                  <Icon type='team' style={{ color: '#8491A3' }} />
-                  <span className={styles.text}>Teams</span>
-                </span>
-              }
+              title={<SideMenuItem icon='team' label='Teams' />}
             >
               {teamLoading || !teamData ? (
                 <div />

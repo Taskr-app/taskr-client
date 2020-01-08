@@ -1,7 +1,7 @@
-import React from "react";
-import { Menu, Icon } from "antd";
-import styles from './IconItem.module.scss'
-import { MenuItemProps } from "antd/lib/menu/MenuItem";
+import React from 'react';
+import { Menu, Icon } from 'antd';
+import styles from './IconItem.module.scss';
+import { MenuItemProps } from 'antd/lib/menu/MenuItem';
 
 const { Item } = Menu;
 
@@ -18,7 +18,7 @@ export const MenuItemIcon: React.FC<MenuItemIconProps & MenuItemProps> = ({
   ...props
 }) => {
   return (
-    <Item {...props} style={{ position: "relative" }}>
+    <Item {...props} style={{ position: 'relative' }}>
       <span className={styles.menuItemIcon}>
         {leftIcon && <Icon type={leftIcon} />}
         <span>{label}</span>

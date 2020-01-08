@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
+import styles from './AccountSettings.module.scss';
 import { Form, Input, Icon, Button, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { useChangePasswordMutation } from '../../../generated/graphql';
 import { errorMessage } from '../../../lib/messageHandler';
+import { LinkText } from '../../../components/common/Text';
 
 const ChangePassword: React.FC<FormComponentProps> = ({ form }) => {
+  const [showChangePassword, handlePasswordChange] = useState<boolean>(false);
+  const togglePasswordChange = () => handlePasswordChange(!showChangePassword)
   const [changePassword, { loading }] = useChangePasswordMutation({
     onCompleted: () => {
       message.success('Your password has changed for the next time you login');
@@ -39,6 +43,12 @@ const ChangePassword: React.FC<FormComponentProps> = ({ form }) => {
   };
 
   const { getFieldDecorator } = form;
+
+  if (!showChangePassword) {
+    return (
+      <LinkText onClick={togglePasswordChange} style={{ marginBottom: '15px' }}>Change password</LinkText>
+    );
+  }
 
   return (
     <Form onSubmit={handleSubmit} style={{ width: '350px' }}>
@@ -82,9 +92,14 @@ const ChangePassword: React.FC<FormComponentProps> = ({ form }) => {
         )}
       </Form.Item>
       <Form.Item>
-        <Button htmlType='submit' type='primary' block loading={loading}>
-          Change password
-        </Button>
+        <div className={styles.flex}>
+          <Button onClick={togglePasswordChange} style={{ marginRight: '15px' }} block>
+            Cancel
+          </Button>
+          <Button htmlType='submit' type='primary' loading={loading} block>
+            Change password
+          </Button>
+        </div>
       </Form.Item>
     </Form>
   );

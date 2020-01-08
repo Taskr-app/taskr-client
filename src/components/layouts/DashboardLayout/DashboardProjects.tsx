@@ -5,7 +5,7 @@ import { useHistory } from 'react-router';
 
 import styles from './DashboardLayout.module.scss';
 import { Icon, Tooltip } from 'antd';
-import { DefaultUserAvatar } from '../../common/Avatar';
+import { UserAvatar } from '../../common/Avatar';
 
 const DashboardProjects: React.FC = () => {
   const history = useHistory();
@@ -40,7 +40,7 @@ const DashboardProjects: React.FC = () => {
               <div className={styles.usersContainer}>
                 <Tooltip title={project.owner.email}>
                   <div>
-                    <DefaultUserAvatar user={project.owner} />
+                    <UserAvatar user={project.owner} />
                   </div>
                 </Tooltip>
               </div>

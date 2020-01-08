@@ -1,20 +1,20 @@
-import * as React from "react";
-import { mount } from "enzyme";
-import { act } from "react-dom/test-utils";
-import { MockedProvider, wait } from "@apollo/react-testing";
-import { ForgotPasswordDocument } from "../../../generated/graphql";
-import ForgotPasswordSuccessPage from "../../../pages/forgot-password/success";
-import { queryStringify } from "../../../lib/queryParser";
-import { MemoryRouter, Switch, Route } from "react-router";
-import Login from "../../../pages/login"
+import * as React from 'react';
+import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
+import { MockedProvider, wait } from '@apollo/react-testing';
+import { ForgotPasswordDocument } from '../../../generated/graphql';
+import ForgotPasswordSuccessPage from '../../../pages/forgot-password/success';
+import { queryStringify } from '../../../lib/queryParser';
+import { MemoryRouter, Switch, Route } from 'react-router';
+import Login from '../../../pages/login';
 
-describe("Pages", () => {
-  describe("ForgotPasswordSuccessPage", () => {
+describe('Pages', () => {
+  describe('ForgotPasswordSuccessPage', () => {
     let forgotPasswordCalled = false;
     const mockQuery = {
-      email: "qjwrwqr@email.com",
-      id: "qwewqrwqrq",
-      password: "password"
+      email: 'qjwrwqr@email.com',
+      id: 'qwewqrwqrq',
+      password: 'password'
     };
     const mocks = [
       {
@@ -38,14 +38,14 @@ describe("Pages", () => {
     ];
 
     const routerLocation = {
-      pathname: "/forgot-password/success",
+      pathname: '/forgot-password/success',
       search: queryStringify({
         email: mockQuery.email,
         id: mockQuery.id
       })
     };
 
-    it("fires forgotPassword mutation on submit and redirects to LoginPage", async () => {
+    it('fires forgotPassword mutation on submit and redirects to LoginPage', async () => {
       const wrapper = mount(
         <MockedProvider mocks={mocks} addTypename={false}>
           <MemoryRouter initialEntries={[routerLocation]}>
@@ -60,7 +60,7 @@ describe("Pages", () => {
                 path={'/login'}
                 render={({ location }) => {
                   routerLocation.pathname = location.pathname;
-                  return <Login />
+                  return <Login />;
                 }}
               />
             </Switch>
@@ -71,21 +71,21 @@ describe("Pages", () => {
       await act(async () => {
         wrapper
           .find(`input#forgotPasswordSuccess_password`)
-          .simulate("change", {
-            target: { name: "password", value: mockQuery.password }
+          .simulate('change', {
+            target: { name: 'password', value: mockQuery.password }
           });
         wrapper
           .find(`input#forgotPasswordSuccess_confirmPassword`)
-          .simulate("change", {
-            target: { name: "confirmPassword", value: mockQuery.password }
+          .simulate('change', {
+            target: { name: 'confirmPassword', value: mockQuery.password }
           });
-        wrapper.find("form").simulate("submit");
+        wrapper.find('form').simulate('submit');
         await wait(0);
       });
 
       expect(forgotPasswordCalled).toBe(true);
-      expect(wrapper.contains(<Login />))
-      expect(routerLocation.pathname).toEqual('/login')
+      expect(wrapper.contains(<Login />));
+      expect(routerLocation.pathname).toEqual('/login');
     });
   });
 });
