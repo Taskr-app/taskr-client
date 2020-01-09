@@ -17,6 +17,7 @@ import EmailVerificationSuccessPage from './pages/email-verification/success';
 import TeamPage from './pages/team';
 import GooglePage from './pages/google';
 import ProjectPage from './pages/project';
+import NewEmailSuccessPage from './pages/new-email/success';
 
 const Routes: React.FC = () => {
   return (
@@ -63,7 +64,12 @@ const Routes: React.FC = () => {
               component={TeamInviteSuccess}
             />
 
-            <Route exact path="/settings" component={Settings} />
+            <Route path="/settings" component={Settings} />
+            <Route
+              exact
+              path="/new-email/success"
+              component={NewEmailSuccessPage}
+            />
 
             <Route exact path="/team/:teamId/:teamName" component={TeamPage} />
             <Route

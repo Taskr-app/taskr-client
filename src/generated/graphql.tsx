@@ -13,22 +13,11 @@ export type Scalars = {
   DateTime: any,
   /** String value that is a hex color code ie. #FFFFFF */
   HexColor: any,
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any,
 };
 
 
-
-export type ImageResponse = {
-   __typename?: 'ImageResponse',
-  public_id: Scalars['String'],
-  width: Scalars['Float'],
-  height: Scalars['Float'],
-  format: Scalars['String'],
-  created_at: Scalars['String'],
-  bytes: Scalars['Float'],
-  url: Scalars['String'],
-  secure_url: Scalars['String'],
-  original_filename: Scalars['String'],
-};
 
 export type Label = {
    __typename?: 'Label',
@@ -63,9 +52,10 @@ export type Mutation = {
   login: LoginResponse,
   logout: Scalars['Boolean'],
   auth_googleOAuth: LoginResponse,
-  createAvatar: ImageResponse,
-  updateAvatar: ImageResponse,
-  updateUsername: User,
+  uploadAvatar: Scalars['Boolean'],
+  updateUsername: Scalars['Boolean'],
+  sendNewEmailLink: Scalars['Boolean'],
+  updateEmail: Scalars['Boolean'],
   sendForgotPasswordLink: Scalars['String'],
   forgotPassword: Scalars['Boolean'],
   changePassword: Scalars['Boolean'],
@@ -141,18 +131,25 @@ export type MutationAuth_GoogleOAuthArgs = {
 };
 
 
-export type MutationCreateAvatarArgs = {
-  image: Scalars['String']
-};
-
-
-export type MutationUpdateAvatarArgs = {
-  image: Scalars['String']
+export type MutationUploadAvatarArgs = {
+  image: Scalars['Upload']
 };
 
 
 export type MutationUpdateUsernameArgs = {
   username: Scalars['String']
+};
+
+
+export type MutationSendNewEmailLinkArgs = {
+  email: Scalars['String']
+};
+
+
+export type MutationUpdateEmailArgs = {
+  verificationLink: Scalars['String'],
+  password?: Maybe<Scalars['String']>,
+  email: Scalars['String']
 };
 
 
@@ -465,9 +462,11 @@ export type Subscription = {
   onListUpdated: List,
   onListMoved: List,
   onTaskCreated: Task,
-  updatedTask: Task,
   onTaskMoved: Task,
   onTaskDeleted: Task,
+  newTask: Task,
+  updatedTask: Task,
+  deletedTask: Task,
   addedTaskMember: Task,
   removedTaskMember: Task,
   newNotification: Notifications,
@@ -496,6 +495,10 @@ export type SubscriptionOnListMovedArgs = {
 
 export type SubscriptionOnTaskCreatedArgs = {
   listId: Scalars['ID']
+}
+
+export type SubscriptionNewTaskArgs = {
+  listId: Scalars['Int']
 };
 
 
@@ -514,12 +517,12 @@ export type SubscriptionOnTaskDeletedArgs = {
 };
 
 
-export type SubscriptionAddedTaskMemberArgs = {
+export type SubscriptionRemovedTaskMemberArgs = {
   taskId: Scalars['Int']
 };
 
 
-export type SubscriptionRemovedTaskMemberArgs = {
+export type SubscriptionAddedTaskMemberArgs = {
   taskId: Scalars['Int']
 };
 
@@ -551,13 +554,14 @@ export type Team = {
   projects: Array<Project>,
 };
 
+
 export type User = {
    __typename?: 'User',
   id: Scalars['ID'],
   email: Scalars['String'],
   username: Scalars['String'],
-  avatar: Scalars['String'],
-  auth: Scalars['String'],
+  avatar?: Maybe<Scalars['String']>,
+  auth: UserAuthType,
   created_at: Scalars['DateTime'],
   updated_at: Scalars['DateTime'],
   ownedProjects: Array<Project>,
@@ -566,6 +570,12 @@ export type User = {
   teams: Array<Team>,
   tasks: Array<Task>,
 };
+
+/** User auth type for auth column (WEBSITE | GOOGLE) */
+export enum UserAuthType {
+  Website = 'WEBSITE',
+  Google = 'GOOGLE'
+}
 
 export type ValidateLinkQueryVariables = {
   key: Scalars['String'],
@@ -801,10 +811,10 @@ export type GetUserProjectsQuery = (
     & Pick<Project, 'id' | 'name' | 'desc'>
     & { owner: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'username'>
+      & Pick<User, 'id' | 'email' | 'username' | 'avatar'>
     ), members: Array<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'username'>
+      & Pick<User, 'id' | 'email' | 'username' | 'avatar'>
     )> }
   )> }
 );
@@ -1088,10 +1098,9 @@ export type MeQueryVariables = {};
 
 export type MeQuery = (
   { __typename?: 'Query' }
-  & { me: (
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'username'>
-  ) }
+  & { me: { __typename?: 'User' }
+    & UserFragment
+   }
 );
 
 export type RegisterMutationVariables = {
@@ -1130,6 +1139,16 @@ export type SendForgotPasswordLinkMutation = (
   & Pick<Mutation, 'sendForgotPasswordLink'>
 );
 
+export type SendNewEmailLinkMutationVariables = {
+  email: Scalars['String']
+};
+
+
+export type SendNewEmailLinkMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'sendNewEmailLink'>
+);
+
 export type SendVerificationLinkMutationVariables = {
   email: Scalars['String'],
   password: Scalars['String']
@@ -1141,6 +1160,18 @@ export type SendVerificationLinkMutation = (
   & Pick<Mutation, 'sendVerificationLink'>
 );
 
+export type UpdateEmailMutationVariables = {
+  email: Scalars['String'],
+  verificationLink: Scalars['String'],
+  password?: Maybe<Scalars['String']>
+};
+
+
+export type UpdateEmailMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateEmail'>
+);
+
 export type UpdateUsernameMutationVariables = {
   username: Scalars['String']
 };
@@ -1148,13 +1179,33 @@ export type UpdateUsernameMutationVariables = {
 
 export type UpdateUsernameMutation = (
   { __typename?: 'Mutation' }
-  & { updateUsername: (
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'username'>
-  ) }
+  & Pick<Mutation, 'updateUsername'>
 );
 
+export type UploadAvatarMutationVariables = {
+  image: Scalars['Upload']
+};
 
+
+export type UploadAvatarMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'uploadAvatar'>
+);
+
+export type UserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'email' | 'username' | 'avatar' | 'auth'>
+);
+
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  id
+  email
+  username
+  avatar
+  auth
+}
+    `;
 export const ValidateLinkDocument = gql`
     query ValidateLink($key: String!, $link: String!) {
   validateLink(key: $key, link: $link)
@@ -1449,11 +1500,13 @@ export const GetUserProjectsDocument = gql`
       id
       email
       username
+      avatar
     }
     members {
       id
       email
       username
+      avatar
     }
   }
 }
@@ -1807,12 +1860,10 @@ export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<Logout
 export const MeDocument = gql`
     query Me {
   me {
-    id
-    email
-    username
+    ...User
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 
     export function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>) {
       return ApolloReactHooks.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
@@ -1864,6 +1915,19 @@ export type SendForgotPasswordLinkMutationFn = ApolloReactCommon.MutationFunctio
 export type SendForgotPasswordLinkMutationHookResult = ReturnType<typeof useSendForgotPasswordLinkMutation>;
 export type SendForgotPasswordLinkMutationResult = ApolloReactCommon.MutationResult<SendForgotPasswordLinkMutation>;
 export type SendForgotPasswordLinkMutationOptions = ApolloReactCommon.BaseMutationOptions<SendForgotPasswordLinkMutation, SendForgotPasswordLinkMutationVariables>;
+export const SendNewEmailLinkDocument = gql`
+    mutation SendNewEmailLink($email: String!) {
+  sendNewEmailLink(email: $email)
+}
+    `;
+export type SendNewEmailLinkMutationFn = ApolloReactCommon.MutationFunction<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>;
+
+    export function useSendNewEmailLinkMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>) {
+      return ApolloReactHooks.useMutation<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>(SendNewEmailLinkDocument, baseOptions);
+    }
+export type SendNewEmailLinkMutationHookResult = ReturnType<typeof useSendNewEmailLinkMutation>;
+export type SendNewEmailLinkMutationResult = ApolloReactCommon.MutationResult<SendNewEmailLinkMutation>;
+export type SendNewEmailLinkMutationOptions = ApolloReactCommon.BaseMutationOptions<SendNewEmailLinkMutation, SendNewEmailLinkMutationVariables>;
 export const SendVerificationLinkDocument = gql`
     mutation SendVerificationLink($email: String!, $password: String!) {
   sendVerificationLink(email: $email, password: $password)
@@ -1877,13 +1941,22 @@ export type SendVerificationLinkMutationFn = ApolloReactCommon.MutationFunction<
 export type SendVerificationLinkMutationHookResult = ReturnType<typeof useSendVerificationLinkMutation>;
 export type SendVerificationLinkMutationResult = ApolloReactCommon.MutationResult<SendVerificationLinkMutation>;
 export type SendVerificationLinkMutationOptions = ApolloReactCommon.BaseMutationOptions<SendVerificationLinkMutation, SendVerificationLinkMutationVariables>;
+export const UpdateEmailDocument = gql`
+    mutation UpdateEmail($email: String!, $verificationLink: String!, $password: String) {
+  updateEmail(email: $email, verificationLink: $verificationLink, password: $password)
+}
+    `;
+export type UpdateEmailMutationFn = ApolloReactCommon.MutationFunction<UpdateEmailMutation, UpdateEmailMutationVariables>;
+
+    export function useUpdateEmailMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateEmailMutation, UpdateEmailMutationVariables>) {
+      return ApolloReactHooks.useMutation<UpdateEmailMutation, UpdateEmailMutationVariables>(UpdateEmailDocument, baseOptions);
+    }
+export type UpdateEmailMutationHookResult = ReturnType<typeof useUpdateEmailMutation>;
+export type UpdateEmailMutationResult = ApolloReactCommon.MutationResult<UpdateEmailMutation>;
+export type UpdateEmailMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateEmailMutation, UpdateEmailMutationVariables>;
 export const UpdateUsernameDocument = gql`
     mutation UpdateUsername($username: String!) {
-  updateUsername(username: $username) {
-    id
-    email
-    username
-  }
+  updateUsername(username: $username)
 }
     `;
 export type UpdateUsernameMutationFn = ApolloReactCommon.MutationFunction<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
@@ -1894,3 +1967,16 @@ export type UpdateUsernameMutationFn = ApolloReactCommon.MutationFunction<Update
 export type UpdateUsernameMutationHookResult = ReturnType<typeof useUpdateUsernameMutation>;
 export type UpdateUsernameMutationResult = ApolloReactCommon.MutationResult<UpdateUsernameMutation>;
 export type UpdateUsernameMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
+export const UploadAvatarDocument = gql`
+    mutation UploadAvatar($image: Upload!) {
+  uploadAvatar(image: $image)
+}
+    `;
+export type UploadAvatarMutationFn = ApolloReactCommon.MutationFunction<UploadAvatarMutation, UploadAvatarMutationVariables>;
+
+    export function useUploadAvatarMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UploadAvatarMutation, UploadAvatarMutationVariables>) {
+      return ApolloReactHooks.useMutation<UploadAvatarMutation, UploadAvatarMutationVariables>(UploadAvatarDocument, baseOptions);
+    }
+export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
+export type UploadAvatarMutationResult = ApolloReactCommon.MutationResult<UploadAvatarMutation>;
+export type UploadAvatarMutationOptions = ApolloReactCommon.BaseMutationOptions<UploadAvatarMutation, UploadAvatarMutationVariables>;

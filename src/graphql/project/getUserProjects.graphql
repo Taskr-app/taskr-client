@@ -7,11 +7,13 @@ query GetUserProjects {
       id
       email
       username
+      avatar
     }
     members {
       id
       email
       username
+      avatar
     }
   }
 }

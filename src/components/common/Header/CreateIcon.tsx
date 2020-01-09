@@ -37,7 +37,7 @@ const CreateIcon: React.FC = () => {
     <Dropdown overlay={menu} placement={'bottomCenter'}>
       <Avatar
         icon={<Icon type='plus-square' theme='twoTone' />}
-        style={{ backgroundColor: 'transparent', color: 'rgba(0, 0, 0, 0.65)' }}
+        style={{ backgroundColor: 'transparent', color: 'rgba(0, 0, 0, 0.65)', cursor: 'pointer' }}
       />
     </Dropdown>
   );

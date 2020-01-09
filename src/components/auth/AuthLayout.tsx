@@ -35,6 +35,12 @@ const AuthLayout: React.FC<Props> = ({ children }) => {
       alt: 'Go back to',
       altLink: 'Log in',
       altHref: '/login'
+    },
+    '/new-email/success': {
+      greeting: 'New password',
+      alt: 'Go back',
+      altLink: 'home',
+      altHref: '/'
     }
   };
 
