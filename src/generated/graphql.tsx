@@ -493,6 +493,10 @@ export type SubscriptionOnListMovedArgs = {
 
 export type SubscriptionOnTaskCreatedArgs = {
   listId: Scalars['ID']
+}
+
+export type SubscriptionNewTaskArgs = {
+  listId: Scalars['Int']
 };
 
 
@@ -511,12 +515,12 @@ export type SubscriptionOnTaskDeletedArgs = {
 };
 
 
-export type SubscriptionAddedTaskMemberArgs = {
+export type SubscriptionRemovedTaskMemberArgs = {
   taskId: Scalars['Int']
 };
 
 
-export type SubscriptionRemovedTaskMemberArgs = {
+export type SubscriptionAddedTaskMemberArgs = {
   taskId: Scalars['Int']
 };
 
@@ -699,6 +703,7 @@ export type UpdateListNameMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'updateListName'>
 );
+
 
 export type GetNotificationsQueryVariables = {};
 

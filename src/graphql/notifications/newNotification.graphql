@@ -1,5 +1,5 @@
 subscription NewNotification($userId: ID!) {
-  newNotification(userId:$userId) {
+  newNotification(userId: $userId) {
     id
     date
     userId
