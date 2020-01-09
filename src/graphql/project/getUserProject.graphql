@@ -7,10 +7,5 @@ query GetUserProject($id: ID!) {
       username
       email
     }
-    lists {
-      id
-      name
-      pos
-    }
   }
 }
