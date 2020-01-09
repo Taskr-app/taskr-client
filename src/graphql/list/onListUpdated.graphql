@@ -1,0 +1,7 @@
+subscription OnListUpdated($projectId: ID!) {
+  onListUpdated(projectId: $projectId) {
+    id
+    name
+    pos
+  }
+}

@@ -29,7 +29,7 @@ const DashboardProjects: React.FC = () => {
           >
             <div className={styles.left}>
               <div className={styles.projectIcon}>
-                <Icon type='appstore' style={{ fontSize: '16px' }} />
+                <Icon type="appstore" style={{ fontSize: '16px' }} />
               </div>
               <div>
                 <p className={styles.name}>{project.name}</p>

@@ -1,0 +1,3 @@
+mutation UpdateListPos($id: ID!, $aboveId: ID, $belowId: ID) {
+  updateListPos(id: $id, aboveId: $aboveId, belowId: $belowId)
+}
