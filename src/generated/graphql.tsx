@@ -454,17 +454,17 @@ export type Subscription = {
 };
 
 
-export type SubscriptionOnListCreatedArgs = {
-  projectId: Scalars['ID']
-};
-
-
 export type SubscriptionOnListDeletedArgs = {
   projectId: Scalars['ID']
 };
 
 
 export type SubscriptionOnListUpdatedArgs = {
+  projectId: Scalars['ID']
+};
+
+
+export type SubscriptionOnListCreatedArgs = {
   projectId: Scalars['ID']
 };
 
