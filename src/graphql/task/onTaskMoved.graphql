@@ -1,0 +1,7 @@
+subscription OnTaskMoved($listId: ID!) {
+  onTaskMoved(listId: $listId) {
+    id
+    name
+    pos
+  }
+}

@@ -1,0 +1,8 @@
+mutation CreateTask($listId: ID!, $name: String!, $desc: String) {
+  createTask(listId: $listId, name: $name, desc: $desc) {
+    id
+    name
+    desc
+    pos
+  }
+}
