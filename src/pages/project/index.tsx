@@ -4,25 +4,18 @@ import {
   OnListCreatedDocument,
   OnListDeletedDocument,
   useUpdateListPosMutation,
-  useGetProjectListsQuery,
   useOnListMovedSubscription,
   useGetUserProjectQuery,
   useGetProjectListsAndTasksQuery,
   GetProjectListsAndTasksDocument,
-  useUpdateTaskPosMutation,
-  useOnTaskMovedSubscription
+  useUpdateTaskPosMutation
 } from '../../generated/graphql';
 import { errorMessage } from '../../lib/messageHandler';
 import { useModal } from '../../components/modals';
 import CreateListModal from '../../components/modals/CreateListModal';
 import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
-import {
-  DragDropContext,
-  Droppable,
-  DraggableLocation,
-  DropResult
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import ListsContainer from './ListsContainer';
 import InviteMemberModal from '../../components/modals/InviteMemberModal';
 import reorder, { reorderTasks } from './reorder';

@@ -7,16 +7,12 @@ import {
   Task,
   useOnTaskMovedSubscription,
   OnTaskCreatedDocument,
-  GetProjectListsAndTasksDocument,
-  useGetProjectListsAndTasksQuery,
   OnTaskDeletedDocument
 } from '../generated/graphql';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { Draggable } from 'react-beautiful-dnd';
 import TasksContainer from './TasksContainer';
 import styles from './List.module.scss';
 import CreateTaskModal from './modals/CreateTaskModal';
-import { useQuery } from '@apollo/react-hooks';
-import { previewImage } from 'antd/lib/upload/utils';
 import {
   subscribeToNewTasks,
   subscribeToDeletedTasks
