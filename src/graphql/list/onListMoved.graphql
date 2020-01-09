@@ -1,0 +1,7 @@
+subscription OnListMoved($projectId: ID!) {
+  onListMoved(projectId: $projectId) {
+    id
+    name
+    pos
+  }
+}

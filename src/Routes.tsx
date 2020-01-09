@@ -25,52 +25,56 @@ const Routes: React.FC = () => {
       <ModalProvider>
         <AuthProvider>
           <Switch>
-            <Route exact path='/' component={Dashboard} />
-            <Route exact path='/home' component={Home} />
-            <Route exact path='/login' component={Login} />
-            <Route exact path='/register' component={Register} />
-            <Route exact path='/google' component={GooglePage} />
+            <Route exact path="/" component={Dashboard} />
+            <Route exact path="/home" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/google" component={GooglePage} />
 
             <Route
               exact
-              path='/email-verification'
+              path="/email-verification"
               component={EmailVerificationPage}
             />
             <Route
               exact
-              path='/email-verification/success'
+              path="/email-verification/success"
               component={EmailVerificationSuccessPage}
             />
-            <Route exact path='/forgot-password' component={ForgotPassword} />
+            <Route exact path="/forgot-password" component={ForgotPassword} />
             <Route
               exact
-              path='/forgot-password/success'
+              path="/forgot-password/success"
               component={ForgotPasswordSuccess}
             />
 
             <Route
               exact
-              path='/invite/project/public'
+              path="/invite/project/public"
               component={ProjectInvitePublic}
             />
             <Route
               exact
-              path='/invite/project/success'
+              path="/invite/project/success"
               component={ProjectInviteSuccess}
             />
             <Route
               exact
-              path='/invite/team/success'
+              path="/invite/team/success"
               component={TeamInviteSuccess}
             />
 
-            <Route path='/settings' component={Settings} />
-            <Route exact path='/new-email/success' component={NewEmailSuccessPage} />
-
-            <Route exact path='/team/:teamId/:teamName' component={TeamPage} />
+            <Route path="/settings" component={Settings} />
             <Route
               exact
-              path='/project/:projectId/:projectName'
+              path="/new-email/success"
+              component={NewEmailSuccessPage}
+            />
+
+            <Route exact path="/team/:teamId/:teamName" component={TeamPage} />
+            <Route
+              exact
+              path="/project/:projectId/:projectName"
               component={ProjectPage}
             />
           </Switch>

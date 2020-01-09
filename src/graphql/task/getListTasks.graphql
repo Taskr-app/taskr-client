@@ -1,0 +1,7 @@
+query GetListTasks($listId: ID!) {
+  getListTasks(listId: $listId) {
+    id
+    name
+    desc
+  }
+}
