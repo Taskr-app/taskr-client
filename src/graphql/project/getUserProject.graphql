@@ -2,10 +2,5 @@ query GetUserProject($id: ID!) {
   getUserProject(id: $id) {
     id
     name
-    owner {
-      id
-      username
-      email
-    }
   }
 }

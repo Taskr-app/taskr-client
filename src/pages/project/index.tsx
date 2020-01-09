@@ -3,19 +3,29 @@ import ProjectLayout from '../../components/layouts/ProjectLayout';
 import {
   OnListCreatedDocument,
   OnListDeletedDocument,
-  useGetProjectListsQuery,
   useUpdateListPosMutation,
   useOnListMovedSubscription,
-  useGetUserProjectQuery
+  useGetUserProjectQuery,
+  useGetProjectListsAndTasksQuery,
+  GetProjectListsAndTasksDocument,
+  useUpdateTaskPosMutation,
+  useOnTaskMovedSubscription
 } from '../../generated/graphql';
 import { errorMessage } from '../../lib/messageHandler';
 import { useModal } from '../../components/modals';
 import CreateListModal from '../../components/modals/CreateListModal';
 import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Droppable,
+  DraggableLocation,
+  DropResult
+} from 'react-beautiful-dnd';
 import ListsContainer from './ListsContainer';
 import InviteMemberModal from '../../components/modals/InviteMemberModal';
+import reorder, { reorderTasks } from './reorder';
+import updateTask from './updateTask';
 
 interface RouteParams {
   projectId: string;
@@ -25,7 +35,7 @@ interface RouteParams {
 const grid = 8;
 
 const getBoardStyle = (isDraggingOver: Boolean) => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  // background: isDraggingOver ? 'lightblue' : 'none',
   display: 'flex'
 });
 
@@ -44,16 +54,19 @@ const ProjectPage: React.FC = () => {
     refetch,
     loading,
     subscribeToMore
-  } = useGetProjectListsQuery({
+  } = useGetProjectListsAndTasksQuery({
     variables: { projectId: projectId as string },
     onError: err => errorMessage(err)
+    // fetchPolicy: 'network-only'
   });
+
   useGetUserProjectQuery({
     variables: { id: projectId as string },
     onError: err => errorMessage(err)
   });
 
   const [updateListPos] = useUpdateListPosMutation({ ignoreResults: true });
+  const [updateTaskPos] = useUpdateTaskPosMutation({ ignoreResults: true });
 
   useOnListMovedSubscription({
     variables: { projectId: projectId as string },
@@ -72,7 +85,7 @@ const ProjectPage: React.FC = () => {
         return {
           ...prev,
           getProjectLists: [
-            ...prev.getProjectLists,
+            ...prev.getProjectListsAndTasks,
             subscriptionData.data.onListCreated
           ]
         };
@@ -88,7 +101,7 @@ const ProjectPage: React.FC = () => {
         if (!subscriptionData.data) {
           return prev;
         }
-        const newLists = prev.getProjectLists.filter(
+        const newLists = prev.getProjectListsAndTasks.filter(
           list => list.id !== subscriptionData.data.onListDeleted.id
         );
         return { ...prev, getProjectLists: newLists };
@@ -102,27 +115,39 @@ const ProjectPage: React.FC = () => {
   }, []);
 
   const handleDragEnd = useCallback(
-    async (result, provided) => {
+    async (result: DropResult, provided) => {
       const { source, destination, draggableId } = result;
+      console.log('draggableId', draggableId, source, destination);
 
+      // no combine allowed
+      if (result.combine) {
+        if (result.type === 'LIST') {
+          return;
+        }
+      }
+
+      // dropped nowhere
       if (!destination || !data) {
         return;
       }
-      const lists = data.getProjectLists;
 
-      const reorder = (list: any[], startIndex: number, endIndex: number) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-        return result;
-      };
+      // did not move anywhere - bail early
+      if (
+        source.droppableId === destination.droppableId &&
+        source.index === destination.index
+      ) {
+        return;
+      }
 
-      if (source.draggableId === destination.draggableId) {
+      const lists = data.getProjectListsAndTasks;
+
+      // reorder a list in a project
+      if (result.type === 'LIST') {
         const reorderedLists = reorder(lists, source.index, destination.index);
 
         // change local state (but not their positions)
-        // ultra jank, MIGHT NEED TO USE writeQuery, look into it
-        const dataGetProjectLists = `getProjectLists({"projectId":"${projectId}"})`;
+        // jank. look into writeQuery
+        const dataGetProjectLists = `getProjectListsAndTasks({"projectId":"${projectId}"})`;
         const newData = { [dataGetProjectLists]: reorderedLists };
         client.writeData({
           data: {
@@ -156,7 +181,54 @@ const ProjectPage: React.FC = () => {
             }
           });
         }
+        return;
       }
+
+      // reorder tasks
+      const reorderedListsAndTasks = reorderTasks({
+        lists,
+        source,
+        destination
+      });
+
+      // write to query (state)
+      client.writeQuery({
+        query: GetProjectListsAndTasksDocument,
+        data: { getProjectListsAndTasks: reorderedListsAndTasks }
+      });
+
+      // destination list (n)
+      const list = reorderedListsAndTasks.find(
+        list => list.id === destination.droppableId.split('-')[1]
+      );
+
+      if (!list) {
+        return;
+      }
+
+      const targetTaskId = list!.tasks[destination.index].id.toString();
+
+      // api update when moving to same list
+      if (source.droppableId === destination.droppableId) {
+        updateTask({
+          id: targetTaskId,
+          list,
+          destination,
+          mutation: updateTaskPos
+        });
+        return;
+      }
+
+      // api update when moving to diff list
+      updateTask({
+        id: targetTaskId,
+        list,
+        destination,
+        mutation: updateTaskPos
+      });
+      return;
+
+      //
     },
     [data]
   );
@@ -165,7 +237,7 @@ const ProjectPage: React.FC = () => {
     return <div>loading</div>;
   }
 
-  const renderLists = data!.getProjectLists;
+  const renderLists = data!.getProjectListsAndTasks;
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -175,12 +247,18 @@ const ProjectPage: React.FC = () => {
         inviteMemberModal={showInviteMemberModal}
       >
         {data && (
-          <Droppable droppableId={projectId.toString()} direction="horizontal">
+          <Droppable
+            droppableId={`project-${projectId.toString()}`}
+            type="LIST"
+            direction="horizontal"
+          >
             {(provided, snapshot) => {
               return (
                 <ListsContainer
+                  querysub={subscribeToMore}
                   provided={provided}
                   lists={renderLists}
+                  refetch={refetch}
                   style={getBoardStyle(snapshot.isDraggingOver)}
                 />
               );

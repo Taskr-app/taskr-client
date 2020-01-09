@@ -1,0 +1,7 @@
+subscription OnTaskCreated($listId: ID!) {
+  onTaskCreated(listId: $listId) {
+    id
+    name
+    pos
+  }
+}

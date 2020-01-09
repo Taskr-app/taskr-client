@@ -1,0 +1,7 @@
+subscription OnTaskDeleted($listId: ID!) {
+  onTaskDeleted(listId: $listId) {
+    id
+    name
+    pos
+  }
+}

@@ -10,26 +10,47 @@ interface Props extends FormComponentProps {
 }
 
 const ListTitleForm: React.FC<Props> = ({ defaultTitle, form, id }) => {
-  const { getFieldDecorator } = form;
+  const { getFieldDecorator, getFieldValue } = form;
   const inputRef = useRef<Input>(null);
   const [title, setTitle] = useState(defaultTitle);
+  const [background, setBackground] = useState('#f4f8f8');
+
   const [updateListName] = useUpdateListNameMutation({
     variables: { name: title, id: id.toString() }
   });
 
+  const handleFocus = () => {
+    setBackground('white');
+  };
+
+  const handleBlur = () => {
+    setBackground('#f4f8f8');
+    if (getFieldValue('name').localeCompare(defaultTitle) !== 0) {
+      updateListName();
+    }
+  };
+
+  const getInputStyle = () => ({
+    border: 'none',
+    background,
+    transition: 'background-color 0.5s ease',
+    fontWeight: 600
+  });
+
   return (
     <Form>
-      <Form.Item>
+      <Form.Item style={{ margin: 0 }}>
         {getFieldDecorator('name', {
           rules: [{ required: true, message: 'List name is required' }],
           initialValue: title
         })(
           <Input
-            onBlur={() => updateListName()}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             ref={inputRef}
             onChange={e => setTitle(e.target.value)}
             onPressEnter={() => inputRef.current!.blur()}
-            style={{ border: 'none' }}
+            style={getInputStyle()}
             className={styles.input}
           />
         )}

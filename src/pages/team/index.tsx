@@ -49,8 +49,6 @@ const TeamPage: React.FC = () => {
     }
   });
 
-  // console.log(data && data);
-
   const [sendTeamInviteLink] = useSendTeamInviteLinkMutation({
     onCompleted: () => {
       message.success(`A team invitation has been sent to ${val}`);
@@ -206,10 +204,10 @@ const TeamPage: React.FC = () => {
       <h1>{renderTeamName()}</h1>
       <form onSubmit={handleSubmit}>
         <input
-          placeholder='Team Name'
+          placeholder="Team Name"
           value={localName.teamName}
-          id='teamName'
-          name='teamName'
+          id="teamName"
+          name="teamName"
           onChange={updateLocalName}
         />
         <button>edit</button>

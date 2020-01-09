@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.1",
-    "@types/react-beautiful-dnd": "^11.0.3",
+    "@types/react-beautiful-dnd": "^11.0.4",
     "antd": "^3.25.0",
     "apollo-boost": "^0.4.4",
     "apollo-link-context": "^1.0.19",
@@ -26,7 +26,7 @@
     "node-sass": "^4.13.0",
     "query-string": "^6.9.0",
     "react": "^16.11.0",
-    "react-beautiful-dnd": "^12.1.1",
+    "react-beautiful-dnd": "^12.2.0",
     "react-dom": "^16.11.0",
     "react-helmet": "^5.2.1",
     "react-router-dom": "^5.1.2",
