@@ -3,10 +3,11 @@
   width: 100vw;
   box-sizing: border-box;
   margin: 0;
-  background-color: #FFF;
+  background-color: #fff;
+  overflow-x: hidden;
 
   &.dark {
-    background-color: #1C1D21;
+    background-color: #1c1d21;
   }
 }
 

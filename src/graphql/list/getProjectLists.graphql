@@ -1,0 +1,7 @@
+query GetProjectLists($projectId: ID!) {
+  getProjectLists(projectId: $projectId) {
+    name
+    id
+    pos
+  }
+}

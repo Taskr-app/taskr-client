@@ -1,23 +1,29 @@
 import React, { useEffect, useCallback } from 'react';
 import ProjectLayout from '../../components/layouts/ProjectLayout';
 import {
-  useGetUserProjectQuery,
   OnListCreatedDocument,
-  OnListDeletedDocument
+  OnListDeletedDocument,
+  useUpdateListPosMutation,
+  useGetProjectListsQuery,
+  useOnListMovedSubscription
 } from '../../generated/graphql';
 import { errorMessage } from '../../lib/messageHandler';
-import { Button } from 'antd';
 import { useModal } from '../../components/modals';
 import CreateListModal from '../../components/modals/CreateListModal';
 import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import ListsContainer from './ListsContiner';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import ListsContainer from './ListsContainer';
 
 interface RouteParams {
   projectId: string;
   projectName: string;
 }
+
+const getBoardStyle = (isDraggingOver: Boolean) => ({
+  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  display: 'flex'
+});
 
 const ProjectPage: React.FC = () => {
   const params = useParams<RouteParams>();
@@ -25,10 +31,25 @@ const ProjectPage: React.FC = () => {
   const { showModal } = useModal();
   const showCreateListModal = () =>
     showModal(<CreateListModal projectId={projectId} />);
-  const { data, loading, subscribeToMore } = useGetUserProjectQuery({
-    variables: { id: projectId as string },
+
+  const {
+    data,
+    client,
+    refetch,
+    loading,
+    subscribeToMore
+  } = useGetProjectListsQuery({
+    variables: { projectId: projectId as string },
     onError: err => errorMessage(err)
   });
+
+  const [updateListPos] = useUpdateListPosMutation({ ignoreResults: true });
+
+  useOnListMovedSubscription({
+    variables: { projectId: projectId as string },
+    onSubscriptionData: () => refetch()
+  });
+
   const subscribeToNewLists = () => {
     subscribeToMore({
       document: OnListCreatedDocument,
@@ -37,14 +58,14 @@ const ProjectPage: React.FC = () => {
         if (!subscriptionData.data) {
           return prev;
         }
-        const newProject = {
-          ...prev.getUserProject,
-          lists: [
-            ...prev.getUserProject.lists,
+
+        return {
+          ...prev,
+          getProjectLists: [
+            ...prev.getProjectLists,
             subscriptionData.data.onListCreated
           ]
         };
-        return { ...prev, getUserProject: newProject };
       }
     });
   };
@@ -57,13 +78,10 @@ const ProjectPage: React.FC = () => {
         if (!subscriptionData.data) {
           return prev;
         }
-        const newProject = {
-          ...prev.getUserProject,
-          lists: prev.getUserProject.lists.filter(
-            list => list.id !== subscriptionData.data.onListDeleted.id
-          )
-        };
-        return { ...prev, getUserProject: newProject };
+        const newLists = prev.getProjectLists.filter(
+          list => list.id !== subscriptionData.data.onListDeleted.id
+        );
+        return { ...prev, getProjectLists: newLists };
       }
     });
   };
@@ -73,25 +91,88 @@ const ProjectPage: React.FC = () => {
     subscribeToDeletedLists();
   }, []);
 
-  const handleDragEnd = useCallback(() => {
-    console.log('drag end');
-  }, []);
+  const handleDragEnd = useCallback(
+    async (result, provided) => {
+      const { source, destination, draggableId } = result;
+
+      if (!destination || !data) {
+        return;
+      }
+      const lists = data.getProjectLists;
+
+      const reorder = (list: any[], startIndex: number, endIndex: number) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+      };
+
+      if (source.draggableId === destination.draggableId) {
+        const reorderedLists = reorder(lists, source.index, destination.index);
+
+        // change local state (but not their positions)
+        // ultra jank, MIGHT NEED TO USE writeQuery, look into it
+        const dataGetProjectLists = `getProjectLists({"projectId":"${projectId}"})`;
+        const newData = { [dataGetProjectLists]: reorderedLists };
+        client.writeData({
+          data: {
+            ...newData
+          }
+        });
+
+        // destination is first on list
+        if (destination.index === 0) {
+          // TODO disable rerender on mutation
+          await updateListPos({
+            variables: {
+              id: draggableId,
+              belowId: lists[0].id
+            }
+          });
+        }
+        // destination is last on list
+        else if (destination.index === lists.length - 1) {
+          await updateListPos({
+            variables: {
+              id: draggableId,
+              aboveId: lists[lists.length - 1].id
+            }
+          });
+        } else {
+          await updateListPos({
+            variables: {
+              id: draggableId,
+              aboveId: reorderedLists[destination.index - 1].id,
+              belowId: reorderedLists[destination.index + 1].id
+            }
+          });
+        }
+      }
+    },
+    [data]
+  );
 
   if (!data && loading) {
     return <div>loading</div>;
   }
 
+  const renderLists = data!.getProjectLists;
+
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <ProjectLayout title={params.projectName}>
-        <Button onClick={showCreateListModal}>Create List</Button>
+      <ProjectLayout
+        title={params.projectName}
+        createListModal={showCreateListModal}
+      >
         {data && (
-          <Droppable droppableId={projectId.toString()}>
+          <Droppable droppableId={projectId.toString()} direction="horizontal">
             {(provided, snapshot) => {
               return (
                 <ListsContainer
                   provided={provided}
-                  lists={data.getUserProject.lists}
+                  // lists={data.getUserProject.lists}
+                  lists={renderLists}
+                  style={getBoardStyle(snapshot.isDraggingOver)}
                 />
               );
             }}

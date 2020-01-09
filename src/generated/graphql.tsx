@@ -373,6 +373,7 @@ export type Query = {
   getUserProject: Project,
   getUserProjects: Array<Project>,
   getPublicProjectLink: Scalars['String'],
+  getProjectLists: Array<List>,
   validateLink: Scalars['Boolean'],
   validatePublicProjectLink: Scalars['Boolean'],
   getUserTeam: Team,
@@ -405,6 +406,11 @@ export type QueryGetUserProjectArgs = {
 
 
 export type QueryGetPublicProjectLinkArgs = {
+  projectId: Scalars['ID']
+};
+
+
+export type QueryGetProjectListsArgs = {
   projectId: Scalars['ID']
 };
 
@@ -445,6 +451,7 @@ export type Subscription = {
   onListCreated: List,
   onListDeleted: List,
   onListUpdated: List,
+  onListMoved: List,
   newTask: Task,
   updatedTask: Task,
   deletedTask: Task,
@@ -465,6 +472,11 @@ export type SubscriptionOnListUpdatedArgs = {
 
 
 export type SubscriptionOnListCreatedArgs = {
+  projectId: Scalars['ID']
+};
+
+
+export type SubscriptionOnListMovedArgs = {
   projectId: Scalars['ID']
 };
 
@@ -593,6 +605,19 @@ export type DeleteListMutation = (
   ) }
 );
 
+export type GetProjectListsQueryVariables = {
+  projectId: Scalars['ID']
+};
+
+
+export type GetProjectListsQuery = (
+  { __typename?: 'Query' }
+  & { getProjectLists: Array<(
+    { __typename?: 'List' }
+    & Pick<List, 'name' | 'id' | 'pos'>
+  )> }
+);
+
 export type OnListCreatedSubscriptionVariables = {
   projectId: Scalars['ID']
 };
@@ -614,6 +639,32 @@ export type OnListDeletedSubscriptionVariables = {
 export type OnListDeletedSubscription = (
   { __typename?: 'Subscription' }
   & { onListDeleted: (
+    { __typename?: 'List' }
+    & Pick<List, 'id' | 'name' | 'pos'>
+  ) }
+);
+
+export type OnListMovedSubscriptionVariables = {
+  projectId: Scalars['ID']
+};
+
+
+export type OnListMovedSubscription = (
+  { __typename?: 'Subscription' }
+  & { onListMoved: (
+    { __typename?: 'List' }
+    & Pick<List, 'id' | 'name' | 'pos'>
+  ) }
+);
+
+export type OnListUpdatedSubscriptionVariables = {
+  projectId: Scalars['ID']
+};
+
+
+export type OnListUpdatedSubscription = (
+  { __typename?: 'Subscription' }
+  & { onListUpdated: (
     { __typename?: 'List' }
     & Pick<List, 'id' | 'name' | 'pos'>
   ) }
@@ -652,6 +703,19 @@ export type NewNotificationSubscription = (
     { __typename?: 'Notifications' }
     & Pick<Notifications, 'id' | 'date' | 'userId' | 'type' | 'read'>
   ) }
+)
+
+
+export type UpdateListPosMutationVariables = {
+  id: Scalars['ID'],
+  aboveId?: Maybe<Scalars['ID']>,
+  belowId?: Maybe<Scalars['ID']>
+};
+
+
+export type UpdateListPosMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateListPos'>
 );
 
 export type AcceptProjectInviteLinkMutationVariables = {
@@ -1096,6 +1160,25 @@ export type DeleteListMutationFn = ApolloReactCommon.MutationFunction<DeleteList
 export type DeleteListMutationHookResult = ReturnType<typeof useDeleteListMutation>;
 export type DeleteListMutationResult = ApolloReactCommon.MutationResult<DeleteListMutation>;
 export type DeleteListMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteListMutation, DeleteListMutationVariables>;
+export const GetProjectListsDocument = gql`
+    query GetProjectLists($projectId: ID!) {
+  getProjectLists(projectId: $projectId) {
+    name
+    id
+    pos
+  }
+}
+    `;
+
+    export function useGetProjectListsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetProjectListsQuery, GetProjectListsQueryVariables>) {
+      return ApolloReactHooks.useQuery<GetProjectListsQuery, GetProjectListsQueryVariables>(GetProjectListsDocument, baseOptions);
+    }
+      export function useGetProjectListsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetProjectListsQuery, GetProjectListsQueryVariables>) {
+        return ApolloReactHooks.useLazyQuery<GetProjectListsQuery, GetProjectListsQueryVariables>(GetProjectListsDocument, baseOptions);
+      }
+      
+export type GetProjectListsQueryHookResult = ReturnType<typeof useGetProjectListsQuery>;
+export type GetProjectListsQueryResult = ApolloReactCommon.QueryResult<GetProjectListsQuery, GetProjectListsQueryVariables>;
 export const OnListCreatedDocument = gql`
     subscription OnListCreated($projectId: ID!) {
   onListCreated(projectId: $projectId) {
@@ -1126,6 +1209,36 @@ export const OnListDeletedDocument = gql`
     }
 export type OnListDeletedSubscriptionHookResult = ReturnType<typeof useOnListDeletedSubscription>;
 export type OnListDeletedSubscriptionResult = ApolloReactCommon.SubscriptionResult<OnListDeletedSubscription>;
+export const OnListMovedDocument = gql`
+    subscription OnListMoved($projectId: ID!) {
+  onListMoved(projectId: $projectId) {
+    id
+    name
+    pos
+  }
+}
+    `;
+
+    export function useOnListMovedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<OnListMovedSubscription, OnListMovedSubscriptionVariables>) {
+      return ApolloReactHooks.useSubscription<OnListMovedSubscription, OnListMovedSubscriptionVariables>(OnListMovedDocument, baseOptions);
+    }
+export type OnListMovedSubscriptionHookResult = ReturnType<typeof useOnListMovedSubscription>;
+export type OnListMovedSubscriptionResult = ApolloReactCommon.SubscriptionResult<OnListMovedSubscription>;
+export const OnListUpdatedDocument = gql`
+    subscription OnListUpdated($projectId: ID!) {
+  onListUpdated(projectId: $projectId) {
+    id
+    name
+    pos
+  }
+}
+    `;
+
+    export function useOnListUpdatedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<OnListUpdatedSubscription, OnListUpdatedSubscriptionVariables>) {
+      return ApolloReactHooks.useSubscription<OnListUpdatedSubscription, OnListUpdatedSubscriptionVariables>(OnListUpdatedDocument, baseOptions);
+    }
+export type OnListUpdatedSubscriptionHookResult = ReturnType<typeof useOnListUpdatedSubscription>;
+export type OnListUpdatedSubscriptionResult = ApolloReactCommon.SubscriptionResult<OnListUpdatedSubscription>;
 export const UpdateListNameDocument = gql`
     mutation UpdateListName($name: String!, $id: ID!) {
   updateListName(name: $name, id: $id)
@@ -1176,6 +1289,19 @@ export const NewNotificationDocument = gql`
     }
 export type NewNotificationSubscriptionHookResult = ReturnType<typeof useNewNotificationSubscription>;
 export type NewNotificationSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNotificationSubscription>;
+export const UpdateListPosDocument = gql`
+    mutation UpdateListPos($id: ID!, $aboveId: ID, $belowId: ID) {
+  updateListPos(id: $id, aboveId: $aboveId, belowId: $belowId)
+}
+    `;
+export type UpdateListPosMutationFn = ApolloReactCommon.MutationFunction<UpdateListPosMutation, UpdateListPosMutationVariables>;
+
+    export function useUpdateListPosMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateListPosMutation, UpdateListPosMutationVariables>) {
+      return ApolloReactHooks.useMutation<UpdateListPosMutation, UpdateListPosMutationVariables>(UpdateListPosDocument, baseOptions);
+    }
+export type UpdateListPosMutationHookResult = ReturnType<typeof useUpdateListPosMutation>;
+export type UpdateListPosMutationResult = ApolloReactCommon.MutationResult<UpdateListPosMutation>;
+export type UpdateListPosMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateListPosMutation, UpdateListPosMutationVariables>;
 export const AcceptProjectInviteLinkDocument = gql`
     mutation AcceptProjectInviteLink($email: String!, $projectInviteLink: String!) {
   acceptProjectInviteLink(email: $email, projectInviteLink: $projectInviteLink)
