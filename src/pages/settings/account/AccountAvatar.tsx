@@ -27,6 +27,7 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
   useEffect(() => {
     URL.revokeObjectURL(preview);
   }, [preview]);
+  
   const avatarStyle = classNames(styles.avatar, {
     [styles.edit]: editing
   });
@@ -66,7 +67,7 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </div>
     );
-  }, [preview, imageError, editing])
+  }, [preview, imageError, editing, user.avatar])
 
   const rootProps = editing
     ? getRootProps({ className: styles.avatarSettings })
@@ -84,7 +85,7 @@ const AccountAvatar: React.FC<Props> = ({ user, editing, setFile }) => {
       {editing && (
         <div className={styles.addIcon}>
           <Avatar
-            icon={<Icon type='file-add' style={{ opacity: '0.6' }} />}
+            icon={<Icon type='file-add' style={{ opacity: '60%' }} />}
             style={{ backgroundColor: '#dcddde', color: 'black' }}
             shape='circle'
           />

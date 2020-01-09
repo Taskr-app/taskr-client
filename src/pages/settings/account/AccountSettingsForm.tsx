@@ -27,7 +27,6 @@ const AccountSettingsForm: React.FC<FormComponentProps & Props> = ({
   const [updateUsername] = useUpdateUsernameMutation({
     onCompleted: () => message.success('Your username has been changed'),
     onError: err => errorMessage(err),
-    refetchQueries: [{ query: MeDocument }]
   });
   const [sendNewEmailLink] = useSendNewEmailLinkMutation({
     onCompleted: () =>
@@ -37,8 +36,9 @@ const AccountSettingsForm: React.FC<FormComponentProps & Props> = ({
     onError: err => errorMessage(err)
   });
   const [uploadAvatar] = useUploadAvatarMutation({
-    onError: err => errorMessage(err)
+    onError: err => errorMessage(err),
   });
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const { validateFields } = form;
