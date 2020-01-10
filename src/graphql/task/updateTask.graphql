@@ -1,0 +1,17 @@
+mutation UpdateTask(
+  $id: ID!
+  $listId: ID
+  $name: String
+  $dueDate: DateTime
+  $desc: String
+) {
+  updateTask(
+    id: $id
+    listId: $listId
+    name: $name
+    dueDate: $dueDate
+    desc: $desc
+  ) {
+    id
+  }
+}

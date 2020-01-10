@@ -176,7 +176,6 @@ const ProjectPage: React.FC = () => {
 
         // destination is first on list
         if (destination.index === 0) {
-          // TODO disable rerender on mutation
           await updateListPos({
             variables: {
               id: draggableId,

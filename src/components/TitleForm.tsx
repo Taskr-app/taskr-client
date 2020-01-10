@@ -7,35 +7,51 @@ import styles from './ListTitleForm.module.scss';
 interface Props extends FormComponentProps {
   defaultTitle: string;
   id: number;
+  mutationHook?: any;
+  mutationVariableName?: string;
+  color?: string;
+  fontSize?: string;
 }
 
-const ListTitleForm: React.FC<Props> = ({ defaultTitle, form, id }) => {
+const TitleForm: React.FC<Props> = ({
+  defaultTitle,
+  form,
+  id,
+  mutationHook,
+  mutationVariableName,
+  color = 'white',
+  fontSize = '1em'
+}) => {
   const { getFieldDecorator, getFieldValue } = form;
   const inputRef = useRef<Input>(null);
   const [title, setTitle] = useState(defaultTitle);
-  const [background, setBackground] = useState('#f4f8f8');
+  const [background, setBackground] = useState(color);
 
-  const [updateListName] = useUpdateListNameMutation({
-    variables: { name: title, id: id.toString() }
-  });
+  let mutate: any;
+
+  if (mutationHook && mutationVariableName) {
+    const variables = {
+      [mutationVariableName]: title,
+      id: id.toString()
+    };
+
+    [mutate] = mutationHook({
+      variables
+    });
+  }
 
   const handleFocus = () => {
     setBackground('white');
   };
 
   const handleBlur = () => {
-    setBackground('#f4f8f8');
+    setBackground(color);
     if (getFieldValue('name').localeCompare(defaultTitle) !== 0) {
-      updateListName();
+      if (mutationHook) {
+        mutate();
+      }
     }
   };
-
-  const getInputStyle = () => ({
-    border: 'none',
-    background,
-    transition: 'background-color 0.5s ease',
-    fontWeight: 600
-  });
 
   return (
     <Form>
@@ -50,7 +66,13 @@ const ListTitleForm: React.FC<Props> = ({ defaultTitle, form, id }) => {
             ref={inputRef}
             onChange={e => setTitle(e.target.value)}
             onPressEnter={() => inputRef.current!.blur()}
-            style={getInputStyle()}
+            style={{
+              border: 'none',
+              background,
+              transition: 'background-color 0.5s ease',
+              fontWeight: 600,
+              fontSize
+            }}
             className={styles.input}
           />
         )}
@@ -59,4 +81,4 @@ const ListTitleForm: React.FC<Props> = ({ defaultTitle, form, id }) => {
   );
 };
 
-export default Form.create<Props>({ name: 'listTitle' })(ListTitleForm);
+export default Form.create<Props>({ name: 'listTitle' })(TitleForm);
