@@ -10,7 +10,7 @@ import Task from './Task';
 import styles from './TasksContainer.module.scss';
 
 const grid = 1;
-const containerHeight = 250;
+// const containerHeight = 250;
 
 const getTasksContainerStyle = (isDraggingOver: Boolean) => ({
   background: isDraggingOver ? 'lightblue' : 'none'
