@@ -462,12 +462,17 @@ export type Subscription = {
   onListUpdated: List,
   onListMoved: List,
   onTaskCreated: Task,
+  onTaskDeleted: Task,
   updatedTask: Task,
   onTaskMoved: Task,
-  onTaskDeleted: Task,
   addedTaskMember: Task,
   removedTaskMember: Task,
   newNotification: Notifications,
+};
+
+
+export type SubscriptionOnListCreatedArgs = {
+  projectId: Scalars['ID']
 };
 
 
@@ -481,11 +486,6 @@ export type SubscriptionOnListUpdatedArgs = {
 };
 
 
-export type SubscriptionOnListCreatedArgs = {
-  projectId: Scalars['ID']
-};
-
-
 export type SubscriptionOnListMovedArgs = {
   projectId: Scalars['ID']
 };
@@ -493,10 +493,11 @@ export type SubscriptionOnListMovedArgs = {
 
 export type SubscriptionOnTaskCreatedArgs = {
   listId: Scalars['ID']
-}
+};
 
-export type SubscriptionNewTaskArgs = {
-  listId: Scalars['Int']
+
+export type SubscriptionOnTaskDeletedArgs = {
+  listId: Scalars['ID']
 };
 
 
@@ -510,17 +511,12 @@ export type SubscriptionOnTaskMovedArgs = {
 };
 
 
-export type SubscriptionOnTaskDeletedArgs = {
-  listId: Scalars['ID']
-};
-
-
-export type SubscriptionRemovedTaskMemberArgs = {
+export type SubscriptionAddedTaskMemberArgs = {
   taskId: Scalars['Int']
 };
 
 
-export type SubscriptionAddedTaskMemberArgs = {
+export type SubscriptionRemovedTaskMemberArgs = {
   taskId: Scalars['Int']
 };
 
@@ -704,6 +700,17 @@ export type UpdateListNameMutation = (
   & Pick<Mutation, 'updateListName'>
 );
 
+export type UpdateListPosMutationVariables = {
+  id: Scalars['ID'],
+  aboveId?: Maybe<Scalars['ID']>,
+  belowId?: Maybe<Scalars['ID']>
+};
+
+
+export type UpdateListPosMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateListPos'>
+);
 
 export type GetNotificationsQueryVariables = {};
 
@@ -727,19 +734,6 @@ export type NewNotificationSubscription = (
     { __typename?: 'Notifications' }
     & Pick<Notifications, 'id' | 'date' | 'userId' | 'type' | 'read'>
   ) }
-)
-
-
-export type UpdateListPosMutationVariables = {
-  id: Scalars['ID'],
-  aboveId?: Maybe<Scalars['ID']>,
-  belowId?: Maybe<Scalars['ID']>
-};
-
-
-export type UpdateListPosMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateListPos'>
 );
 
 export type AcceptProjectInviteLinkMutationVariables = {
@@ -1365,6 +1359,19 @@ export type UpdateListNameMutationFn = ApolloReactCommon.MutationFunction<Update
 export type UpdateListNameMutationHookResult = ReturnType<typeof useUpdateListNameMutation>;
 export type UpdateListNameMutationResult = ApolloReactCommon.MutationResult<UpdateListNameMutation>;
 export type UpdateListNameMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateListNameMutation, UpdateListNameMutationVariables>;
+export const UpdateListPosDocument = gql`
+    mutation UpdateListPos($id: ID!, $aboveId: ID, $belowId: ID) {
+  updateListPos(id: $id, aboveId: $aboveId, belowId: $belowId)
+}
+    `;
+export type UpdateListPosMutationFn = ApolloReactCommon.MutationFunction<UpdateListPosMutation, UpdateListPosMutationVariables>;
+
+    export function useUpdateListPosMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateListPosMutation, UpdateListPosMutationVariables>) {
+      return ApolloReactHooks.useMutation<UpdateListPosMutation, UpdateListPosMutationVariables>(UpdateListPosDocument, baseOptions);
+    }
+export type UpdateListPosMutationHookResult = ReturnType<typeof useUpdateListPosMutation>;
+export type UpdateListPosMutationResult = ApolloReactCommon.MutationResult<UpdateListPosMutation>;
+export type UpdateListPosMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateListPosMutation, UpdateListPosMutationVariables>;
 export const GetNotificationsDocument = gql`
     query GetNotifications {
   getNotifications {
@@ -1402,19 +1409,6 @@ export const NewNotificationDocument = gql`
     }
 export type NewNotificationSubscriptionHookResult = ReturnType<typeof useNewNotificationSubscription>;
 export type NewNotificationSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNotificationSubscription>;
-export const UpdateListPosDocument = gql`
-    mutation UpdateListPos($id: ID!, $aboveId: ID, $belowId: ID) {
-  updateListPos(id: $id, aboveId: $aboveId, belowId: $belowId)
-}
-    `;
-export type UpdateListPosMutationFn = ApolloReactCommon.MutationFunction<UpdateListPosMutation, UpdateListPosMutationVariables>;
-
-    export function useUpdateListPosMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateListPosMutation, UpdateListPosMutationVariables>) {
-      return ApolloReactHooks.useMutation<UpdateListPosMutation, UpdateListPosMutationVariables>(UpdateListPosDocument, baseOptions);
-    }
-export type UpdateListPosMutationHookResult = ReturnType<typeof useUpdateListPosMutation>;
-export type UpdateListPosMutationResult = ApolloReactCommon.MutationResult<UpdateListPosMutation>;
-export type UpdateListPosMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateListPosMutation, UpdateListPosMutationVariables>;
 export const AcceptProjectInviteLinkDocument = gql`
     mutation AcceptProjectInviteLink($email: String!, $projectInviteLink: String!) {
   acceptProjectInviteLink(email: $email, projectInviteLink: $projectInviteLink)
