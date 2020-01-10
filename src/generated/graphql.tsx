@@ -500,17 +500,25 @@ export type Subscription = {
 };
 
 
+<<<<<<< c03479dbf93f926ec0bc8c8a735ffad74b19cff1
 export type SubscriptionOnSendProjectInviteArgs = {
-  projectId: Scalars['ID']
-};
-
-
-export type SubscriptionOnAcceptProjectInviteArgs = {
-  projectId: Scalars['ID']
-};
-
-
+=======
 export type SubscriptionOnListCreatedArgs = {
+>>>>>>> add titleform
+  projectId: Scalars['ID']
+};
+
+
+<<<<<<< c03479dbf93f926ec0bc8c8a735ffad74b19cff1
+export type SubscriptionOnAcceptProjectInviteArgs = {
+=======
+export type SubscriptionOnListDeletedArgs = {
+>>>>>>> add titleform
+  projectId: Scalars['ID']
+};
+
+
+export type SubscriptionOnListUpdatedArgs = {
   projectId: Scalars['ID']
 };
 
@@ -533,8 +541,13 @@ export type SubscriptionOnListMovedArgs = {
 export type SubscriptionOnTaskCreatedArgs = {
   listId: Scalars['ID']
 };
+<<<<<<< c03479dbf93f926ec0bc8c8a735ffad74b19cff1
 
 
+=======
+
+
+>>>>>>> add titleform
 export type SubscriptionOnTaskDeletedArgs = {
   listId: Scalars['ID']
 };
@@ -982,6 +995,23 @@ export type OnTaskMovedSubscription = (
   & { onTaskMoved: (
     { __typename?: 'Task' }
     & Pick<Task, 'id' | 'name' | 'pos'>
+  ) }
+);
+
+export type UpdateTaskMutationVariables = {
+  id: Scalars['ID'],
+  listId?: Maybe<Scalars['ID']>,
+  name?: Maybe<Scalars['String']>,
+  dueDate?: Maybe<Scalars['DateTime']>,
+  desc?: Maybe<Scalars['String']>
+};
+
+
+export type UpdateTaskMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTask: (
+    { __typename?: 'Task' }
+    & Pick<Task, 'id'>
   ) }
 );
 
@@ -1771,6 +1801,21 @@ export const OnTaskMovedDocument = gql`
     }
 export type OnTaskMovedSubscriptionHookResult = ReturnType<typeof useOnTaskMovedSubscription>;
 export type OnTaskMovedSubscriptionResult = ApolloReactCommon.SubscriptionResult<OnTaskMovedSubscription>;
+export const UpdateTaskDocument = gql`
+    mutation UpdateTask($id: ID!, $listId: ID, $name: String, $dueDate: DateTime, $desc: String) {
+  updateTask(id: $id, listId: $listId, name: $name, dueDate: $dueDate, desc: $desc) {
+    id
+  }
+}
+    `;
+export type UpdateTaskMutationFn = ApolloReactCommon.MutationFunction<UpdateTaskMutation, UpdateTaskMutationVariables>;
+
+    export function useUpdateTaskMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateTaskMutation, UpdateTaskMutationVariables>) {
+      return ApolloReactHooks.useMutation<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument, baseOptions);
+    }
+export type UpdateTaskMutationHookResult = ReturnType<typeof useUpdateTaskMutation>;
+export type UpdateTaskMutationResult = ApolloReactCommon.MutationResult<UpdateTaskMutation>;
+export type UpdateTaskMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateTaskMutation, UpdateTaskMutationVariables>;
 export const UpdateTaskPosDocument = gql`
     mutation UpdateTaskPos($id: ID!, $listId: ID, $aboveId: ID, $belowId: ID) {
   updateTaskPos(id: $id, listId: $listId, aboveId: $aboveId, belowId: $belowId)

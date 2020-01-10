@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Modal, Form, Input, Icon } from 'antd';
 import { useModal } from '.';
 import { useCreateTaskMutation } from '../../generated/graphql';
@@ -31,6 +31,21 @@ const CreateTaskModal: React.FC<Props> = ({ listId, form }) => {
     });
   };
 
+  const handleEnterPress = useCallback(e => {
+    const { keyCode } = e;
+    if (keyCode === 13 && form.isFieldTouched('name')) {
+      handleSubmit();
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleEnterPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleEnterPress);
+    };
+  }, [handleEnterPress]);
+
   return (
     <Modal
       visible={true}
@@ -44,6 +59,7 @@ const CreateTaskModal: React.FC<Props> = ({ listId, form }) => {
             rules: [{ required: true, message: 'Task name is required' }]
           })(
             <Input
+              autoFocus
               prefix={
                 <Icon type="align-center" style={{ color: 'rgba(0,0,0,.25' }} />
               }

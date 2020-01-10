@@ -2,6 +2,8 @@ import React from 'react';
 import { useModal } from '..';
 import { Modal, Icon } from 'antd';
 import styles from './TaskModal.module.scss';
+import TitleForm from '../../TitleForm';
+import { useUpdateTaskMutation } from '../../../generated/graphql';
 
 interface Props {
   title: string;
@@ -11,27 +13,27 @@ interface Props {
 
 interface ModalTitleProps {
   title: string;
+  id: string;
 }
 
-interface SideBarItemProps {
-  icon: string;
-  name: string;
-}
+const SideBarItems = [
+  ['user-add', 'Members'],
+  ['setting', 'Options'],
+  ['message', 'Message'],
+  ['rest', 'Delete']
+];
 
-const SideBarItem: React.FC<SideBarItemProps> = ({ icon, name }) => {
-  return (
-    <div className={styles.sidebarItem}>
-      <Icon type={icon} style={{ marginRight: '4px' }} />
-      <span>{name}</span>
-    </div>
-  );
-};
-
-const ModalTitle: React.FC<ModalTitleProps> = ({ title }) => {
+const ModalTitle: React.FC<ModalTitleProps> = ({ title, id }) => {
   return (
     <div className={styles.title}>
       <Icon type="robot" style={{ marginRight: '12px' }} />
-      {title}
+      <TitleForm
+        fontSize="1.2em"
+        id={parseInt(id)}
+        defaultTitle={title}
+        mutationHook={useUpdateTaskMutation}
+        mutationVariableName="name"
+      />
     </div>
   );
 };
@@ -48,7 +50,7 @@ const TaskModal: React.FC<Props> = ({ title, id, desc }) => {
         flexDirection: 'row',
         alignContent: 'space-between'
       }}
-      title={<ModalTitle title={title} />}
+      title={<ModalTitle title={title} id={id} />}
       visible={true}
       onCancel={unmount}
     >
@@ -81,10 +83,12 @@ const TaskModal: React.FC<Props> = ({ title, id, desc }) => {
         </div>
       </div>
       <div className={styles.sidebar}>
-        <SideBarItem icon={'user-add'} name={'Members'} />
-        <SideBarItem icon={'setting'} name={'Options'} />
-        <SideBarItem icon={'message'} name={'Message'} />
-        <SideBarItem icon={'rest'} name={'Delete'} />
+        {SideBarItems.map(item => (
+          <div className={styles.sidebarItem} key={item[1]}>
+            <Icon type={item[0]} style={{ marginRight: '4px' }} />
+            <span>{item[1]}</span>
+          </div>
+        ))}
       </div>
     </Modal>
   );

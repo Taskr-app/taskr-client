@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useModal } from './modals';
 import DeleteListModal from './modals/DeleteListModal';
-import ListTitleForm from './ListTitleForm';
+import TitleForm from './TitleForm';
 import { LinkText } from './common/Text';
 import {
   Task,
   useOnTaskMovedSubscription,
   OnTaskCreatedDocument,
-  OnTaskDeletedDocument
+  OnTaskDeletedDocument,
+  useUpdateListNameMutation
 } from '../generated/graphql';
 import { Draggable } from 'react-beautiful-dnd';
 import TasksContainer from './TasksContainer';
@@ -91,7 +92,13 @@ const List: React.FC<Props> = ({
           {...provided.draggableProps}
         >
           <div className={styles.header} {...provided.dragHandleProps}>
-            <ListTitleForm defaultTitle={name} id={id} />
+            <TitleForm
+              defaultTitle={name}
+              id={id}
+              mutationVariableName="name"
+              mutationHook={useUpdateListNameMutation}
+              color="#f4f8f8"
+            />
             <LinkText onClick={handleClick}>...</LinkText>
             <LinkText onClick={handleClickTask}>Add Task</LinkText>
           </div>
