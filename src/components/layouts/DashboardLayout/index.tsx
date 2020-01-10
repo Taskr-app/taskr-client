@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGetUserTeamsQuery, Team } from '../../../generated/graphql';
-import { Menu } from 'antd';
+import { Menu  } from 'antd';
 import Layout from '../Layout';
 import { encode } from '../../../lib/hashids';
 import { useHistory } from 'react-router';
