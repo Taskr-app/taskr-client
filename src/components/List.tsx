@@ -19,6 +19,7 @@ import {
   subscribeToDeletedTasks
 } from '../pages/project/subscriptions';
 import { SubscribeToMoreOptions } from 'apollo-client';
+import { Icon } from 'antd';
 
 const grid = 8;
 
@@ -70,7 +71,7 @@ const List: React.FC<Props> = ({
 
   const showCreateTaskModal = () =>
     showModal(<CreateTaskModal listId={id.toString()} />);
-  const handleClickTask = () => {
+  const handleClickAdd = () => {
     showCreateTaskModal();
   };
 
@@ -99,8 +100,16 @@ const List: React.FC<Props> = ({
               mutationHook={useUpdateListNameMutation}
               color="#f4f8f8"
             />
-            <LinkText onClick={handleClick}>...</LinkText>
-            <LinkText onClick={handleClickTask}>Add Task</LinkText>
+            <Icon
+              onClick={handleClick}
+              style={{ marginRight: '4px' }}
+              type="minus"
+            />
+            <Icon
+              onClick={handleClickAdd}
+              style={{ marginRight: '4px' }}
+              type="plus"
+            />
           </div>
           <div className={styles.content}>
             <TasksContainer id={id} tasks={tasks} />

@@ -53,7 +53,7 @@ const Task: React.FC<Props> = ({ id, name, desc }) => {
             />
           ) : null}
         </div>
-        <div>{name}</div>
+        <div className={styles.text}>{name}</div>
       </div>
     </Card>
   );
