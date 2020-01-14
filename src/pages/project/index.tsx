@@ -102,7 +102,7 @@ const ProjectPage: React.FC = () => {
 
         return {
           ...prev,
-          getProjectLists: [
+          getProjectListsAndTasks: [
             ...prev.getProjectListsAndTasks,
             subscriptionData.data.onListCreated
           ]
@@ -116,13 +116,16 @@ const ProjectPage: React.FC = () => {
       document: OnListDeletedDocument,
       variables: { projectId: projectId as string },
       updateQuery: (prev, { subscriptionData }: { subscriptionData: any }) => {
+        console.log(subscriptionData.data);
         if (!subscriptionData.data) {
           return prev;
         }
+
         const newLists = prev.getProjectListsAndTasks.filter(
           list => list.id !== subscriptionData.data.onListDeleted.id
         );
-        return { ...prev, getProjectLists: newLists };
+
+        return { ...prev, getProjectListsAndTasks: newLists };
       }
     });
   };
@@ -136,7 +139,6 @@ const ProjectPage: React.FC = () => {
   const handleDragEnd = useCallback(
     async (result: DropResult, provided) => {
       const { source, destination, draggableId } = result;
-      console.log('draggableId', draggableId, source, destination);
 
       // no combine allowed
       if (result.combine) {

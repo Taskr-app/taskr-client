@@ -1,7 +1,10 @@
 subscription OnListCreated($projectId: ID!) {
   onListCreated(projectId: $projectId) {
-    id
     name
+    id
     pos
+    tasks {
+      name
+    }
   }
 }

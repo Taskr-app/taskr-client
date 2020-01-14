@@ -3,7 +3,11 @@ import { useModal } from '..';
 import { Modal, Icon } from 'antd';
 import styles from './TaskModal.module.scss';
 import TitleForm from '../../TitleForm';
-import { useUpdateTaskMutation } from '../../../generated/graphql';
+import {
+  useUpdateTaskMutation,
+  useDeleteTaskMutation
+} from '../../../generated/graphql';
+import DeleteTaskModal from '../DeleteTaskModal';
 
 interface Props {
   title: string;
@@ -16,13 +20,6 @@ interface ModalTitleProps {
   id: string;
 }
 
-const SideBarItems = [
-  ['user-add', 'Members'],
-  ['setting', 'Options'],
-  ['message', 'Message'],
-  ['rest', 'Delete']
-];
-
 const ModalTitle: React.FC<ModalTitleProps> = ({ title, id }) => {
   return (
     <div className={styles.title}>
@@ -33,6 +30,7 @@ const ModalTitle: React.FC<ModalTitleProps> = ({ title, id }) => {
         defaultTitle={title}
         mutationHook={useUpdateTaskMutation}
         mutationVariableName="name"
+        rows={2}
       />
     </div>
   );
@@ -41,10 +39,26 @@ const ModalTitle: React.FC<ModalTitleProps> = ({ title, id }) => {
 const TaskModal: React.FC<Props> = ({ title, id, desc }) => {
   const { hideModal } = useModal();
   const unmount = () => hideModal();
+  const [deleteTask] = useDeleteTaskMutation({
+    variables: { taskId: id },
+    onCompleted: hideModal
+  });
+
+  const handleDelete = () => {
+    deleteTask();
+  };
+
+  const SideBarItems = [
+    { icon: 'user-add', name: 'Members' },
+    { icon: 'setting', name: 'Options' },
+    { icon: 'message', name: 'Message' },
+    { icon: 'rest', name: 'Delete', onClick: handleDelete }
+  ];
 
   return (
     <Modal
       bodyStyle={{
+        minWidth: '300px',
         padding: '16px 24px',
         display: 'flex',
         flexDirection: 'row',
@@ -77,16 +91,21 @@ const TaskModal: React.FC<Props> = ({ title, id, desc }) => {
             </div>
           </div>
           <div className={styles.messagesContent}>
-            <div>wow!</div>
-            <div>Blah blah blah om omgmsm stevefox!</div>
+            <div>Text Sample</div>
+            <div>Text Sample</div>
+            <div>Text Sample</div>
           </div>
         </div>
       </div>
       <div className={styles.sidebar}>
         {SideBarItems.map(item => (
-          <div className={styles.sidebarItem} key={item[1]}>
-            <Icon type={item[0]} style={{ marginRight: '4px' }} />
-            <span>{item[1]}</span>
+          <div
+            className={styles.sidebarItem}
+            key={item.name}
+            onClick={item.onClick}
+          >
+            <Icon type={item.icon} style={{ marginRight: '4px' }} />
+            <span>{item.name}</span>
           </div>
         ))}
       </div>

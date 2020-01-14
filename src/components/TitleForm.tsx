@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Form, Input } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { useUpdateListNameMutation } from '../generated/graphql';
-import styles from './ListTitleForm.module.scss';
+import styles from './TitleForm.module.scss';
+import TextArea from 'antd/lib/input/TextArea';
 
 interface Props extends FormComponentProps {
   defaultTitle: string;
@@ -11,6 +12,7 @@ interface Props extends FormComponentProps {
   mutationVariableName?: string;
   color?: string;
   fontSize?: string;
+  rows?: number;
 }
 
 const TitleForm: React.FC<Props> = ({
@@ -20,10 +22,11 @@ const TitleForm: React.FC<Props> = ({
   mutationHook,
   mutationVariableName,
   color = 'white',
-  fontSize = '1em'
+  fontSize = '1em',
+  rows = 1
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
-  const inputRef = useRef<Input>(null);
+  const inputRef = useRef<TextArea>(null);
   const [title, setTitle] = useState(defaultTitle);
   const [background, setBackground] = useState(color);
 
@@ -54,13 +57,16 @@ const TitleForm: React.FC<Props> = ({
   };
 
   return (
-    <Form>
+    <Form className={styles.form} style={{ width: '100%' }}>
       <Form.Item style={{ margin: 0 }}>
         {getFieldDecorator('name', {
           rules: [{ required: true, message: 'List name is required' }],
           initialValue: title
         })(
-          <Input
+          <TextArea
+            autoSize={true}
+            spellCheck={false}
+            // rows={rows}
             onFocus={handleFocus}
             onBlur={handleBlur}
             ref={inputRef}
@@ -71,7 +77,13 @@ const TitleForm: React.FC<Props> = ({
               background,
               transition: 'background-color 0.5s ease',
               fontWeight: 600,
-              fontSize
+              fontSize,
+              resize: 'none',
+              wordWrap: 'break-word',
+              paddingBottom: `0px`,
+              paddingTop: `0px`,
+              lineHeight: `2em`,
+              minHeight: `10px`
             }}
             className={styles.input}
           />

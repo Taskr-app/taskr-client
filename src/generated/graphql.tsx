@@ -698,7 +698,11 @@ export type OnListCreatedSubscription = (
   { __typename?: 'Subscription' }
   & { onListCreated: (
     { __typename?: 'List' }
-    & Pick<List, 'id' | 'name' | 'pos'>
+    & Pick<List, 'name' | 'id' | 'pos'>
+    & { tasks: Array<(
+      { __typename?: 'Task' }
+      & Pick<Task, 'name'>
+    )> }
   ) }
 );
 
@@ -711,7 +715,7 @@ export type OnListDeletedSubscription = (
   { __typename?: 'Subscription' }
   & { onListDeleted: (
     { __typename?: 'List' }
-    & Pick<List, 'id' | 'name' | 'pos'>
+    & Pick<List, 'name' | 'id' | 'pos'>
   ) }
 );
 
@@ -1416,9 +1420,12 @@ export type GetProjectListsAndTasksQueryResult = ApolloReactCommon.QueryResult<G
 export const OnListCreatedDocument = gql`
     subscription OnListCreated($projectId: ID!) {
   onListCreated(projectId: $projectId) {
-    id
     name
+    id
     pos
+    tasks {
+      name
+    }
   }
 }
     `;
@@ -1431,8 +1438,8 @@ export type OnListCreatedSubscriptionResult = ApolloReactCommon.SubscriptionResu
 export const OnListDeletedDocument = gql`
     subscription OnListDeleted($projectId: ID!) {
   onListDeleted(projectId: $projectId) {
-    id
     name
+    id
     pos
   }
 }

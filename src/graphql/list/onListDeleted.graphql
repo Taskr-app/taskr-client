@@ -1,7 +1,7 @@
 subscription OnListDeleted($projectId: ID!) {
   onListDeleted(projectId: $projectId) {
-    id
     name
+    id
     pos
   }
 }
