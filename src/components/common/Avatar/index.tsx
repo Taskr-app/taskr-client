@@ -3,9 +3,9 @@ import { User } from '../../../generated/graphql';
 import { Avatar } from 'antd';
 import { cloudinary } from '../../../lib/cloudinary';
 
-type PartialExceptFor<T, TRequired extends keyof T> = Partial<T> &
+export type PartialExceptFor<T, TRequired extends keyof T> = Partial<T> &
   Pick<T, TRequired>;
-type PartialUser = PartialExceptFor<User, 'username' | 'id'>;
+export type PartialUser = PartialExceptFor<User, 'username' | 'id'>;
 interface UserAvatarProps {
   user: PartialUser;
   style?: React.CSSProperties;
