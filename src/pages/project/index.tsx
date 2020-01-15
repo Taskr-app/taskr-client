@@ -116,7 +116,6 @@ const ProjectPage: React.FC = () => {
       document: OnListDeletedDocument,
       variables: { projectId: projectId as string },
       updateQuery: (prev, { subscriptionData }: { subscriptionData: any }) => {
-        console.log(subscriptionData.data);
         if (!subscriptionData.data) {
           return prev;
         }
