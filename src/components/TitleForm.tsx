@@ -66,7 +66,7 @@ const TitleForm: React.FC<Props> = ({
           <TextArea
             autoSize={true}
             spellCheck={false}
-            // rows={rows}
+            rows={rows}
             onFocus={handleFocus}
             onBlur={handleBlur}
             ref={inputRef}

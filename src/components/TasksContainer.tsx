@@ -53,30 +53,33 @@ type TaskProps = {
   tasks: Pick<TaskResponse, 'id' | 'name' | 'desc'>[];
 };
 
-// FIXME: types (props: TaskProps) | currently any
-const InnerTaskList = React.memo(function InnerTaskList(props: any) {
-  return props.tasks.map((task: any, index: number) => (
-    <Draggable
-      draggableId={`${task.name}-${task.id}`}
-      index={index}
-      key={task.id}
-    >
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
+const InnerTaskList = React.memo(function InnerTaskList({ tasks }: TaskProps) {
+  return (
+    <>
+      {tasks.map((task, index) => (
+        <Draggable
+          draggableId={`${task.name}-${task.id}`}
+          index={index}
+          key={task.id}
         >
-          <Task
-            id={task.id}
-            name={task.name}
-            key={`${task.id}-${task.name}`}
-            desc={task.desc}
-          />
-        </div>
-      )}
-    </Draggable>
-  ));
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              <Task
+                id={task.id}
+                name={task.name}
+                key={`${task.id}-${task.name}`}
+                desc={task.desc ? task.desc : ''}
+              />
+            </div>
+          )}
+        </Draggable>
+      ))}
+    </>
+  );
 });
 
 const InnerList = (props: InnerTaskListProps) => {

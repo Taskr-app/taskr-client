@@ -12,7 +12,7 @@ interface Props {
   desc: string;
 }
 
-const Task: React.FC<Props> = ({ id, name, desc }) => {
+const Task: React.FC<Props> = ({ id, name, desc = '' }) => {
   const { showModal } = useModal();
   const [isHovering, setHovering] = useState(false);
   const showDeleteTaskModal = () => {
