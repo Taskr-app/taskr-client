@@ -492,7 +492,7 @@ export type Subscription = {
   onListMoved: List,
   onTaskCreated: Task,
   onTaskDeleted: Task,
-  updatedTask: Task,
+  onTaskUpdated: Task,
   onTaskMoved: Task,
   addedTaskMember: Task,
   removedTaskMember: Task,
@@ -553,8 +553,8 @@ export type SubscriptionOnTaskDeletedArgs = {
 };
 
 
-export type SubscriptionUpdatedTaskArgs = {
-  taskId: Scalars['Int']
+export type SubscriptionOnTaskUpdatedArgs = {
+  taskId: Scalars['ID']
 };
 
 
@@ -972,7 +972,7 @@ export type OnTaskCreatedSubscription = (
   { __typename?: 'Subscription' }
   & { onTaskCreated: (
     { __typename?: 'Task' }
-    & Pick<Task, 'id' | 'name' | 'pos'>
+    & Pick<Task, 'id' | 'name' | 'pos' | 'desc'>
   ) }
 );
 
@@ -985,7 +985,7 @@ export type OnTaskDeletedSubscription = (
   { __typename?: 'Subscription' }
   & { onTaskDeleted: (
     { __typename?: 'Task' }
-    & Pick<Task, 'id' | 'name' | 'pos'>
+    & Pick<Task, 'id' | 'name' | 'pos' | 'desc'>
   ) }
 );
 
@@ -999,6 +999,19 @@ export type OnTaskMovedSubscription = (
   & { onTaskMoved: (
     { __typename?: 'Task' }
     & Pick<Task, 'id' | 'name' | 'pos'>
+  ) }
+);
+
+export type OnTaskUpdatedSubscriptionVariables = {
+  taskId: Scalars['ID']
+};
+
+
+export type OnTaskUpdatedSubscription = (
+  { __typename?: 'Subscription' }
+  & { onTaskUpdated: (
+    { __typename?: 'Task' }
+    & Pick<Task, 'id' | 'name' | 'pos' | 'desc'>
   ) }
 );
 
@@ -1471,6 +1484,7 @@ export const OnListUpdatedDocument = gql`
     id
     name
     pos
+    desc
   }
 }
     `;
@@ -1769,6 +1783,7 @@ export const OnTaskCreatedDocument = gql`
     id
     name
     pos
+    desc
   }
 }
     `;
@@ -1808,6 +1823,22 @@ export const OnTaskMovedDocument = gql`
     }
 export type OnTaskMovedSubscriptionHookResult = ReturnType<typeof useOnTaskMovedSubscription>;
 export type OnTaskMovedSubscriptionResult = ApolloReactCommon.SubscriptionResult<OnTaskMovedSubscription>;
+export const OnTaskUpdatedDocument = gql`
+    subscription OnTaskUpdated($taskId: ID!) {
+  onTaskUpdated(taskId: $taskId) {
+    id
+    name
+    pos
+    desc
+  }
+}
+    `;
+
+    export function useOnTaskUpdatedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<OnTaskUpdatedSubscription, OnTaskUpdatedSubscriptionVariables>) {
+      return ApolloReactHooks.useSubscription<OnTaskUpdatedSubscription, OnTaskUpdatedSubscriptionVariables>(OnTaskUpdatedDocument, baseOptions);
+    }
+export type OnTaskUpdatedSubscriptionHookResult = ReturnType<typeof useOnTaskUpdatedSubscription>;
+export type OnTaskUpdatedSubscriptionResult = ApolloReactCommon.SubscriptionResult<OnTaskUpdatedSubscription>;
 export const UpdateTaskDocument = gql`
     mutation UpdateTask($id: ID!, $listId: ID, $name: String, $dueDate: DateTime, $desc: String) {
   updateTask(id: $id, listId: $listId, name: $name, dueDate: $dueDate, desc: $desc) {

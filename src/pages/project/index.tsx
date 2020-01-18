@@ -34,6 +34,7 @@ const getBoardStyle = (isDraggingOver: Boolean) => ({
 });
 
 const ProjectPage: React.FC = () => {
+  console.log('project page');
   const params = useParams<RouteParams>();
   const projectId = decode(params.projectId);
   const { showModal } = useModal();
@@ -261,6 +262,7 @@ const ProjectPage: React.FC = () => {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
+      {console.log('project page render')}
       <ProjectLayout
         title={params.projectName}
         createListModal={showCreateListModal}

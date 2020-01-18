@@ -3,5 +3,6 @@ subscription OnTaskDeleted($listId: ID!) {
     id
     name
     pos
+    desc
   }
 }

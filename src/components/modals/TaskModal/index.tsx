@@ -3,10 +3,7 @@ import { useModal } from '..';
 import { Modal, Icon } from 'antd';
 import styles from './TaskModal.module.scss';
 import TitleForm from '../../TitleForm';
-import {
-  useUpdateTaskMutation,
-  useDeleteTaskMutation
-} from '../../../generated/graphql';
+import { useUpdateTaskMutation } from '../../../generated/graphql';
 import cn from 'classnames';
 import DeleteTaskModal from '../DeleteTaskModal';
 import TextArea from 'antd/lib/input/TextArea';
@@ -21,13 +18,6 @@ interface ModalTitleProps {
   title: string;
   id: string;
 }
-
-// desc
-// nofocus - desc + edit button
-// focus - desc editable textarea
-// no desc
-// nofocus - button - Add a description..
-// focus - add a description - editable textarea
 
 const ModalTitle: React.FC<ModalTitleProps> = ({ title, id }) => {
   return (
@@ -45,9 +35,9 @@ const ModalTitle: React.FC<ModalTitleProps> = ({ title, id }) => {
 };
 
 const TaskModal: React.FC<Props> = ({ title, id, desc = '' }) => {
-  console.log('desc is', desc, typeof desc);
   const { showModal, hideModal } = useModal();
   const unmount = () => hideModal();
+  const [initialDesc, setInitialDesc] = useState(desc);
   const [description, setDescription] = useState(desc);
   const [updateTask] = useUpdateTaskMutation();
 
@@ -55,10 +45,10 @@ const TaskModal: React.FC<Props> = ({ title, id, desc = '' }) => {
     showModal(<DeleteTaskModal name={'this card?'} id={parseInt(id)} />);
   };
 
-  const handleBlur = () => {
-    if (desc.localeCompare(description) !== 0) {
-      console.log('updating task - api', title, description);
-      // updateTask({ variables: { id, desc } });
+  const handleBlur = async () => {
+    if (initialDesc.localeCompare(description) !== 0) {
+      await updateTask({ variables: { id, desc: description } });
+      setInitialDesc(description);
     }
   };
 
@@ -97,6 +87,7 @@ const TaskModal: React.FC<Props> = ({ title, id, desc = '' }) => {
           </div>
           <div className={styles.descContent}>
             <TextArea
+              dir="auto"
               onBlur={handleBlur}
               placeholder={'Add a description...'}
               className={styles.descTextArea}
