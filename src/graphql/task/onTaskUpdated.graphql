@@ -1,0 +1,8 @@
+subscription OnTaskUpdated($taskId: ID!) {
+  onTaskUpdated(taskId: $taskId) {
+    id
+    name
+    pos
+    desc
+  }
+}

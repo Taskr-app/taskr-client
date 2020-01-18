@@ -3,5 +3,6 @@ subscription OnTaskCreated($listId: ID!) {
     id
     name
     pos
+    desc
   }
 }

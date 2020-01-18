@@ -30,9 +30,10 @@ const getTaskStyle = (isDragging: Boolean, draggableStyle: any) => ({
   ...draggableStyle
 });
 
-interface Props {
+interface TasksContainerProps {
   id: number;
   tasks: Pick<TaskResponse, 'id' | 'name' | 'desc'>[];
+  querysub?: any;
 }
 
 // @types not updated for ~v12
@@ -44,16 +45,24 @@ const DroppableWithRenderClone: React.FC<DroppablePropsWithRenderClone> = props 
   return <Droppable {...props} />;
 };
 
-type InnerTaskListProps = {
+type InnerListProps = {
   dropProvided: DroppableProvided;
+  listId: number;
   tasks: Pick<TaskResponse, 'id' | 'name' | 'desc'>[];
+  querysub?: any;
 };
 
 type TaskProps = {
   tasks: Pick<TaskResponse, 'id' | 'name' | 'desc'>[];
+  querysub?: any;
+  listId: number;
 };
 
-const InnerTaskList = React.memo(function InnerTaskList({ tasks }: TaskProps) {
+const InnerTaskList = React.memo(function InnerTaskList({
+  tasks,
+  querysub,
+  listId
+}: TaskProps) {
   return (
     <>
       {tasks.map((task, index) => (
@@ -70,9 +79,11 @@ const InnerTaskList = React.memo(function InnerTaskList({ tasks }: TaskProps) {
             >
               <Task
                 id={task.id}
+                listId={listId.toString()}
                 name={task.name}
                 key={`${task.id}-${task.name}`}
                 desc={task.desc ? task.desc : ''}
+                querysub={querysub}
               />
             </div>
           )}
@@ -82,20 +93,24 @@ const InnerTaskList = React.memo(function InnerTaskList({ tasks }: TaskProps) {
   );
 });
 
-const InnerList = (props: InnerTaskListProps) => {
-  const { tasks, dropProvided } = props;
+const InnerList = (props: InnerListProps) => {
+  const { tasks, dropProvided, listId, querysub } = props;
 
   return (
     <div>
       <div style={{ minHeight: 250 }} ref={dropProvided.innerRef}>
-        <InnerTaskList tasks={tasks} />
+        <InnerTaskList tasks={tasks} listId={listId} querysub={querysub} />
         {dropProvided.placeholder}
       </div>
     </div>
   );
 };
 
-const TasksContainer: React.FC<Props> = ({ tasks, id }) => {
+const TasksContainer: React.FC<TasksContainerProps> = ({
+  tasks,
+  id,
+  querysub
+}) => {
   return (
     <DroppableWithRenderClone
       droppableId={`list-${id}`}
@@ -113,12 +128,14 @@ const TasksContainer: React.FC<Props> = ({ tasks, id }) => {
           )}
         >
           <Task
+            listId={id.toString()}
             id={tasks[rubric.source.index].id}
             name={tasks[rubric.source.index].name}
             key={`${tasks[rubric.source.index].id}-${
               tasks[rubric.source.index].name
             }`}
             desc={tasks[rubric.source.index].desc!}
+            querysub={querysub}
           />
         </div>
       )}
@@ -130,7 +147,12 @@ const TasksContainer: React.FC<Props> = ({ tasks, id }) => {
           style={getTasksContainerStyle(snapshot.isDraggingOver)}
           {...provided.droppableProps}
         >
-          <InnerList tasks={tasks} dropProvided={provided} />
+          <InnerList
+            listId={id}
+            tasks={tasks}
+            dropProvided={provided}
+            querysub={querysub}
+          />
         </div>
       )}
     </DroppableWithRenderClone>

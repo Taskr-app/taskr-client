@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useModal } from './modals';
 import DeleteListModal from './modals/DeleteListModal';
 import TitleForm from './TitleForm';
-import { LinkText } from './common/Text';
 import {
   Task,
   useOnTaskMovedSubscription,
@@ -112,7 +111,7 @@ const List: React.FC<Props> = ({
             />
           </div>
           <div className={styles.content}>
-            <TasksContainer id={id} tasks={tasks} />
+            <TasksContainer id={id} tasks={tasks} querysub={querysub} />
           </div>
         </div>
       )}
