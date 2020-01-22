@@ -3,6 +3,7 @@
   flex-direction: column;
   background-color: light-grey;
   height: 100%;
+  overflow-y: hidden;
 }
 
 .header {
@@ -28,10 +29,10 @@
 }
 
 .content {
-  overflow-x: hidden;
-  // width: 100%;
   height: 100%;
-  margin: 0em, 0.5em;
+  padding: 0em 1em;
+  overflow-y: hidden;
+  width: fit-content;
 }
 
 .avatarContainer {

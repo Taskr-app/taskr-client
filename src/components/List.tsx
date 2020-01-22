@@ -101,17 +101,18 @@ const List: React.FC<Props> = ({
             />
             <Icon
               onClick={handleClick}
-              style={{ marginRight: '4px' }}
+              className={styles.marginRight}
               type="minus"
-            />
-            <Icon
-              onClick={handleClickAdd}
-              style={{ marginRight: '4px' }}
-              type="plus"
             />
           </div>
           <div className={styles.content}>
             <TasksContainer id={id} tasks={tasks} querysub={querysub} />
+          </div>
+          <div className={styles.footer}>
+            <div className={styles.addTask} onClick={handleClickAdd}>
+              <div className={styles.addTaskTitle}>Add Task</div>
+              <Icon className={styles.marginRight} type="plus" />
+            </div>
           </div>
         </div>
       )}
