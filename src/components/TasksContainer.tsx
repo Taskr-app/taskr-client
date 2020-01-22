@@ -8,14 +8,9 @@ import {
 import { Task as TaskResponse } from '../generated/graphql';
 import Task from './Task';
 import styles from './TasksContainer.module.scss';
+import cn from 'classnames';
 
 const grid = 1;
-// const containerHeight = 250;
-
-const getTasksContainerStyle = (isDraggingOver: Boolean) => ({
-  background: isDraggingOver ? 'lightblue' : 'none'
-  // maxHeight: `${containerHeight}px`
-});
 
 const getTaskStyle = (isDragging: Boolean, draggableStyle: any) => ({
   // some basic styles to make the items look nicer
@@ -122,6 +117,7 @@ const TasksContainer: React.FC<TasksContainerProps> = ({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
+          className={styles.task}
           style={getTaskStyle(
             snapshot.isDragging,
             provided.draggableProps.style
@@ -142,9 +138,10 @@ const TasksContainer: React.FC<TasksContainerProps> = ({
     >
       {(provided, snapshot) => (
         <div
-          className={styles.tasksContainer}
+          className={cn(styles.tasksContainer, {
+            [styles.isDraggingOver]: snapshot.isDraggingOver
+          })}
           ref={provided.innerRef}
-          style={getTasksContainerStyle(snapshot.isDraggingOver)}
           {...provided.droppableProps}
         >
           <InnerList

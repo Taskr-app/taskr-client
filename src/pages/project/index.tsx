@@ -29,12 +29,10 @@ interface RouteParams {
 }
 
 const getBoardStyle = (isDraggingOver: Boolean) => ({
-  // background: isDraggingOver ? 'lightblue' : 'none',
   display: 'flex'
 });
 
 const ProjectPage: React.FC = () => {
-  console.log('project page');
   const params = useParams<RouteParams>();
   const projectId = decode(params.projectId);
   const { showModal } = useModal();
@@ -52,7 +50,6 @@ const ProjectPage: React.FC = () => {
   } = useGetProjectListsAndTasksQuery({
     variables: { projectId: projectId as string },
     onError: err => errorMessage(err)
-    // fetchPolicy: 'network-only'
   });
 
   const {
@@ -218,7 +215,7 @@ const ProjectPage: React.FC = () => {
         data: { getProjectListsAndTasks: reorderedListsAndTasks }
       });
 
-      // destination list (n)
+      // destination list
       const list = reorderedListsAndTasks.find(
         list => list.id === destination.droppableId.split('-')[1]
       );
@@ -262,7 +259,6 @@ const ProjectPage: React.FC = () => {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      {console.log('project page render')}
       <ProjectLayout
         title={params.projectName}
         createListModal={showCreateListModal}

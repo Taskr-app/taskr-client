@@ -24,6 +24,7 @@ const ModalTitle: React.FC<ModalTitleProps> = ({ title, id }) => {
     <div className={styles.title}>
       <Icon type="robot" style={{ marginRight: '12px' }} />
       <TitleForm
+        style={{ paddingRight: '30px' }}
         fontSize="1.2em"
         id={parseInt(id)}
         defaultTitle={title}
@@ -64,6 +65,7 @@ const TaskModal: React.FC<Props> = ({ title, id, desc = '' }) => {
       bodyStyle={{
         minWidth: '300px',
         padding: '16px 24px',
+        marginRight: '32px',
         display: 'flex',
         flexDirection: 'row',
         alignContent: 'space-between'

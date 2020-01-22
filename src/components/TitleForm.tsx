@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Form, Input } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { useUpdateListNameMutation } from '../generated/graphql';
 import styles from './TitleForm.module.scss';
 import TextArea from 'antd/lib/input/TextArea';
 
@@ -13,6 +12,7 @@ interface Props extends FormComponentProps {
   color?: string;
   fontSize?: string;
   rows?: number;
+  style?: React.CSSProperties;
 }
 
 const TitleForm: React.FC<Props> = ({
@@ -23,7 +23,8 @@ const TitleForm: React.FC<Props> = ({
   mutationVariableName,
   color = 'white',
   fontSize = '1em',
-  rows = 1
+  rows = 1,
+  style
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const inputRef = useRef<TextArea>(null);
@@ -73,17 +74,9 @@ const TitleForm: React.FC<Props> = ({
             onChange={e => setTitle(e.target.value)}
             onPressEnter={() => inputRef.current!.blur()}
             style={{
-              border: 'none',
               background,
-              transition: 'background-color 0.5s ease',
-              fontWeight: 600,
               fontSize,
-              resize: 'none',
-              wordWrap: 'break-word',
-              paddingBottom: `0px`,
-              paddingTop: `0px`,
-              lineHeight: `2em`,
-              minHeight: `10px`
+              ...style
             }}
             className={styles.input}
           />
