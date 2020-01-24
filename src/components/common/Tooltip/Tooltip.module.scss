@@ -1,0 +1,14 @@
+.smallTooltip {
+
+}
+.smallTooltipOverlay {
+  font-size: 0.6rem;
+}
+
+.smallTooltipOverlay {
+  :global(.ant-tooltip-inner) {
+    padding: 4px 6px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+}

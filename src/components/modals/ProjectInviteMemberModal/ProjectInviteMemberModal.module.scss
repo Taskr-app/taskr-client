@@ -1,0 +1,22 @@
+.optionContainer {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+
+  .optionAvatar {
+    flex: 0 1 auto;
+  }
+
+  .optionLabels {
+    margin: 0 0 0 12px;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.8rem;
+
+    .username {
+      color: #8491A3;
+    }
+  }
+}
