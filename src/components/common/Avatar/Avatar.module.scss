@@ -1,4 +1,5 @@
 .avatar {
+  transition: background-color 200ms ease;
   &.orange {
     background-color: #f56a00;
     &:hover {
@@ -22,5 +23,13 @@
     &:hover {
       background-color: lighten($color: #00a2ae, $amount: 10%)
     }
+  }
+}
+
+.uploadedAvatar {
+  transition: background-color 200ms ease;
+  background-color: #FFF;
+  &:hover {
+    background-color: darken($color: #FFF, $amount: 3%);
   }
 }
