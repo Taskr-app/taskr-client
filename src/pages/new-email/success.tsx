@@ -18,6 +18,11 @@ import { DescriptionText } from '../../components/common/Text';
 import { FormComponentProps } from 'antd/lib/form';
 import { setAccessToken } from '../../lib/accessToken';
 
+/**
+ * 
+ * @routeQueries - id | email
+ */
+
 const NewEmailSuccessPage: React.FC<FormComponentProps> = ({ form }) => {
   const { data } = useMeQuery();
   const history = useHistory();

@@ -8,7 +8,9 @@ import {
   useGetUserProjectQuery,
   useGetProjectListsAndTasksQuery,
   GetProjectListsAndTasksDocument,
-  useUpdateTaskPosMutation
+  useUpdateTaskPosMutation,
+  OnAcceptProjectInviteDocument,
+  OnAcceptProjectInviteSubscription
 } from '../../generated/graphql';
 import { errorMessage } from '../../lib/messageHandler';
 import { useModal } from '../../components/modals';
@@ -17,9 +19,9 @@ import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import ListsContainer from './ListsContainer';
-import InviteMemberModal from '../../components/modals/InviteMemberModal';
 import reorder, { reorderTasks } from './reorder';
 import updateTask from './updateTask';
+import ProjectInviteMemberModal from '../../components/modals/ProjectInviteMemberModal';
 
 interface RouteParams {
   projectId: string;
@@ -38,7 +40,7 @@ const ProjectPage: React.FC = () => {
   const showCreateListModal = () =>
     showModal(<CreateListModal projectId={projectId} />);
   const showInviteMemberModal = () =>
-    showModal(<InviteMemberModal projectId={projectId} />);
+    showModal(<ProjectInviteMemberModal projectId={projectId} />);
 
   const {
     data,
@@ -52,7 +54,10 @@ const ProjectPage: React.FC = () => {
     // fetchPolicy: 'network-only'
   });
 
-  useGetUserProjectQuery({
+  const {
+    data: projectData,
+    subscribeToMore: subscribeToProject
+  } = useGetUserProjectQuery({
     variables: { id: projectId as string },
     onError: err => errorMessage(err)
   });
@@ -64,6 +69,27 @@ const ProjectPage: React.FC = () => {
     variables: { projectId: projectId as string },
     onSubscriptionData: () => refetch()
   });
+
+  const subscribeToNewMembers = () => {
+    subscribeToProject({
+      document: OnAcceptProjectInviteDocument,
+      variables: { projectId: projectId },
+      updateQuery: (prev, { subscriptionData }: { subscriptionData: any }) => {
+        if (!subscriptionData.data) return prev;
+        return {
+          ...prev,
+          getUserProject: {
+            ...prev.getUserProject,
+            members: [
+              ...prev.getUserProject.members,
+              (subscriptionData.data as OnAcceptProjectInviteSubscription)
+                .onAcceptProjectInvite
+            ]
+          }
+        };
+      }
+    });
+  };
 
   const subscribeToNewLists = () => {
     subscribeToMore({
@@ -104,6 +130,7 @@ const ProjectPage: React.FC = () => {
   useEffect(() => {
     subscribeToNewLists();
     subscribeToDeletedLists();
+    subscribeToNewMembers();
   }, []);
 
   const handleDragEnd = useCallback(
@@ -226,7 +253,7 @@ const ProjectPage: React.FC = () => {
     [data]
   );
 
-  if (!data && loading) {
+  if (!data || !projectData || loading) {
     return <div>loading</div>;
   }
 
@@ -238,12 +265,13 @@ const ProjectPage: React.FC = () => {
         title={params.projectName}
         createListModal={showCreateListModal}
         inviteMemberModal={showInviteMemberModal}
+        project={projectData}
       >
         {data && (
           <Droppable
             droppableId={`project-${projectId.toString()}`}
-            type="LIST"
-            direction="horizontal"
+            type='LIST'
+            direction='horizontal'
           >
             {(provided, snapshot) => {
               return (

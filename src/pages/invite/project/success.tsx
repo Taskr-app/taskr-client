@@ -3,7 +3,6 @@ import Layout from '../../../components/layouts/Layout';
 import {
   useMeQuery,
   useAcceptProjectInviteLinkMutation,
-  useValidateLinkQuery,
   useLogoutMutation
 } from '../../../generated/graphql';
 import AnonLayout from '../../../components/layouts/AnonLayout';
@@ -14,28 +13,25 @@ import { queryStringify, queryParse } from '../../../lib/queryParser';
 import { Redirect } from 'react-router-dom';
 import { Button, message } from 'antd';
 import { setAccessToken } from '../../../lib/accessToken';
+import { isAuthenticationError } from '../../../lib/errorHandler';
 
 const ProjectInviteSuccessPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
   const routeQueries = queryParse(location.search);
   const { data, loading } = useMeQuery();
-  const { data: validated, loading: validateLoading } = useValidateLinkQuery({
-    variables: {
-      key: `project-invite-${routeQueries.email}`,
-      link: routeQueries.id
-    },
-    onError: err => {
-      errorMessage(err);
-    }
-  });
-  const [acceptProjectInviteLink] = useAcceptProjectInviteLinkMutation({
+
+  const [
+    acceptProjectInviteLink,
+    { error, loading: mutationLoading }
+  ] = useAcceptProjectInviteLinkMutation({
     variables: {
       email: routeQueries.email,
-      projectInviteLink: routeQueries.id
+      id: routeQueries.id,
+      projectInviteLink: routeQueries.link
     },
     onCompleted: () => history.push({ pathname: '/' }),
-    onError: err => errorMessage(err)
+    onError: () => null
   });
   const [logout, { client }] = useLogoutMutation({
     onCompleted: async () => {
@@ -51,27 +47,25 @@ const ProjectInviteSuccessPage: React.FC = () => {
       });
     },
     onError: err => errorMessage(err)
-  })
+  });
 
   useEffect(() => {
-    if (!routeQueries.id || !routeQueries.email) {
+    if (!routeQueries.id || !routeQueries.email || !routeQueries.link) {
       history.push('/');
-    }
-
-    if (data && validated && data.me.email === routeQueries.email) {
+    } else {
       const fetchData = async () => {
         await acceptProjectInviteLink();
       };
       fetchData();
     }
-  }, [data, validated]);
+  }, []);
 
   const handleSignup = () => {
     history.push({
       pathname: '/register',
       search: queryStringify({
         returnUrl: '/invite/project/success',
-        registerKey: 'project-invite',
+        registerKey: `project-invites-${routeQueries.id}`,
         ...routeQueries
       })
     });
@@ -82,34 +76,48 @@ const ProjectInviteSuccessPage: React.FC = () => {
       pathname: '/login',
       search: queryStringify({
         returnUrl: '/invite/project/success',
-        registerKey: 'project-invite',
+        registerKey: `project-invites-${routeQueries.id}`,
         ...routeQueries
       })
     });
   };
 
-  if (!validated && !validateLoading) {
+  if (mutationLoading || loading) {
+    console.log('returning load state')
+    return <></>
+  }
+
+  if (error && !isAuthenticationError(error)) {
+    console.log('returning error state', error)
     return (
       <ErrorLayout message={'This link has expired or has already been used'} />
     );
   }
-  if (!loading && !data) {
+  if (error && isAuthenticationError(error)) {
+    console.log('returning anon state')
     return <AnonLayout handleSignup={handleSignup} handleLogin={handleLogin} />;
   }
 
   if (data && data.me.email !== routeQueries.email) {
-
     const handleAccept = async () => {
       await logout();
-      message.destroy()
-    }
+      message.destroy();
+    };
+
+    console.log('returning incorrect path render')
 
     message.info(
       <span style={{ position: 'relative' }}>
         A project invitation was sent to <b>{routeQueries.email}</b>
         <br />
         Do you want to switch accounts?
-        <Button onClick={handleAccept} style={{ margin: '0 5px' }} type='primary'>Log in to a different account</Button>
+        <Button
+          onClick={handleAccept}
+          style={{ margin: '0 5px' }}
+          type='primary'
+        >
+          Log in to a different account
+        </Button>
         <Button onClick={() => message.destroy()}>Cancel</Button>
       </span>,
       0

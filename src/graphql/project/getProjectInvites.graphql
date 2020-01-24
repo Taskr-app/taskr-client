@@ -1,0 +1,6 @@
+query GetProjectInvites($projectId: ID!) {
+  getProjectInvites(projectId: $projectId) {
+    email
+    avatar
+  }
+}

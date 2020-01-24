@@ -24,19 +24,28 @@ const AccountSettingsForm: React.FC<FormComponentProps & Props> = ({
 }) => {
   const { data } = useMeQuery();
   const [file, setFile] = useState<File | null>(null);
-  const [updateUsername] = useUpdateUsernameMutation({
+  const [
+    updateUsername,
+    { loading: updateUsernameLoading }
+  ] = useUpdateUsernameMutation({
     onCompleted: () => message.success('Your username has been changed'),
-    onError: err => errorMessage(err),
+    onError: err => errorMessage(err)
   });
-  const [sendNewEmailLink] = useSendNewEmailLinkMutation({
+  const [
+    sendNewEmailLink,
+    { loading: sendNewEmailLinkLoading }
+  ] = useSendNewEmailLinkMutation({
     onCompleted: () =>
       message.info(
         <span>An email has been sent with steps to change your email.</span>
       ),
     onError: err => errorMessage(err)
   });
-  const [uploadAvatar] = useUploadAvatarMutation({
-    onError: err => errorMessage(err),
+  const [
+    uploadAvatar,
+    { loading: uploadAvatarLoading }
+  ] = useUploadAvatarMutation({
+    onError: err => errorMessage(err)
   });
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -122,7 +131,15 @@ const AccountSettingsForm: React.FC<FormComponentProps & Props> = ({
           <Button className={styles.cancel} onClick={handleEdit}>
             Cancel
           </Button>
-          <Button type='primary' htmlType='submit'>
+          <Button
+            type='primary'
+            htmlType='submit'
+            loading={
+              updateUsernameLoading ||
+              sendNewEmailLinkLoading ||
+              uploadAvatarLoading
+            }
+          >
             Save
           </Button>
         </div>

@@ -1,0 +1,8 @@
+query GetUsersByEmail($search: String!) {
+  getUsersByEmail(search:$search) {
+    id
+    email
+    username
+    avatar
+  }
+}

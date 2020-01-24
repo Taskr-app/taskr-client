@@ -1,0 +1,5 @@
+subscription OnAcceptProjectInvite($projectId: ID!) {
+  onAcceptProjectInvite(projectId: $projectId) {
+    ...User
+  }
+}
