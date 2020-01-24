@@ -45,7 +45,7 @@ export const UserAvatar: React.FC<UserAvatarProps & AvatarProps> = ({
 
     return (
       <Avatar
-        className={avatarStyle}
+        className={styles.uploadedAvatar}
         style={{ ...style }}
         icon={<img src={imageSource} alt='' onError={toggleImageError} />}
         {...avatarProps}
