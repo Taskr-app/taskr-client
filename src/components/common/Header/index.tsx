@@ -8,7 +8,7 @@ import AnonHeader from './AnonHeader';
 import { setAccessToken } from '../../../lib/accessToken';
 import { useHistory } from 'react-router';
 import { UserAvatar } from '../Avatar';
-import NotificationsIcon from './NotificationsIcon';
+// import NotificationsIcon from './NotificationsIcon';
 import CreateIcon from './CreateIcon';
 
 interface Props {
@@ -92,9 +92,9 @@ export const Header: React.FC<Props> = ({ dark }) => {
             <Col span={2}>
               <CreateIcon />
             </Col>
-            <Col span={2}>
+            {/* <Col span={2}>
               {data.me && <NotificationsIcon user={data.me} />}
-            </Col>
+            </Col> */}
             <Col span={2}>
               <Dropdown overlay={menu} placement='bottomRight'>
                 <div className={styles.avatarContainer}>
