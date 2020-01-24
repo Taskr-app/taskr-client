@@ -2,5 +2,11 @@ query GetUserProject($id: ID!) {
   getUserProject(id: $id) {
     id
     name
+    members {
+      ...User
+    }
+    owner {
+      ...User
+    }
   }
 }

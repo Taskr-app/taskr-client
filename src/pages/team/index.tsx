@@ -197,7 +197,6 @@ const TeamPage: React.FC = () => {
 
   // console.log(data && data.getUserTeam.members);
   // console.log(GetUserTeamDocument);
-  // console.log('HI');
 
   return (
     <DashboardLayout>

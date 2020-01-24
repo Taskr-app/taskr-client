@@ -1,0 +1,6 @@
+subscription OnSendProjectInvite($projectId: ID!) {
+  onSendProjectInvite(projectId: $projectId) {
+    email
+    avatar
+  }
+}

@@ -48,7 +48,7 @@ const EmailVerificationPage = () => {
           verification.
         </SubText>
         <SubText>
-          The verification link will be valid for 1 hour. If you did not receive
+          The verification link will be valid for 2 hours. If you did not receive
           one, click on the verification link below.
         </SubText>
       </PageHeader>
