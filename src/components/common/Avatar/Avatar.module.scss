@@ -1,0 +1,26 @@
+.avatar {
+  &.orange {
+    background-color: #f56a00;
+    &:hover {
+      background-color: lighten($color: #f56a00, $amount: 10%)
+    }
+  }
+  &.purple {
+    background-color: #7265e6;
+    &:hover {
+      background-color: lighten($color: #7265e6, $amount: 10%)
+    }
+  }
+  &.yellow {
+    background-color: #ffbf00;
+    &:hover {
+      background-color: lighten($color: #ffbf00, $amount: 10%)
+    }
+  }
+  &.teal {
+    background-color: #00a2ae;
+    &:hover {
+      background-color: lighten($color: #00a2ae, $amount: 10%)
+    }
+  }
+}
