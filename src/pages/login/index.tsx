@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLoginMutation } from '../../generated/graphql';
 
 import { setAccessToken } from '../../lib/accessToken';
@@ -17,7 +17,6 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
   const history = useHistory();
   const location = useLocation();
   const routeQueries = queryParse(location.search);
-  const [forgotPassword, showForgotPassword] = useState(false);
   const [login, { loading }] = useLoginMutation({
     onCompleted: data => {
       setAccessToken(data.login.accessToken);
@@ -32,7 +31,6 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
       }
     },
     onError: err => {
-      showForgotPassword(true);
       errorMessage(err);
     }
   });
@@ -91,11 +89,9 @@ const Login: React.FC<FormComponentProps> = ({ form }) => {
           </Form.Item>
 
           <Form.Item>
-            {forgotPassword && (
-              <a href='/forgot-password' className={styles.forgotPassword}>
-                Forgot your password?
-              </a>
-            )}
+            <a href='/forgot-password' className={styles.forgotPassword}>
+              Forgot your password?
+            </a>
             <Button
               htmlType='submit'
               type='primary'
