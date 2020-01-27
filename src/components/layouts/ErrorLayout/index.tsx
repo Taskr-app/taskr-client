@@ -1,11 +1,10 @@
 import React from 'react';
-// import { Empty } from 'antd';
 import { ReactComponent as CryFace } from '../../../assets/cry-57-3.svg';
 import Layout from '../Layout';
 
 import styles from './ErrorLayout.module.scss';
-import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
+import { BackButton } from '../../common/Button';
 
 interface Props {
   message?: string | React.ReactNode;
@@ -32,18 +31,13 @@ const ErrorLayout: React.FC<Props> = ({ message }) => {
 
         <div className={styles.errorMessage}>
           {message
-            ? message
+            ? <><span className={styles.oops}>Oops! </span><span>{message}</span></>
             : 'Oops! The page you were looking for was not found.'}
         </div>
 
-        <Button
-          className={styles.errorButton}
-          size='large'
-          icon='left'
-          onClick={goBack}
-        >
+        <BackButton className={styles.errorButton} onClick={goBack}>
           Go Back
-        </Button>
+        </BackButton>
       </div>
     </Layout>
   );

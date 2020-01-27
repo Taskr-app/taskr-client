@@ -2,6 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './Button.module.scss';
 import { NavLink } from 'react-router-dom';
+import { Button } from 'antd';
+import { ButtonProps } from 'antd/lib/button';
 
 interface ButtonLinkProps {
   path: string;
@@ -30,5 +32,19 @@ export const ButtonLink: React.FC<ButtonLinkProps> = ({
         {children}
       </button>
     </NavLink>
+  );
+};
+
+export const BackButton: React.FC<ButtonProps> = ({
+  children,
+  ...buttonProps
+}) => {
+  return (
+    <Button {...buttonProps}>
+      <span className={styles.backButtonInner}>
+        <i className='icon icon-arrow-left' />
+        {children}
+      </span>
+    </Button>
   );
 };
