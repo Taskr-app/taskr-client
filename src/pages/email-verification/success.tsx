@@ -5,7 +5,7 @@ import {
   useMeLazyQuery
 } from '../../generated/graphql';
 import { setAccessToken } from '../../lib/accessToken';
-import { message, Button, Icon } from 'antd';
+import { message, Button, Icon, Spin } from 'antd';
 import Layout from '../../components/layouts/Layout';
 import ErrorLayout from '../../components/layouts/ErrorLayout';
 import { errorMessage } from '../../lib/messageHandler';
@@ -32,9 +32,14 @@ const EmailVerificationSuccessPage: React.FC = () => {
           <span>
             The validation link you used has expired or is no longer valid.
           </span>
-          <Button type='link' onClick={resendVerificationEmail}>
-            Resend verification link
-          </Button>
+          {!loading ? (
+            <Button type='link' onClick={resendVerificationEmail}>
+              Resend verification link
+            </Button>
+          ) : (
+            <Spin />
+          )}
+
           <Icon
             type='close-circle'
             style={{ cursor: 'pointer' }}
@@ -46,7 +51,10 @@ const EmailVerificationSuccessPage: React.FC = () => {
       history.push('/');
     }
   });
-  const [resendVerificationLink] = useResendVerificationLinkMutation({
+  const [
+    resendVerificationLink,
+    { loading }
+  ] = useResendVerificationLinkMutation({
     variables: {
       email: routeQueries.email
     },
@@ -65,7 +73,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
 
   const resendVerificationEmail = async () => {
     await resendVerificationLink();
-    await message.destroy();
+    message.destroy();
   };
 
   useEffect(() => {

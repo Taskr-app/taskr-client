@@ -83,12 +83,10 @@ const ProjectInviteSuccessPage: React.FC = () => {
   };
 
   if (mutationLoading || loading) {
-    console.log('returning load state')
     return <></>
   }
 
   if (error && !isAuthenticationError(error)) {
-    console.log('returning error state', error)
     return (
       <ErrorLayout message={'This link has expired or has already been used'} />
     );
@@ -103,8 +101,6 @@ const ProjectInviteSuccessPage: React.FC = () => {
       await logout();
       message.destroy();
     };
-
-    console.log('returning incorrect path render')
 
     message.info(
       <span style={{ position: 'relative' }}>
