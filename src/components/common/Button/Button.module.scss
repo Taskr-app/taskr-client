@@ -34,3 +34,13 @@
 .linkText {
   color: #40a9ff;
 }
+
+.backButtonInner {
+  display: flex !important;
+  align-items: center;
+
+  i {
+    font-size: 10px;
+    margin-right: 5px;
+  }
+}

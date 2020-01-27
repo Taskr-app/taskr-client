@@ -51,7 +51,7 @@ export const Header: React.FC<Props> = ({ dark }) => {
   };
 
   const menu = (
-    <Menu onClick={handleMenuClick}>
+    <Menu onClick={handleMenuClick} style={{ minWidth: '200px' }}>
       <Menu.Item disabled>
         {data.me.username} ({data.me.email})
       </Menu.Item>

@@ -1,3 +1,6 @@
+$navy-blue: var(--navy-blue);
+$gray: var(--gray);
+
 .errorLayout {
   display: flex;
   justify-content: center;
@@ -18,21 +21,24 @@
     }
   
     .four {
-      color: #0086a8;
+      color: $navy-blue;
       font-size: 64px;
     }
   }
 
   .errorMessage {
-    color: #0086a8;
-    font-style: italic;
-    margin-bottom: 50px;
+    color: $gray;
+    margin-bottom: 40px;
+
+    .oops {
+      color: $navy-blue;
+    }
   }
 
   .errorButton {
-    background-color: #0086a8;
+    background-color: $navy-blue;
     color: #fff;
-    border-color: #0086a8;
+    border-color: $navy-blue;
 
     &:hover {
       background-color: lighten($color: #0086a8, $amount: 5%)

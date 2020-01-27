@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<svg xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <font id="taskr" horiz-adv-x="256">
+    <font-face font-family="taskr"
+      units-per-em="256" ascent="256"
+      descent="0" />
+    <missing-glyph horiz-adv-x="0" />
+    <glyph glyph-name="arrow-left"
+      unicode="&#xEA05;"
+      horiz-adv-x="256" d="M136.832 213.3333333333334L106.6666666666667 243.4986666666667L6.2506666666667 143.0826666666667A21.333333333333332 21.333333333333332 0 0 1 6.2506666666667 112.9173333333334L106.6666666666667 12.5013333333333L136.832 42.6666666666667L72.832 106.6666666666667H256V149.3333333333334H72.832z" />
+  </font>
+</defs>
+</svg>

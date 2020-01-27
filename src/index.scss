@@ -1,7 +1,20 @@
 @import '~antd/dist/antd.css';
+@import './assets/font-icons/scss/nucleo.scss';
 
-$gold: #F5BB00;
-$navy-green: #0086a8;
+:root {
+  --gray: #8491A3;
+  --light-gray: #F4F5F7;
+  --blue: #3C90DF;
+  --bright-blue: #2591f6;
+  --dark-blue: #2E7BC4;
+  --yellow: #FFE979;
+  --black: #48545D;
+
+  --gold: #F5BB00;
+  --navy-blue: #0086a8;
+
+  --box-shadow: 0 4px 8px -2px rgba(9, 30, 66, .28);
+}
 
 body {
   margin: 0;
