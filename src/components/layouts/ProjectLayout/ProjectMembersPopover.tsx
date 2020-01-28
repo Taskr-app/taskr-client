@@ -176,6 +176,7 @@ const ProjectMembersPopover: React.FC<Props> = ({ project }) => {
           style={{ margin: '6px 0 12px' }}
           onSearch={(value: string) => {
             if (value.length >= 3) handleSearch(value);
+            if (value.length === 0) handleSearch(value)
           }}
           placeholder='Email address or name'
         />
