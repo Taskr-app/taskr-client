@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from 'antd';
-import styles from './IconItem.module.scss';
+import styles from './Menu.module.scss';
 
 interface Props {
   icon: string;

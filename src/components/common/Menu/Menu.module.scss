@@ -1,3 +1,18 @@
+$navy-blue: var(--navy-blue);
+
+.menu {
+
+}
+
+.navMenu {
+  background-color: transparent;
+  height: 100%;
+  width: 90px;
+  box-shadow: var(--box-shadow);
+  padding: 10px 6px;
+  box-sizing: border-box;
+}
+
 .menuItemIcon {
   .rightIcon {
     position: absolute;

@@ -1,29 +1,34 @@
 import React from 'react';
-import { Menu, Icon } from 'antd';
-import styles from './IconItem.module.scss';
-import { MenuItemProps } from 'antd/lib/menu/MenuItem';
+import styles from './Menu.module.scss'
+import { useHistory } from 'react-router-dom';
 
-const { Item } = Menu;
-
-interface MenuItemIconProps {
-  label: string;
-  iconType: string;
-  leftIcon?: string;
+interface NavMenuProps {
+  options: [NavOptions]
 }
 
-export const MenuItemIcon: React.FC<MenuItemIconProps & MenuItemProps> = ({
-  label,
-  leftIcon,
-  iconType,
-  ...props
-}) => {
+type NavOptions = {
+  key: string,
+  route: string,
+  label?: string
+}
+
+export const Menu = () => {
   return (
-    <Item {...props} style={{ position: 'relative' }}>
-      <span className={styles.menuItemIcon}>
-        {leftIcon && <Icon type={leftIcon} />}
-        <span>{label}</span>
-        <Icon type={iconType} className={styles.rightIcon} />
-      </span>
-    </Item>
-  );
-};
+    <div className={styles.menu}>Menu</div>
+  )
+}
+
+export const NavMenu: React.FC<NavMenuProps> = ({ options }) => {
+  const history = useHistory();
+  return (
+    <div className={styles.navMenu}>
+      {options.map(({ key, route, label }) => {
+        return (
+          <div key={key} onClick={() => history.push(route)}>
+            {label ? label : key}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
