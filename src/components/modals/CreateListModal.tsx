@@ -39,7 +39,6 @@ const CreateListModal: React.FC<Props> = ({ projectId, form }) => {
   }, [handleEnterPress]);
 
   const handleSubmit = () => {
-    console.log('submittig');
     validateFields((validationErrors, { name }) => {
       if (!validationErrors) {
         createList({ variables: { name, projectId } });
