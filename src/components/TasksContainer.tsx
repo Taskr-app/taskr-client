@@ -13,15 +13,10 @@ import cn from 'classnames';
 const grid = 1;
 
 const getTaskStyle = (isDragging: Boolean, draggableStyle: any) => ({
-  // some basic styles to make the items look nicer
   userSelect: 'none',
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
-
-  // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'grey',
-
-  // styles we need to apply on draggables
+  borderColor: isDragging ? 'lightgreen' : 'none',
   ...draggableStyle
 });
 
@@ -68,9 +63,14 @@ const InnerTaskList = React.memo(function InnerTaskList({
         >
           {(provided, snapshot) => (
             <div
+              className={styles.task}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
+              style={getTaskStyle(
+                snapshot.isDragging,
+                provided.draggableProps.style
+              )}
             >
               <Task
                 id={task.id}

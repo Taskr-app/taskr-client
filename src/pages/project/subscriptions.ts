@@ -10,7 +10,6 @@ export const subscribeToNewTasks = (
       prev: any,
       { subscriptionData }: { subscriptionData: any }
     ) => {
-      console.log('triggered!!!');
       if (!subscriptionData.data) {
         return prev;
       }
@@ -36,7 +35,6 @@ export const subscribeToNewTasks = (
           };
 
           result.getProjectListsAndTasks[i] = cloneList;
-          console.log('result is', result);
           return result;
         }
       }
@@ -119,8 +117,6 @@ export const subscribeToUpdatedTasks = (
         return prev;
       }
 
-      console.log('list.tasks BEFORE', list.tasks[0]);
-
       const taskIndex = list.tasks.findIndex(
         (task: any) => parseInt(task.id) === variables.taskId
       );
@@ -130,8 +126,6 @@ export const subscribeToUpdatedTasks = (
       }
 
       list.tasks[taskIndex] = subscriptionData.data.onTaskUpdated;
-
-      console.log('list.tasks is', list.tasks[0]);
 
       return result;
     }
