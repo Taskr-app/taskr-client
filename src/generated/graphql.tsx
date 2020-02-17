@@ -55,6 +55,12 @@ export type LoginResponse = {
   user: User,
 };
 
+export type MovedTaskInput = {
+  id: Scalars['ID'],
+  pos: Scalars['Float'],
+  listId: Scalars['ID'],
+};
+
 export type Mutation = {
    __typename?: 'Mutation',
   deleteTeam: Team,
@@ -81,7 +87,7 @@ export type Mutation = {
   acceptPublicProjectLink: Scalars['Boolean'],
   createList: List,
   updateListName: Scalars['Boolean'],
-  updateListPos: Scalars['Boolean'],
+  updateListPos: Array<List>,
   createTeam: Team,
   sendTeamInviteLink: Scalars['String'],
   acceptTeamInviteLink: Scalars['Boolean'],
@@ -300,10 +306,8 @@ export type MutationUpdateTaskArgs = {
 
 
 export type MutationUpdateTaskPosArgs = {
-  belowId?: Maybe<Scalars['ID']>,
-  aboveId?: Maybe<Scalars['ID']>,
-  listId?: Maybe<Scalars['ID']>,
-  id: Scalars['ID']
+  taskMoved: MovedTaskInput,
+  moreTasks?: Maybe<Array<TaskInput>>
 };
 
 
@@ -384,6 +388,12 @@ export type Project = {
   lists: Array<List>,
   members: Array<User>,
   team: Team,
+};
+
+export type PublishTasksResult = {
+   __typename?: 'PublishTasksResult',
+  task: Task,
+  moreTasks?: Maybe<Array<TaskWithPosResponse>>,
 };
 
 export type Query = {
@@ -489,11 +499,11 @@ export type Subscription = {
   onListCreated: List,
   onListDeleted: List,
   onListUpdated: List,
-  onListMoved: List,
+  onListMoved: Array<List>,
   onTaskCreated: Task,
   onTaskDeleted: Task,
   onTaskUpdated: Task,
-  onTaskMoved: Task,
+  onTaskMoved: PublishTasksResult,
   addedTaskMember: Task,
   removedTaskMember: Task,
   newNotification: Notifications,
@@ -587,6 +597,17 @@ export type Task = {
   list: List,
   project: Project,
   users: Array<User>,
+};
+
+export type TaskInput = {
+  id: Scalars['ID'],
+  pos: Scalars['Float'],
+};
+
+export type TaskWithPosResponse = {
+   __typename?: 'TaskWithPosResponse',
+  id: Scalars['ID'],
+  pos: Scalars['Float'],
 };
 
 export type Team = {
@@ -726,10 +747,10 @@ export type OnListMovedSubscriptionVariables = {
 
 export type OnListMovedSubscription = (
   { __typename?: 'Subscription' }
-  & { onListMoved: (
+  & { onListMoved: Array<(
     { __typename?: 'List' }
     & Pick<List, 'id' | 'name' | 'pos'>
-  ) }
+  )> }
 );
 
 export type OnListUpdatedSubscriptionVariables = {
@@ -765,7 +786,10 @@ export type UpdateListPosMutationVariables = {
 
 export type UpdateListPosMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateListPos'>
+  & { updateListPos: Array<(
+    { __typename?: 'List' }
+    & Pick<List, 'id' | 'pos'>
+  )> }
 );
 
 export type GetNotificationsQueryVariables = {};
@@ -997,8 +1021,18 @@ export type OnTaskMovedSubscriptionVariables = {
 export type OnTaskMovedSubscription = (
   { __typename?: 'Subscription' }
   & { onTaskMoved: (
-    { __typename?: 'Task' }
-    & Pick<Task, 'id' | 'name' | 'pos'>
+    { __typename?: 'PublishTasksResult' }
+    & { task: (
+      { __typename?: 'Task' }
+      & Pick<Task, 'id' | 'pos' | 'name' | 'desc'>
+      & { list: (
+        { __typename?: 'List' }
+        & Pick<List, 'id'>
+      ) }
+    ), moreTasks: Maybe<Array<(
+      { __typename?: 'TaskWithPosResponse' }
+      & Pick<TaskWithPosResponse, 'id' | 'pos'>
+    )>> }
   ) }
 );
 
@@ -1033,10 +1067,8 @@ export type UpdateTaskMutation = (
 );
 
 export type UpdateTaskPosMutationVariables = {
-  id: Scalars['ID'],
-  listId?: Maybe<Scalars['ID']>,
-  aboveId?: Maybe<Scalars['ID']>,
-  belowId?: Maybe<Scalars['ID']>
+  taskMoved: MovedTaskInput,
+  moreTasks?: Maybe<Array<TaskInput>>
 };
 
 
@@ -1509,7 +1541,10 @@ export type UpdateListNameMutationResult = ApolloReactCommon.MutationResult<Upda
 export type UpdateListNameMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateListNameMutation, UpdateListNameMutationVariables>;
 export const UpdateListPosDocument = gql`
     mutation UpdateListPos($id: ID!, $aboveId: ID, $belowId: ID) {
-  updateListPos(id: $id, aboveId: $aboveId, belowId: $belowId)
+  updateListPos(id: $id, aboveId: $aboveId, belowId: $belowId) {
+    id
+    pos
+  }
 }
     `;
 export type UpdateListPosMutationFn = ApolloReactCommon.MutationFunction<UpdateListPosMutation, UpdateListPosMutationVariables>;
@@ -1811,9 +1846,19 @@ export type OnTaskDeletedSubscriptionResult = ApolloReactCommon.SubscriptionResu
 export const OnTaskMovedDocument = gql`
     subscription OnTaskMoved($listId: ID!) {
   onTaskMoved(listId: $listId) {
-    id
-    name
-    pos
+    task {
+      id
+      pos
+      name
+      desc
+      list {
+        id
+      }
+    }
+    moreTasks {
+      id
+      pos
+    }
   }
 }
     `;
@@ -1855,8 +1900,8 @@ export type UpdateTaskMutationHookResult = ReturnType<typeof useUpdateTaskMutati
 export type UpdateTaskMutationResult = ApolloReactCommon.MutationResult<UpdateTaskMutation>;
 export type UpdateTaskMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateTaskMutation, UpdateTaskMutationVariables>;
 export const UpdateTaskPosDocument = gql`
-    mutation UpdateTaskPos($id: ID!, $listId: ID, $aboveId: ID, $belowId: ID) {
-  updateTaskPos(id: $id, listId: $listId, aboveId: $aboveId, belowId: $belowId)
+    mutation UpdateTaskPos($taskMoved: MovedTaskInput!, $moreTasks: [TaskInput!]) {
+  updateTaskPos(taskMoved: $taskMoved, moreTasks: $moreTasks)
 }
     `;
 export type UpdateTaskPosMutationFn = ApolloReactCommon.MutationFunction<UpdateTaskPosMutation, UpdateTaskPosMutationVariables>;

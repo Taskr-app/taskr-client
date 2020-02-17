@@ -19,9 +19,9 @@ import { useParams } from 'react-router';
 import { decode } from '../../lib/hashids';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import ListsContainer from './ListsContainer';
-import reorder, { reorderTasks } from './reorder';
-import updateTask from './updateTask';
 import ProjectInviteMemberModal from '../../components/modals/ProjectInviteMemberModal';
+import { reorderTasks, reorderAndAssignTempPos } from './reorder';
+import sort from 'fast-sort';
 
 interface RouteParams {
   projectId: string;
@@ -44,7 +44,6 @@ const ProjectPage: React.FC = () => {
   const {
     data,
     client,
-    refetch,
     loading,
     subscribeToMore
   } = useGetProjectListsAndTasksQuery({
@@ -61,11 +60,22 @@ const ProjectPage: React.FC = () => {
   });
 
   const [updateListPos] = useUpdateListPosMutation({ ignoreResults: true });
-  const [updateTaskPos] = useUpdateTaskPosMutation({ ignoreResults: true });
+  const [updateTaskPos] = useUpdateTaskPosMutation({
+    ignoreResults: true
+  });
 
   useOnListMovedSubscription({
     variables: { projectId: projectId as string },
-    onSubscriptionData: () => refetch()
+    onSubscriptionData: res => {
+      const sortedLists = sort([...data!.getProjectListsAndTasks]).by({
+        asc: list => list.pos
+      });
+      client.writeQuery({
+        query: GetProjectListsAndTasksDocument,
+        variables: { projectId: projectId as string },
+        data: { getProjectListsAndTasks: sortedLists }
+      });
+    }
   });
 
   const subscribeToNewMembers = () => {
@@ -157,20 +167,23 @@ const ProjectPage: React.FC = () => {
         return;
       }
 
-      const lists = data.getProjectListsAndTasks;
+      const lists = data.getProjectListsAndTasks.map(list => ({
+        ...list,
+        tasks: [...list.tasks]
+      }));
 
       // reorder a list in a project
       if (result.type === 'LIST') {
-        const reorderedLists = reorder(lists, source.index, destination.index);
+        const reorderedLists = reorderAndAssignTempPos(
+          lists,
+          source.index,
+          destination.index
+        );
 
-        // change local state (but not their positions)
-        // jank. look into writeQuery
-        const dataGetProjectLists = `getProjectListsAndTasks({"projectId":"${projectId}"})`;
-        const newData = { [dataGetProjectLists]: reorderedLists };
-        client.writeData({
-          data: {
-            ...newData
-          }
+        client.writeQuery({
+          query: GetProjectListsAndTasksDocument,
+          variables: { projectId: projectId as string },
+          data: { getProjectListsAndTasks: reorderedLists }
         });
 
         // destination is first on list
@@ -182,6 +195,7 @@ const ProjectPage: React.FC = () => {
             }
           });
         }
+
         // destination is last on list
         else if (destination.index === lists.length - 1) {
           await updateListPos({
@@ -202,51 +216,26 @@ const ProjectPage: React.FC = () => {
         return;
       }
 
-      // reorder tasks
-      const reorderedListsAndTasks = reorderTasks({
+      // Returns a new array of lists with reordered tasks
+      const [reorderedListsAndTasks, mutationVariables] = await reorderTasks({
         lists,
         source,
         destination
       });
 
-      // write to query (state)
+      // Write to query (state)
       client.writeQuery({
         query: GetProjectListsAndTasksDocument,
+        variables: { projectId: projectId as string },
         data: { getProjectListsAndTasks: reorderedListsAndTasks }
       });
 
-      // destination list
-      const list = reorderedListsAndTasks.find(
-        list => list.id === destination.droppableId.split('-')[1]
-      );
-
-      if (!list) {
-        return;
-      }
-
-      const targetTaskId = list!.tasks[destination.index].id.toString();
-
-      // api update when moving to same list
-      if (source.droppableId === destination.droppableId) {
-        updateTask({
-          id: targetTaskId,
-          list,
-          destination,
-          mutation: updateTaskPos
-        });
-        return;
-      }
-
-      // api update when moving to diff list
-      updateTask({
-        id: targetTaskId,
-        list,
-        destination,
-        mutation: updateTaskPos
+      // Call graphql mutation
+      await updateTaskPos({
+        variables: mutationVariables
       });
-      return;
 
-      //
+      return;
     },
     [data]
   );
@@ -255,7 +244,19 @@ const ProjectPage: React.FC = () => {
     return <div>loading</div>;
   }
 
-  const renderLists = data!.getProjectListsAndTasks;
+  const renderLists = data!.getProjectListsAndTasks.map(list => ({
+    ...list,
+    tasks: [...list.tasks]
+  }));
+
+  sort(renderLists).by({
+    asc: list => {
+      // sort(list.tasks).by({
+      //   asc: task => task.pos
+      // });
+      return list.pos;
+    }
+  });
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -268,8 +269,8 @@ const ProjectPage: React.FC = () => {
         {data && (
           <Droppable
             droppableId={`project-${projectId.toString()}`}
-            type='LIST'
-            direction='horizontal'
+            type="LIST"
+            direction="horizontal"
           >
             {(provided, snapshot) => {
               return (
@@ -277,8 +278,8 @@ const ProjectPage: React.FC = () => {
                   querysub={subscribeToMore}
                   provided={provided}
                   lists={renderLists}
-                  refetch={refetch}
                   style={getBoardStyle(snapshot.isDraggingOver)}
+                  projectId={projectId}
                 />
               );
             }}

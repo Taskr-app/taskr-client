@@ -7619,6 +7619,11 @@ fast-safe-stringify@^1.0.8, fast-safe-stringify@^1.2.1:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-1.2.3.tgz#9fe22c37fb2f7f86f06b8f004377dbf8f1ee7bc1"
   integrity sha512-QJYT/i0QYoiZBQ71ivxdyTqkwKkQ0oxACXHYxH2zYHJEgzi2LsbjgvtzTbLi1SZcF190Db2YP7I7eTsU2egOlw==
+  
+fast-sort@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/fast-sort/-/fast-sort-2.0.1.tgz#71d932d2de380d0d6ca449fdc5dbdefdc437e84a"
+  integrity sha512-61gSQXW5KavRau+RBlQbpD3q+tUyrHSKiU/wob4RP58s99uIpydII6MaRpA+t6Td6/WhvU0lgL8UoMPKKv4xYg==
 
 fastq@^1.6.0:
   version "1.6.0"

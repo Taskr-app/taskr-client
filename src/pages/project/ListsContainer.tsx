@@ -2,22 +2,30 @@ import React from 'react';
 import { DroppableProvided } from 'react-beautiful-dnd';
 import styles from './Project.module.scss';
 import List from '../../components/List';
-import { List as ListResponse } from '../../generated/graphql';
+import { Task } from '../../generated/graphql';
 
 interface Props {
   querysub?: any;
   provided: DroppableProvided;
-  lists: Pick<ListResponse, 'id' | 'name' | 'pos'>[];
+  lists: {
+    tasks: ({
+      __typename?: 'Task' | undefined;
+    } & Pick<Task, 'desc' | 'name' | 'id' | 'pos'>)[];
+    __typename?: 'List' | undefined;
+    name: string;
+    id: string;
+    pos: number;
+  }[];
   style: any;
-  refetch: () => void;
+  projectId: string;
 }
 
 const ListsContainer: React.FC<Props> = ({
   provided,
   lists,
   style,
-  refetch,
-  querysub
+  querysub,
+  projectId
 }) => {
   return (
     <div
@@ -26,15 +34,15 @@ const ListsContainer: React.FC<Props> = ({
       {...provided.droppableProps}
       style={style}
     >
-      {lists.map((list: any, index: number) => (
+      {lists.map((list, index: number) => (
         <List
           querysub={querysub}
           key={list.id}
-          id={list.id}
+          id={parseInt(list.id)}
           name={list.name}
           index={index}
           tasks={list.tasks}
-          refetch={refetch}
+          projectId={projectId}
         />
       ))}
       {provided.placeholder}

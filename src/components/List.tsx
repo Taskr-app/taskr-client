@@ -7,7 +7,9 @@ import {
   useOnTaskMovedSubscription,
   OnTaskCreatedDocument,
   OnTaskDeletedDocument,
-  useUpdateListNameMutation
+  useUpdateListNameMutation,
+  GetProjectListsAndTasksDocument,
+  useGetProjectListsAndTasksQuery
 } from '../generated/graphql';
 import { Draggable } from 'react-beautiful-dnd';
 import TasksContainer from './TasksContainer';
@@ -19,6 +21,8 @@ import {
 } from '../pages/project/subscriptions';
 import { SubscribeToMoreOptions } from 'apollo-client';
 import { Icon } from 'antd';
+import sort from 'fast-sort';
+import { client } from '../lib/apollo';
 
 const grid = 8;
 
@@ -39,11 +43,11 @@ interface Props {
   querysub?: SubscribeToMoreOptions;
   ref?: any;
   id: number;
+  projectId: string;
   key: string;
   name: string;
   index: number;
-  tasks: Task[];
-  refetch: () => void;
+  tasks: Pick<Task, 'desc' | 'name' | 'id' | 'pos'>[];
 }
 
 const List: React.FC<Props> = ({
@@ -51,14 +55,55 @@ const List: React.FC<Props> = ({
   name,
   index,
   tasks,
-  refetch,
-  querysub
+  querysub,
+  projectId
 }) => {
   const { showModal } = useModal();
+  const { data } = useGetProjectListsAndTasksQuery({
+    variables: { projectId: projectId.toString() }
+  });
+
   useOnTaskMovedSubscription({
-    variables: { listId: id.toString() },
-    onSubscriptionData: () => {
-      refetch();
+    variables: { listId: (id as unknown) as string },
+    onSubscriptionData: res => {
+      if (res.subscriptionData.data && data) {
+        const { task: taskData } = res.subscriptionData.data.onTaskMoved;
+        const queryClone = data.getProjectListsAndTasks.map(list => ({
+          ...list,
+          tasks: [...list.tasks]
+        }));
+
+        // Check if data's list.id matches component's id prop
+        if (parseInt(taskData.list.id) === id) {
+          // Find list in query
+          const list = queryClone.find(list => parseInt(list.id) === id);
+
+          // Find task in list and update its pos
+          const task = list!.tasks.find(task => taskData.id === task.id);
+
+          // If task exists in list, update pos
+          // Else append the task to list and sort the list
+          if (task) task.pos = taskData.pos;
+          else {
+            list!.tasks.push(taskData);
+            sort(list!.tasks).by({
+              asc: task => task.pos
+            });
+          }
+        } else {
+          // Splice task off list
+          const list = queryClone.find(list => parseInt(list.id) === id);
+          list!.tasks.forEach((task, index) => {
+            if (task.id === taskData.id) list!.tasks.splice(index, 1);
+          });
+        }
+
+        client.writeQuery({
+          query: GetProjectListsAndTasksDocument,
+          variables: { projectId: projectId as string },
+          data: { getProjectListsAndTasks: queryClone }
+        });
+      }
     }
   });
 
@@ -75,9 +120,17 @@ const List: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    subscribeToNewTasks(querysub, OnTaskCreatedDocument, { listId: id });
-    subscribeToDeletedTasks(querysub, OnTaskDeletedDocument, { listId: id });
+    subscribeToNewTasks(querysub, OnTaskCreatedDocument, {
+      listId: id
+    });
+    subscribeToDeletedTasks(querysub, OnTaskDeletedDocument, {
+      listId: id
+    });
   }, []);
+
+  sort(tasks).by({
+    asc: task => task.pos
+  });
 
   return (
     <Draggable draggableId={`${id}`} index={index}>
