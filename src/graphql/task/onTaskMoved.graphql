@@ -1,7 +1,17 @@
 subscription OnTaskMoved($listId: ID!) {
   onTaskMoved(listId: $listId) {
-    id
-    name
-    pos
+    task {
+      id
+      pos
+      name
+      desc
+      list {
+        id
+      }
+    }
+    moreTasks {
+      id
+      pos
+    }
   }
 }

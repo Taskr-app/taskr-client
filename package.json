@@ -26,6 +26,7 @@
     "cloudinary-core": "^2.8.0",
     "cookie": "^0.4.0",
     "customize-cra": "^0.9.1",
+    "fast-sort": "^2.0.1",
     "graphql": "^14.5.7",
     "hashids": "latest",
     "identity-obj-proxy": "^3.0.0",
