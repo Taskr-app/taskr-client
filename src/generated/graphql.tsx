@@ -510,25 +510,17 @@ export type Subscription = {
 };
 
 
-<<<<<<< c03479dbf93f926ec0bc8c8a735ffad74b19cff1
 export type SubscriptionOnSendProjectInviteArgs = {
-=======
-export type SubscriptionOnListCreatedArgs = {
->>>>>>> add titleform
   projectId: Scalars['ID']
 };
 
 
-<<<<<<< c03479dbf93f926ec0bc8c8a735ffad74b19cff1
 export type SubscriptionOnAcceptProjectInviteArgs = {
-=======
-export type SubscriptionOnListDeletedArgs = {
->>>>>>> add titleform
   projectId: Scalars['ID']
 };
 
 
-export type SubscriptionOnListUpdatedArgs = {
+export type SubscriptionOnListCreatedArgs = {
   projectId: Scalars['ID']
 };
 
@@ -551,13 +543,8 @@ export type SubscriptionOnListMovedArgs = {
 export type SubscriptionOnTaskCreatedArgs = {
   listId: Scalars['ID']
 };
-<<<<<<< c03479dbf93f926ec0bc8c8a735ffad74b19cff1
 
 
-=======
-
-
->>>>>>> add titleform
 export type SubscriptionOnTaskDeletedArgs = {
   listId: Scalars['ID']
 };
@@ -1516,7 +1503,6 @@ export const OnListUpdatedDocument = gql`
     id
     name
     pos
-    desc
   }
 }
     `;
@@ -1834,6 +1820,7 @@ export const OnTaskDeletedDocument = gql`
     id
     name
     pos
+    desc
   }
 }
     `;
