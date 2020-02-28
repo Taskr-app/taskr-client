@@ -28,9 +28,8 @@ interface RouteParams {
   projectName: string;
 }
 
-const getBoardStyle = (isDraggingOver: Boolean) => ({
-  display: 'flex'
-});
+// const getBoardStyle = (isDraggingOver: Boolean) => ({
+// });
 
 const ProjectPage: React.FC = () => {
   const params = useParams<RouteParams>();
@@ -241,7 +240,7 @@ const ProjectPage: React.FC = () => {
   );
 
   if (!data || !projectData || loading) {
-    return <div>loading</div>;
+    return <div></div>;
   }
 
   const renderLists = data!.getProjectListsAndTasks.map(list => ({
@@ -250,12 +249,7 @@ const ProjectPage: React.FC = () => {
   }));
 
   sort(renderLists).by({
-    asc: list => {
-      // sort(list.tasks).by({
-      //   asc: task => task.pos
-      // });
-      return list.pos;
-    }
+    asc: list => list.pos
   });
 
   return (
@@ -278,7 +272,7 @@ const ProjectPage: React.FC = () => {
                   querysub={subscribeToMore}
                   provided={provided}
                   lists={renderLists}
-                  style={getBoardStyle(snapshot.isDraggingOver)}
+                  // style={getBoardStyle(snapshot.isDraggingOver)}
                   projectId={projectId}
                 />
               );

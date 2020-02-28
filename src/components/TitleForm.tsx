@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Form, Input } from 'antd';
+import { Form } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import styles from './TitleForm.module.scss';
 import TextArea from 'antd/lib/input/TextArea';

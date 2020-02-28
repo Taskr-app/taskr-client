@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useModal } from '..';
-import { Modal, Icon } from 'antd';
+import { Modal, Icon, Button } from 'antd';
 import styles from './TaskModal.module.scss';
 import TitleForm from '../../TitleForm';
 import { useUpdateTaskMutation } from '../../../generated/graphql';
@@ -73,6 +73,11 @@ const TaskModal: React.FC<Props> = ({ title, id, desc = '' }) => {
       title={<ModalTitle title={title} id={id} />}
       visible={true}
       onCancel={unmount}
+      footer={[
+        <Button key="submit" type="primary" onClick={unmount}>
+          Close
+        </Button>
+      ]}
     >
       <div className={styles.innerContainer}>
         <div className={styles.descContainer}>

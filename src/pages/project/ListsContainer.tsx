@@ -16,14 +16,13 @@ interface Props {
     id: string;
     pos: number;
   }[];
-  style: any;
+  style?: any;
   projectId: string;
 }
 
 const ListsContainer: React.FC<Props> = ({
   provided,
   lists,
-  style,
   querysub,
   projectId
 }) => {
@@ -32,7 +31,6 @@ const ListsContainer: React.FC<Props> = ({
       className={styles.listsContainer}
       ref={provided.innerRef}
       {...provided.droppableProps}
-      style={style}
     >
       {lists.map((list, index: number) => (
         <List

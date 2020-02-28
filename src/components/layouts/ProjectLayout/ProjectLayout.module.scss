@@ -29,8 +29,9 @@
 }
 
 .content {
+  display: flex;
   height: 100%;
-  padding: 0em 1em;
+  padding: 0.5em;
   overflow-y: hidden;
   width: fit-content;
 }
@@ -60,7 +61,7 @@
       height: 28px;
       line-height: 28px;
       &:hover {
-        background-color: lighten($color: #1890ff, $amount: 10%)
+        background-color: lighten($color: #1890ff, $amount: 10%);
       }
     }
   }

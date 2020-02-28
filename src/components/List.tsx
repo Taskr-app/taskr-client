@@ -22,7 +22,6 @@ import {
 import { SubscribeToMoreOptions } from 'apollo-client';
 import { Icon } from 'antd';
 import sort from 'fast-sort';
-import { client } from '../lib/apollo';
 
 const grid = 8;
 
@@ -59,7 +58,7 @@ const List: React.FC<Props> = ({
   projectId
 }) => {
   const { showModal } = useModal();
-  const { data } = useGetProjectListsAndTasksQuery({
+  const { data, client } = useGetProjectListsAndTasksQuery({
     variables: { projectId: projectId.toString() }
   });
 
