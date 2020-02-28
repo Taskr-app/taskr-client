@@ -64,7 +64,7 @@ describe('Pages', () => {
           };
         }
       };
-      const wrapper = render(
+      render(
         <MockedProvider mocks={[getUserTeamQuery]} addTypename={false}>
           <MemoryRouter initialEntries={[routerLocation.pathname]}>
             <Route
@@ -374,11 +374,11 @@ describe('Pages', () => {
           <MemoryRouter initialEntries={[newRouterLocation]}>
             <Switch>
               <Route
-                path='/team/:teamId/:teamName'
+                path="/team/:teamId/:teamName"
                 render={() => <TeamPage />}
               />
               <Route
-                path='/project/:projectId/:projectName'
+                path="/project/:projectId/:projectName"
                 render={({ location }) => {
                   newRouterLocation = location.pathname;
                   return <div />;
@@ -398,7 +398,7 @@ describe('Pages', () => {
         await wait(0);
       });
       expect(getUserTeamQueryCalled).toBe(true);
-      expect(wrapper.contains(<ProjectPage />));
+      // expect(wrapper.contains(<ProjectPage />));
       expect(newRouterLocation).toEqual(
         `/project/${HashFactory.encode(mockQuery.projectId)}/${
           mockQuery.projectName

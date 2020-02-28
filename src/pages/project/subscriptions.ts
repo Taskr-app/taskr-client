@@ -25,7 +25,13 @@ export const subscribeToNewTasks = (
       };
 
       for (let i = 0; i < result.getProjectListsAndTasks.length; i += 1) {
-        if (variables.listId === result.getProjectListsAndTasks[i].id) {
+        console.log(
+          result.getProjectListsAndTasks[i].id,
+          typeof result.getProjectListsAndTasks[i].id
+        );
+        if (
+          variables.listId === parseInt(result.getProjectListsAndTasks[i].id)
+        ) {
           const cloneList = {
             ...result.getProjectListsAndTasks[i],
             tasks: [
@@ -70,7 +76,9 @@ export const subscribeToDeletedTasks = (
       };
 
       for (let i = 0; i < result.getProjectListsAndTasks.length; i += 1) {
-        if (variables.listId === result.getProjectListsAndTasks[i].id) {
+        if (
+          variables.listId === parseInt(result.getProjectListsAndTasks[i].id)
+        ) {
           result.getProjectListsAndTasks[
             i
           ].tasks = result.getProjectListsAndTasks[i].tasks.filter(

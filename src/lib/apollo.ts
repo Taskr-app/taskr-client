@@ -66,6 +66,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   console.log('Network Error: ', networkError);
 });
 
+console.log(process.env.REACT_APP_GREAPHQL_URL, 'env url');
+
 const httpLink = createUploadLink({
   uri: process.env.REACT_APP_GRAPHQL_URL,
   credentials: 'include',
@@ -87,7 +89,7 @@ const wsLink = new WebSocketLink({
           ...Headers,
           authorization: token ? `bearer ${token}` : ''
         }
-      }
+      };
     }
   }
 });
