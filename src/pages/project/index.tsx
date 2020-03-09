@@ -82,7 +82,12 @@ const ProjectPage: React.FC = () => {
       document: OnAcceptProjectInviteDocument,
       variables: { projectId: projectId },
       updateQuery: (prev, { subscriptionData }: { subscriptionData: any }) => {
-        if (!subscriptionData.data) return prev;
+        if (
+          !subscriptionData ||
+          !subscriptionData.data ||
+          Object.keys(!subscriptionData.data).length === 0
+        )
+          return prev;
         return {
           ...prev,
           getUserProject: {
@@ -103,7 +108,11 @@ const ProjectPage: React.FC = () => {
       document: OnListCreatedDocument,
       variables: { projectId: projectId as string },
       updateQuery: (prev, { subscriptionData }: { subscriptionData: any }) => {
-        if (!subscriptionData.data) {
+        if (
+          !subscriptionData ||
+          !subscriptionData.data ||
+          Object.keys(!subscriptionData.data).length === 0
+        ) {
           return prev;
         }
 
@@ -123,7 +132,11 @@ const ProjectPage: React.FC = () => {
       document: OnListDeletedDocument,
       variables: { projectId: projectId as string },
       updateQuery: (prev, { subscriptionData }: { subscriptionData: any }) => {
-        if (!subscriptionData.data) {
+        if (
+          !subscriptionData ||
+          !subscriptionData.data ||
+          Object.keys(!subscriptionData.data).length === 0
+        ) {
           return prev;
         }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, mount, shallow, ReactWrapper } from 'enzyme';
+import { render, mount } from 'enzyme';
 import { MockedProvider, wait, MockedResponse } from '@apollo/react-testing';
 import { MemoryRouter, Route } from 'react-router-dom';
 import ProjectPage from '../../pages/project';
@@ -18,18 +18,7 @@ import {
   OnTaskDeletedDocument
 } from '../../generated/graphql';
 import { encode } from '../../lib/hashids';
-import renderer, { act as reactAct } from 'react-test-renderer';
 import { act } from 'react-dom/test-utils';
-import ListsContainer from '../../pages/project/ListsContainer';
-import { DragDropContext } from 'react-beautiful-dnd';
-
-// fetches user's project, !data -> dont render data
-
-// fetches project's lists and tasks
-//check if query is called
-
-// list
-// test for CTA / mutation
 
 describe('Project Page', () => {
   const projectId = '1';
@@ -90,10 +79,6 @@ describe('Project Page', () => {
       }
     })
   };
-
-  const onTaskMovedData = [
-    { id: '1', name: 'task1', desc: 'desc', pos: 16384, list: { id: '1' } }
-  ];
 
   const onTaskMovedMocks = listsAndTasksMock.map(list => ({
     request: {
@@ -216,12 +201,13 @@ describe('Project Page', () => {
     });
     wrapper.update();
 
-    expect(wrapper.html()).toContain('section');
-
-    // subToDeletedLists
+    // Expects lists with names ooga and booga
+    console.log('wrapper.html', wrapper);
+    expect(wrapper.html()).toContain('ooga');
+    expect(wrapper.html()).toContain('booga');
   });
 
-  it('should render loading state', async () => {
+  it('should render loading state', () => {
     const wrapper = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter initialEntries={[`/project/${hashedId}/${projectName}`]}>

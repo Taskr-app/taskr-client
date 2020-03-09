@@ -11,7 +11,6 @@ import {
   DeleteTeamMemberDocument
 } from '../../generated/graphql';
 import { act } from 'react-dom/test-utils';
-import ProjectPage from '../../pages/project';
 
 describe('Pages', () => {
   describe('Team', () => {
