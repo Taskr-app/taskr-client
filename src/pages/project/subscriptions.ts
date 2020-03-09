@@ -10,9 +10,14 @@ export const subscribeToNewTasks = (
       prev: any,
       { subscriptionData }: { subscriptionData: any }
     ) => {
-      if (!subscriptionData.data) {
+      if (
+        !subscriptionData ||
+        !subscriptionData.data ||
+        Object.keys(subscriptionData.data).length === 0
+      ) {
         return prev;
       }
+      console.log('inside');
 
       const result = {
         ...prev,
@@ -25,10 +30,6 @@ export const subscribeToNewTasks = (
       };
 
       for (let i = 0; i < result.getProjectListsAndTasks.length; i += 1) {
-        console.log(
-          result.getProjectListsAndTasks[i].id,
-          typeof result.getProjectListsAndTasks[i].id
-        );
         if (
           variables.listId === parseInt(result.getProjectListsAndTasks[i].id)
         ) {
@@ -61,7 +62,11 @@ export const subscribeToDeletedTasks = (
       prev: any,
       { subscriptionData }: { subscriptionData: any }
     ) => {
-      if (!subscriptionData.data) {
+      if (
+        !subscriptionData ||
+        !subscriptionData.data ||
+        Object.keys(subscriptionData.data).length === 0
+      ) {
         return prev;
       }
 
@@ -104,7 +109,11 @@ export const subscribeToUpdatedTasks = (
       prev: any,
       { subscriptionData }: { subscriptionData: any }
     ) => {
-      if (!subscriptionData.data) {
+      if (
+        !subscriptionData ||
+        !subscriptionData.data ||
+        Object.keys(subscriptionData.data).length === 0
+      ) {
         return prev;
       }
       const result = {

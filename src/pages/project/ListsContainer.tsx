@@ -28,6 +28,7 @@ const ListsContainer: React.FC<Props> = ({
 }) => {
   return (
     <div
+      data-testid="board"
       className={styles.listsContainer}
       ref={provided.innerRef}
       {...provided.droppableProps}

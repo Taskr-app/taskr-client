@@ -65,7 +65,11 @@ const List: React.FC<Props> = ({
   useOnTaskMovedSubscription({
     variables: { listId: (id as unknown) as string },
     onSubscriptionData: res => {
-      if (res.subscriptionData.data && data) {
+      if (
+        res.subscriptionData.data &&
+        res.subscriptionData.data.onTaskMoved &&
+        data
+      ) {
         const { task: taskData } = res.subscriptionData.data.onTaskMoved;
         const queryClone = data.getProjectListsAndTasks.map(list => ({
           ...list,
@@ -143,7 +147,11 @@ const List: React.FC<Props> = ({
           ref={provided.innerRef}
           {...provided.draggableProps}
         >
-          <div className={styles.header} {...provided.dragHandleProps}>
+          <div
+            className={styles.header}
+            {...provided.dragHandleProps}
+            data-testid="list-content"
+          >
             <TitleForm
               defaultTitle={name}
               id={id}
