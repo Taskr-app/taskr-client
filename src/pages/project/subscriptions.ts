@@ -17,16 +17,15 @@ export const subscribeToNewTasks = (
       ) {
         return prev;
       }
-      console.log('inside');
 
       const result = {
         ...prev,
         getProjectListsAndTasks: prev.getProjectListsAndTasks.map(
           (list: any) => ({
             ...list,
-            tasks: [...list.tasks]
+            tasks: [...list.tasks],
           })
-        )
+        ),
       };
 
       for (let i = 0; i < result.getProjectListsAndTasks.length; i += 1) {
@@ -37,8 +36,8 @@ export const subscribeToNewTasks = (
             ...result.getProjectListsAndTasks[i],
             tasks: [
               ...result.getProjectListsAndTasks[i].tasks,
-              subscriptionData.data.onTaskCreated
-            ]
+              subscriptionData.data.onTaskCreated,
+            ],
           };
 
           result.getProjectListsAndTasks[i] = cloneList;
@@ -46,7 +45,7 @@ export const subscribeToNewTasks = (
         }
       }
       return prev;
-    }
+    },
   });
 };
 
@@ -75,9 +74,9 @@ export const subscribeToDeletedTasks = (
         getProjectListsAndTasks: prev.getProjectListsAndTasks.map(
           (list: any) => ({
             ...list,
-            tasks: [...list.tasks]
+            tasks: [...list.tasks],
           })
-        )
+        ),
       };
 
       for (let i = 0; i < result.getProjectListsAndTasks.length; i += 1) {
@@ -93,7 +92,7 @@ export const subscribeToDeletedTasks = (
         }
       }
       return prev;
-    }
+    },
   });
 };
 
@@ -121,9 +120,9 @@ export const subscribeToUpdatedTasks = (
         getProjectListsAndTasks: prev.getProjectListsAndTasks.map(
           (list: any) => ({
             ...list,
-            tasks: [...list.tasks]
+            tasks: [...list.tasks],
           })
-        )
+        ),
       };
 
       const list = result.getProjectListsAndTasks.find(
@@ -145,6 +144,6 @@ export const subscribeToUpdatedTasks = (
       list.tasks[taskIndex] = subscriptionData.data.onTaskUpdated;
 
       return result;
-    }
+    },
   });
 };

@@ -39,9 +39,9 @@ describe('Pages', () => {
       const wrapper = mount(
         <MockedProvider mocks={mocks} addTypename={false}>
           <MemoryRouter initialEntries={[routerLocation]}>
-            <Route path='/login' render={() => <Login />} />
+            <Route path="/login" render={() => <Login />} />
             <Route
-              path='/'
+              path="/"
               render={({ location }) => {
                 routerLocation = location.pathname;
                 return <Dashboard />;
@@ -63,6 +63,7 @@ describe('Pages', () => {
 
       expect(loginMutationCalled).toBe(true);
       expect(wrapper.contains(<Dashboard />));
+      // eslint-disable-next-line no-restricted-globals
       expect(location.pathname).toEqual('/');
     });
   });
