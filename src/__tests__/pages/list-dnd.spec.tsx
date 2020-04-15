@@ -1,31 +1,31 @@
 import {
   mockDndElSpacing,
-  DND_DRAG_HANDLE_DATA_ATTR
-} from '../utils/rbdHelpers';
-import * as React from 'react';
-import { MockedProvider, wait, MockedResponse } from '@apollo/react-testing';
+  DND_DRAG_HANDLE_DATA_ATTR,
+} from "../utils/rbdHelpers";
+import * as React from "react";
+import { MockedProvider, wait, MockedResponse } from "@apollo/react-testing";
 import {
   mocks,
   projectId,
-  listsAndTasksMock
-} from '../utils/mockListsAndTasks';
-import { MemoryRouter, Route } from 'react-router-dom';
-import ProjectPage from '../../pages/project';
-import { act } from 'react-dom/test-utils';
-import { encode } from '../../lib/hashids';
+  listsAndTasksMock,
+} from "../utils/mockListsAndTasks";
+import { MemoryRouter, Route } from "react-router-dom";
+import ProjectPage from "../../pages/project";
+import { act } from "react-dom/test-utils";
+import { encode } from "../../lib/hashids";
 import {
   render,
   fireEvent,
   within,
-  waitForElement
-} from '@testing-library/react';
-import { UpdateListPosDocument } from '../../generated/graphql';
+  waitForElement,
+} from "@testing-library/react";
+import { UpdateListPosDocument } from "../../generated/graphql";
 
 const spaceKey = { keyCode: 32 };
 const arrowLeftKey = { keyCode: 37 };
 const arrowRightKey = { keyCode: 39 };
 
-const projectName = 'testing';
+const projectName = "testing";
 const hashedId = encode(projectId);
 
 const createTestTextOrderByTestIdHelper = (getAllByTestId: any) => {
@@ -60,13 +60,13 @@ const renderApp = async (mocks: MockedResponse[]) => {
   return { makeGetDragEl, ...rtlUtils };
 };
 
-describe('Project-Dnd', () => {
+describe("Project-Dnd", () => {
   let root: HTMLDivElement;
 
   beforeEach(() => {
     // mockGetComputedSpacing();
-    root = document.createElement('div');
-    root.id = 'root';
+    root = document.createElement("div");
+    root.id = "root";
     document.body.appendChild(root);
   });
 
@@ -74,28 +74,31 @@ describe('Project-Dnd', () => {
     document.body.removeChild(root);
   });
 
-  describe('dnd', () => {
-    test('Move a list to the right', async () => {
-      const mocksWithUpdatePosListMutation = [...mocks];
-      mocksWithUpdatePosListMutation.push({
+  describe("dnd", () => {
+    test("Move a list to the right", async () => {
+      const updatePosListMutationMock = {
         request: {
           query: UpdateListPosDocument,
           variables: {
-            id: '1',
-            aboveId: listsAndTasksMock[1].id
-          }
+            id: "1",
+            aboveId: listsAndTasksMock[1].id,
+          },
         },
         result: {
           data: {
-            undefined
-          }
-        }
-      });
+            undefined,
+          },
+        },
+      };
+      const mocksWithUpdatePosListMutation = [
+        ...mocks,
+        updatePosListMutationMock,
+      ];
       const { getByText, makeGetDragEl, getByTestId } = await renderApp(
         mocksWithUpdatePosListMutation
       );
 
-      const getDragEl = (makeGetDragEl('ooga') as unknown) as () => HTMLElement;
+      const getDragEl = (makeGetDragEl("ooga") as unknown) as () => HTMLElement;
 
       await act(async () => {
         getDragEl().focus();
@@ -110,31 +113,31 @@ describe('Project-Dnd', () => {
       });
 
       const { getAllByTestId: getAllByTestIdWithinBoard } = (within(
-        getByTestId('board')
+        getByTestId("board")
       ) as unknown) as { getAllByTestId: HTMLElement[] };
 
       const testTextOrderByTestId = createTestTextOrderByTestIdHelper(
         getAllByTestIdWithinBoard
       );
 
-      testTextOrderByTestId('list-content', ['booga', 'ooga']);
+      testTextOrderByTestId("list-content", ["booga", "ooga"]);
     });
 
-    test('Move a list to the left', async () => {
+    test("Move a list to the left", async () => {
       const mocksWithUpdatePosListMutation = [...mocks];
       mocksWithUpdatePosListMutation.push({
         request: {
           query: UpdateListPosDocument,
           variables: {
-            id: '2',
-            belowId: listsAndTasksMock[0].id
-          }
+            id: "2",
+            belowId: listsAndTasksMock[0].id,
+          },
         },
         result: {
           data: {
-            undefined
-          }
-        }
+            undefined,
+          },
+        },
       });
 
       const { getByText, makeGetDragEl, getByTestId } = await renderApp(
@@ -142,7 +145,7 @@ describe('Project-Dnd', () => {
       );
 
       const getDragEl = (makeGetDragEl(
-        'booga'
+        "booga"
       ) as unknown) as () => HTMLElement;
 
       await act(async () => {
@@ -158,14 +161,14 @@ describe('Project-Dnd', () => {
       });
 
       const { getAllByTestId: getAllByTestIdWithinBoard } = (within(
-        getByTestId('board')
+        getByTestId("board")
       ) as unknown) as { getAllByTestId: HTMLElement[] };
 
       const testTextOrderByTestId = createTestTextOrderByTestIdHelper(
         getAllByTestIdWithinBoard
       );
 
-      testTextOrderByTestId('list-content', ['booga', 'ooga']);
+      testTextOrderByTestId("list-content", ["booga", "ooga"]);
     });
   });
 });

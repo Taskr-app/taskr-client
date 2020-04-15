@@ -20,7 +20,9 @@ const CreateTaskModal: React.FC<Props> = ({ listId, form }) => {
   const unmount = () => hideModal();
   const [createTask] = useCreateTaskMutation({
     onCompleted: () => unmount(),
-    onError: err => errorMessage(err)
+    onError: (err) => {
+      errorMessage(err);
+    },
   });
 
   const handleSubmit = () => {
@@ -31,7 +33,7 @@ const CreateTaskModal: React.FC<Props> = ({ listId, form }) => {
     });
   };
 
-  const handleEnterPress = useCallback(e => {
+  const handleEnterPress = useCallback((e) => {
     const { keyCode } = e;
     if (keyCode === 13 && form.isFieldTouched('name')) {
       handleSubmit();
@@ -56,7 +58,7 @@ const CreateTaskModal: React.FC<Props> = ({ listId, form }) => {
       <Form>
         <Form.Item>
           {getFieldDecorator('name', {
-            rules: [{ required: true, message: 'Task name is required' }]
+            rules: [{ required: true, message: 'Task name is required' }],
           })(
             <Input
               autoFocus
